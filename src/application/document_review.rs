@@ -166,7 +166,7 @@ pub async fn enrich(app: &App, user: &User, id: &str, input: Enrichment) -> Resu
         .iter()
         .map(|p| p["id"].as_str().unwrap().to_owned())
         .collect::<Vec<_>>();
-    let model = input.model.unwrap_or_else(|| "apertus-v1-5-8b".into());
+    let model = input.model.unwrap_or_else(super::runs::default_model);
     let language = input.language.unwrap_or_else(|| "en".into());
     let message="From the selected document pages, identify a concise title and only directly attested dates, organizations, or people. Quote the exact source passages. Distinguish document claims from verified events. State missing metadata and potential selection or transcription bias. Do not invent fields, infer outcomes, or treat the title as evidence. This is a metadata proposal requiring human review.".to_owned();
     let started = runs::start(

@@ -15,6 +15,7 @@ use uuid::Uuid;
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Input {
     pub message: String,
+    #[serde(default = "default_model")]
     pub model: String,
     pub language: String,
     #[serde(default)]
@@ -25,6 +26,9 @@ pub struct Input {
     pub source_ids: Vec<String>,
     #[serde(default)]
     pub provider_processing_confirmed: bool,
+}
+pub fn default_model() -> String {
+    "apertus-v1-5-70b".into()
 }
 pub async fn session(app: &App, user: &User, title: &str, language: &str) -> Result<Value> {
     if !domain::valid_locale(language) {
