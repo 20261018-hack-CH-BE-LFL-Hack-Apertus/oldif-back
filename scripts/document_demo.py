@@ -27,7 +27,12 @@ def run_demo():
     csv_bytes=call(f'/api/documents/{ident}/export?format=csv')
     csv_rows=list(csv.DictReader(io.StringIO(csv_bytes.decode())))
     assert [json.loads(row['text_json']) for row in csv_rows]==[page['text'] for page in pages]
-    report={'fixture':'explicitly synthetic two-page text','document_id':ident,'page_count':len(pages),'original_hash_verified':True,'page_hashes_verified':True,'csv_text_roundtrip_verified':True,'review_version':review['document']['version'],'enrichment':'NOT_RUN','human_quality':'NOT_RUN'}
+    bundle=call(f'/api/documents/{ident}/export?format=bundle&scope=private')
+    assert bundle['publication_performed'] is False and len(bundle['files'])==7
+    assert all(hashlib.sha256(file['content'].encode()).hexdigest()==file['sha256'] for file in bundle['files'])
+    exported=[json.loads(line) for line in next(f['content'] for f in bundle['files'] if f['name']=='records.jsonl').splitlines()]
+    assert [row['data']['text'] for row in exported]==[page['text'] for page in pages]
+    report={'bundle_file_hashes_verified':True,'bundle_text_roundtrip_verified':True,'fixture':'explicitly synthetic two-page text','document_id':ident,'page_count':len(pages),'original_hash_verified':True,'page_hashes_verified':True,'csv_text_roundtrip_verified':True,'review_version':review['document']['version'],'enrichment':'NOT_RUN','human_quality':'NOT_RUN'}
     if enabled:
         run=call(f'/api/documents/{ident}/enrich',{'provider_processing_confirmed':True,'page_numbers':[1],'language':'en'})
         deadline=time.monotonic()+180
