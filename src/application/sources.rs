@@ -60,42 +60,41 @@ pub async fn search(
     if question.chars().count() > 8000 {
         return Err(Error::bad("Search query exceeds 8000 characters"));
     }
-    let terms: Vec<String> = question
-        .to_lowercase()
-        .split(|c: char| !c.is_alphanumeric())
-        .filter(|s| s.len() > 2)
-        .map(str::to_owned)
-        .collect();
-    let mut rows: Vec<_> = all(app, owner)
+    let records = all(app, owner)
         .await?
         .into_iter()
         .filter(|r| {
             datasets.is_empty() || datasets.iter().any(|d| r.data["dataset_id"] == d.as_str())
         })
-        .map(|r| {
-            let title = r.data["title"].as_str().unwrap_or("").to_lowercase();
-            let text = r.data["text"].as_str().unwrap_or("").to_lowercase();
-            let score = terms
-                .iter()
-                .map(|term| {
-                    usize::from(title.contains(term)) * 3 + usize::from(text.contains(term))
-                })
-                .sum::<usize>();
-            (score, r)
+        .collect::<Vec<_>>();
+    let documents = records
+        .iter()
+        .map(|r| crate::domain::retrieval::Document {
+            id: r.id.clone(),
+            title: r.data["title"].as_str().unwrap_or("").into(),
+            location: r.data["metadata"]["Schulort"].as_str().unwrap_or("").into(),
+            text: r.data["text"].as_str().unwrap_or("").into(),
         })
-        .collect();
-    rows.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.id.cmp(&b.1.id)));
-    Ok(rows
+        .collect::<Vec<_>>();
+    let selection = crate::domain::retrieval::select(question, &documents, 6);
+    Ok(selection
+        .indices
         .into_iter()
-        .take(6)
-        .map(|(score, r)| {
-            let mut row = r.public();
+        .map(|(index, score)| {
+            let mut row = records[index].public();
             row["retrieval_score"] = json!(score);
-            row["retrieval_method"] = json!("lexical");
+            row["retrieval_method"] = json!(selection.method);
+            row["text_sha256"] = json!(hash(row["text"].as_str().unwrap_or("")));
+            row["record_hash_scope"] = json!(if row["metadata"].is_object() {
+                "canonical-source-row-json"
+            } else {
+                "utf8-original-text"
+            });
             row
         })
         .collect())
 }
+
 pub async fn import(app: &App, owner: &str, input: Value) -> Result<Value> {
     if input["rights_confirmed"] != true {
         return Err(Error::bad("Confirm that these records may be processed"));

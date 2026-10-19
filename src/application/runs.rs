@@ -51,7 +51,7 @@ pub async fn start(app: &App, user: &User, input: Input) -> Result<Value> {
     let selected = sources::search(app, &user.id, &input.message, &input.dataset_ids).await?;
     if selected.is_empty() {
         return Err(Error::bad(
-            "Choose a dataset with accessible transcriptions",
+            "No matching source was found. Name a school or an exact source identifier from the collection",
         ));
     }
     let history = history(app, &user.id, &sid).await?;
@@ -73,7 +73,7 @@ pub async fn start(app: &App, user: &User, input: Input) -> Result<Value> {
             ),
         ])
         .await?;
-    emit(app,&user.id,&sid,&id,"started",json!({"model":input.model,"retrieved_sources":selected.len(),"retrieval_method":"lexical"})).await?;
+    emit(app,&user.id,&sid,&id,"started",json!({"model":input.model,"retrieved_sources":selected.len(),"retrieval_method":selected[0]["retrieval_method"],"source_ids":selected.iter().map(|s|s["id"].clone()).collect::<Vec<_>>()})).await?;
     let next_app = app.clone();
     let owner = user.id.clone();
     let rid = id.clone();
@@ -101,7 +101,7 @@ fn validate(input: &Input) -> Result<()> {
 fn core_source(row: &Value) -> Value {
     let text = row["text"].as_str().unwrap_or("");
     // The core receives complete records so exact-quote validation uses the original text.
-    json!({"id":row["id"],"title":row["title"],"text":text,"url":row["url"],"page":row["page"],"sha256":row["sha256"],"licence":row["licence"]})
+    json!({"id":row["id"],"title":row["title"],"text":text,"url":row["url"],"page":row["page"],"sha256":row["sha256"],"text_sha256":row["text_sha256"],"record_hash_scope":row["record_hash_scope"],"licence":row["licence"]})
 }
 async fn history(app: &App, owner: &str, sid: &str) -> Result<Vec<Value>> {
     let rows = app.store.list(owner, "message").await?;

@@ -1,3 +1,4 @@
+pub mod retrieval;
 pub fn valid_id(value: &str) -> bool {
     !value.is_empty()
         && value.len() <= 200
