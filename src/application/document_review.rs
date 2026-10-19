@@ -18,7 +18,12 @@ pub struct Annotation {
     pub handwriting_status: String,
     pub legibility_status: String,
     pub note: String,
+    #[serde(default)]
+    pub missing_page: bool,
+    #[serde(default="unknown")]
+    pub reading_order_status: String,
 }
+fn unknown()->String{"unknown".into()}
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Review {
@@ -44,7 +49,7 @@ pub async fn review(app: &App, owner: &str, id: &str, input: Review) -> Result<V
     let changed=json!({"title":data["title"],"labels":data["labels"],"metadata":data["metadata"],"annotations":data["annotations"]});
     let transform=super::provenance::transformation("human_metadata_revision",&input.reason,owner,&revision_id,json!({"kind":"document","id":id,"version":document.version}),original,changed.clone());
     data["transformation"]=transform.clone();
-    let review = json!({"document_id":id,"actor":owner,"decision":input.decision,"reason":input.reason,"previous_version":document.version,"resulting_version":document.version+1,"changes":changed,"transformation":transform,"original_modified":false});
+    let review = json!({"document_id":id,"actor":owner,"decision":data["review"]["decision"],"reason":input.reason,"previous_version":document.version,"resulting_version":document.version+1,"changes":changed,"transformation":transform,"original_modified":false});
     let rows = app
         .store
         .batch(vec![
@@ -90,8 +95,8 @@ fn revise(mut data: Value, owner: &str, input: &Review) -> Result<Value> {
             data["page_count"].as_u64().unwrap_or(0) as usize,
         )?;
     }
-    data["review"] =
-        json!({"decision":input.decision,"reason":input.reason,"actor":owner,"human_review":true});
+    let unresolved=data["annotations"].as_array().is_some_and(|items|items.iter().any(|a|a["missing_page"]==true||a["reading_order_status"]=="uncertain"||["illegible","partially_legible"].iter().any(|v|a["legibility_status"]==*v)));
+    data["review"] = json!({"decision":if unresolved{"needs_review"}else{input.decision.as_str()},"reason":input.reason,"actor":owner,"human_review":true});
     Ok(data)
 }
 fn labels(values: &[String]) -> Result<()> {
@@ -110,6 +115,7 @@ fn annotations_value(values: &[Annotation], page_count: usize) -> Result<Value> 
             || a.bias.len() > 2000
             || a.missingness.len() > 2000
             || a.note.len() > 4000
+            || !["unknown","verified","uncertain"].contains(&a.reading_order_status.as_str())
             || !["unknown", "handwritten", "printed", "mixed"]
                 .contains(&a.handwriting_status.as_str())
             || !["unknown", "legible", "partially_legible", "illegible"]
@@ -118,7 +124,7 @@ fn annotations_value(values: &[Annotation], page_count: usize) -> Result<Value> 
             return Err(Error::bad("Invalid or duplicate page annotation"));
         }
         labels(&a.labels)?;
-        result.push(json!({"page":a.page,"labels":a.labels,"bias":a.bias,"missingness":a.missingness,"handwriting_status":a.handwriting_status,"legibility_status":a.legibility_status,"note":a.note,"method":"human_annotation"}));
+        result.push(json!({"page":a.page,"labels":a.labels,"bias":a.bias,"missingness":a.missingness,"handwriting_status":a.handwriting_status,"legibility_status":a.legibility_status,"note":a.note,"method":"human_annotation","missing_page":a.missing_page,"reading_order_status":a.reading_order_status}));
     }
     Ok(json!(result))
 }
@@ -229,6 +235,12 @@ fn selected_pages(pages: &[Value], requested: Option<&[usize]>) -> Result<Vec<Va
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn detected_page_uncertainty_cannot_be_auto_accepted() {
+        let original=json!({"page_count":2,"annotations":[],"title":"source"});
+        let input:Review=serde_json::from_value(json!({"expected_version":1,"decision":"accepted","reason":"Compared source","annotations":[{"page":1,"labels":[],"bias":"","missingness":"one page absent","handwriting_status":"unknown","legibility_status":"legible","note":"","missing_page":true,"reading_order_status":"uncertain"}]})).unwrap();
+        let updated=revise(original,"owner",&input).unwrap();assert_eq!(updated["review"]["decision"],"needs_review");assert_eq!(updated["annotations"][0]["method"],"human_annotation");
+    }
     #[test]
     fn human_revisions_preserve_original_and_omit_unspecified_fields() {
         let source = json!({"original_sha256":"original","title":"Extracted","labels":["archive"],"page_count":2,"metadata":{},"annotations":[]});
