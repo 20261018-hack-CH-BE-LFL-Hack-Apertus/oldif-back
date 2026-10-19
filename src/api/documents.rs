@@ -42,8 +42,9 @@ pub async fn upload(
         .get("content-type")
         .and_then(|h| h.to_str().ok())
         .unwrap_or("");
+    let key = headers.get("idempotency-key").map(|value| value.to_str().map_err(|_| Error::bad("Invalid Idempotency-Key"))).transpose()?;
     Ok(Json(
-        documents::upload(&app, &user.id, filename, media, metadata, body.to_vec()).await?,
+        documents::upload(&app, &user.id, filename, media, metadata, key, body.to_vec()).await?,
     ))
 }
 pub async fn detail(

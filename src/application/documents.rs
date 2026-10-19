@@ -1,5 +1,5 @@
 use crate::{
-    application::auth,
+    application::{auth, document_ingest},
     error::{Error, Result},
     infrastructure::{
         document_parser::{self, Parsed},
@@ -10,7 +10,6 @@ use crate::{
 use base64::{Engine, engine::general_purpose::STANDARD};
 use serde::Deserialize;
 use serde_json::{Value, json};
-use uuid::Uuid;
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -25,27 +24,36 @@ pub async fn upload(
     filename: &str,
     content_type: &str,
     input: Metadata,
+    key: Option<&str>,
     bytes: Vec<u8>,
 ) -> Result<Value> {
     validate_metadata(filename, &input)?;
     let media = document_parser::media(filename, content_type, &bytes)?;
+    let identity = document_ingest::Identity::new(owner, filename, media, &input, key, &bytes)?;
     let _permit = app.document_slots.try_acquire().map_err(|_| {
         Error(
             axum::http::StatusCode::TOO_MANY_REQUESTS,
             "Another document operation is running; retry shortly".into(),
         )
     })?;
+    let previous = document_ingest::existing(app, owner, &identity).await?;
+    if let Some(document) = previous.as_ref().filter(|record| record.data["status"] == "ready") {
+        return Ok(json!({"document":document.public(),"pages":pages(app,owner,&document.id).await?,"idempotent_replay":true,"ingestion_resumed":false}));
+    }
     auth::limit(app, &format!("document:{owner}"), 5).await?;
     let started = std::time::Instant::now();
     let parsed = document_parser::parse(&app.config.documents, media, &bytes).await?;
-    let id = Uuid::new_v4().to_string();
-    let hash = document_parser::digest(&bytes);
-    let data = document_data(&id, filename, media, &input, &bytes, &parsed, &hash);
-    let document = app
-        .store
-        .put(Write::new(owner, "document", &id, data))
-        .await?;
-    let result = persist(app, &document, &bytes, &parsed, &hash).await;
+    let resume = previous.is_some();
+    let hash = identity.original_sha256;
+    let document = match previous {
+        Some(document) => document,
+        None => {
+            let mut data = document_data(&identity.id, filename, media, &input, &bytes, &parsed, &hash);
+            data["ingest_fingerprint"] = json!(identity.fingerprint);
+            app.store.put(Write::new(owner, "document", &identity.id, data)).await?
+        }
+    };
+    let result = persist(app, &document, &bytes, &parsed, &hash, resume).await;
     if result.is_err() {
         let mut failed = document.data.clone();
         failed["status"] = json!("failed");
@@ -53,6 +61,8 @@ pub async fn upload(
     }
     let mut result = result?;
     result["processing_ms"] = json!(started.elapsed().as_millis());
+    result["idempotent_replay"] = json!(false);
+    result["ingestion_resumed"] = json!(resume);
     Ok(result)
 }
 fn validate_metadata(filename: &str, input: &Metadata) -> Result<()> {
@@ -128,10 +138,11 @@ async fn persist(
     bytes: &[u8],
     parsed: &Parsed,
     hash: &str,
+    resume: bool,
 ) -> Result<Value> {
     let chunks = bytes.chunks(98_304).enumerate().map(|(index, chunk)| Write::new(&document.owner,"document_blob",&format!("{}-{index:04}",document.id),json!({"document_id":document.id,"index":index,"encoding":"base64","sha256":document_parser::digest(chunk),"bytes":STANDARD.encode(chunk)}))).collect::<Vec<_>>();
     for group in chunks.chunks(8) {
-        app.store.batch(group.to_vec()).await?;
+        document_ingest::persist_batch(app, group.to_vec(), resume).await?;
     }
     let pages = parsed
         .pages
@@ -140,8 +151,7 @@ async fn persist(
         .map(|(i, text)| page(app, document, i + 1, text, hash))
         .collect::<Vec<_>>();
     for group in pages.chunks(8) {
-        app.store
-            .batch(
+        document_ingest::persist_batch(app,
                 group
                     .iter()
                     .map(|p| {
@@ -152,8 +162,7 @@ async fn persist(
                             p.clone(),
                         )
                     })
-                    .collect(),
-            )
+                    .collect(), resume)
             .await?;
     }
     let mut data = document.data.clone();

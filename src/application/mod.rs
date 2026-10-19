@@ -5,6 +5,7 @@ pub mod sources;
 pub mod stapfer_seed;
 pub mod mcp;
 pub mod documents;
+pub mod document_ingest;
 pub mod document_review;
 pub mod document_export;
 pub mod document_extraction;

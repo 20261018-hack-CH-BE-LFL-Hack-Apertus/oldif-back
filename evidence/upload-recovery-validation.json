@@ -1,0 +1,77 @@
+{
+  "validation_class": "real local HTTP + SQLite record store with one injected source write failure and backend process restart",
+  "checks": [
+    {
+      "check": "injected_source_batch_failure_visible",
+      "passed": true
+    },
+    {
+      "check": "failed_document_retained",
+      "passed": true
+    },
+    {
+      "check": "original_fragment_survives_failure",
+      "passed": true
+    },
+    {
+      "check": "restart_retry_resumes_same_document",
+      "passed": true
+    },
+    {
+      "check": "all_three_page_hashes_and_empty_page_preserved",
+      "passed": true
+    },
+    {
+      "check": "original_download_exact_after_resume",
+      "passed": true
+    },
+    {
+      "check": "immutable_fragments_not_rewritten",
+      "passed": true
+    },
+    {
+      "check": "completed_replay_has_no_new_revision",
+      "passed": true
+    },
+    {
+      "check": "replay_preserves_human_revision",
+      "passed": true
+    },
+    {
+      "check": "same_key_changed_bytes_conflicts",
+      "passed": true
+    },
+    {
+      "check": "same_key_changed_metadata_conflicts",
+      "passed": true
+    },
+    {
+      "check": "unsafe_key_rejected",
+      "passed": true
+    },
+    {
+      "check": "owner_has_one_document",
+      "passed": true
+    },
+    {
+      "check": "same_key_isolated_by_owner",
+      "passed": true
+    },
+    {
+      "check": "default_content_identity_is_idempotent",
+      "passed": true
+    }
+  ],
+  "passed": 15,
+  "failed": 0,
+  "faults_injected": 1,
+  "backend_restarts": 1,
+  "native_tests_passed": 26,
+  "provider_calls": 0,
+  "private_document_content_used": false,
+  "elapsed_seconds": 1.266,
+  "limits": [
+    "Explicit client retry is required; no background retry or provider call is made.",
+    "Parser upgrades that change immutable fragment bytes cause a conflict instead of replacement."
+  ]
+}
