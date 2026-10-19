@@ -74,7 +74,14 @@ async fn handle(socket: WebSocket, app: App, user: User, query: Connect, headers
                         }continue;
                     }
                     match dispatch(&app,&user,&sid,input).await {
-                        Ok(created)=>{if let Some(id)=created["session_id"].as_str(){sid=Some(id.into());}},
+                        Ok(created)=>{if let Some(id)=created["session_id"].as_str(){
+                            sid=Some(id.into());
+                            if created["idempotent_replay"]==true {
+                                let ack=json!({"type":"run_reused","data":{"run_id":created["run_id"],"session_id":id,"status":created["status"]}});
+                                if tx.send(Message::Text(ack.to_string().into())).await.is_err(){return;}
+                                if let Ok(rows)=replay(&app,&user,id,0).await {for event in rows.into_iter().filter(|event|event["run_id"]==created["run_id"]) {last=last.max(event["sequence"].as_u64().unwrap_or(0));if tx.send(Message::Text(event.to_string().into())).await.is_err(){return;}}}
+                            }
+                        }},
                         Err(e)=>{if tx.send(Message::Text(json!({"type":"error","data":{"message":e.1}}).to_string().into())).await.is_err(){break;}}
                     }
                 }
@@ -99,7 +106,7 @@ async fn replay(app: &App, user: &User, id: &str, after: u64) -> Result<Vec<Valu
         .list(&user.id, "event")
         .await?
         .into_iter()
-        .map(|r| r.data)
+        .map(crate::application::run_events::public)
         .filter(|r| r["session_id"] == id && r["sequence"].as_u64().unwrap_or(0) > after)
         .collect::<Vec<_>>();
     rows.sort_by_key(|r| r["sequence"].as_u64().unwrap_or(0));
@@ -109,7 +116,9 @@ async fn dispatch(app: &App, user: &User, sid: &Option<String>, input: Value) ->
     match input["type"].as_str().unwrap_or("") {
         "message" => {
             let mut input = input;
-            input["session_id"] = json!(sid);
+            input.as_object_mut().ok_or_else(||Error::bad("Expected a research command object"))?.remove("type");
+            if input["session_id"].is_null(){input["session_id"]=json!(sid);}
+            else if sid.as_ref().is_some_and(|id|input["session_id"]!=*id){return Err(Error::bad("Research command must match the subscribed session"));}
             if input["language"].is_null() {
                 input["language"] = json!("en");
             }

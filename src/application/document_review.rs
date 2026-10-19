@@ -130,6 +130,7 @@ pub struct Enrichment {
     pub provider_processing_confirmed: bool,
     pub page_numbers: Option<Vec<usize>>,
     pub source_ids: Option<Vec<String>>,
+    pub idempotency_key: Option<String>,
 }
 pub async fn enrich(app: &App, user: &User, id: &str, input: Enrichment) -> Result<Value> {
     if !input.provider_processing_confirmed {
@@ -186,12 +187,15 @@ pub async fn enrich(app: &App, user: &User, id: &str, input: Enrichment) -> Resu
             dataset_ids: vec![id.into()],
             source_ids: ids,
             provider_processing_confirmed: true,
+            idempotency_key: input.idempotency_key,
         },
     )
     .await?;
     let latest = documents::get(app, &user.id, id).await?;
     let mut data = latest.data.clone();
-    data["enrichments"].as_array_mut().ok_or_else(Error::unavailable)?.push(json!({"run_id":started["run_id"],"session_id":started["session_id"],"page_numbers":selection.iter().map(|p|p["page"].clone()).collect::<Vec<_>>(),"state":"pending_human_review","applied":false}));
+    let enrichments=data["enrichments"].as_array_mut().ok_or_else(Error::unavailable)?;
+    if enrichments.iter().any(|item|item["run_id"]==started["run_id"]) {return Ok(started);}
+    enrichments.push(json!({"run_id":started["run_id"],"session_id":started["session_id"],"page_numbers":selection.iter().map(|p|p["page"].clone()).collect::<Vec<_>>(),"state":"pending_human_review","applied":false}));
     app.store.put(Write::update(&latest, data)).await?;
     Ok(started)
 }

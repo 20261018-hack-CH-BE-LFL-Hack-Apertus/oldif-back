@@ -1,6 +1,8 @@
 pub mod auth;
 pub mod exports;
 pub mod runs;
+pub mod run_requests;
+pub mod run_events;
 pub mod sources;
 pub mod stapfer_seed;
 pub mod mcp;

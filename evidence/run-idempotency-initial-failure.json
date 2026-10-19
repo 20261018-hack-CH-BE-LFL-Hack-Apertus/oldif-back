@@ -1,0 +1,25 @@
+{
+  "validation_class": "actual native backend and core processes, real DB persistence, deterministic loopback fake provider; no external inference",
+  "passed": 2,
+  "failed": 1,
+  "checks": [
+    {
+      "check": "authenticated",
+      "passed": true
+    },
+    {
+      "check": "synthetic_source_ingested",
+      "passed": true
+    }
+  ],
+  "provider_calls": 0,
+  "synthetic_provider_http_calls": 5,
+  "synthetic_workflows_expected": 2,
+  "storage_failures_injected": 0,
+  "backend_restarts": 0,
+  "elapsed_seconds": 31.195,
+  "human_quality": "NOT_RUN",
+  "native_tests_passed": 37,
+  "error": "TimeoutError: timed out",
+  "diagnosis": "Duplicate relay claim constructed then dropped a guard while its registry mutex was still held; fixed before release."
+}

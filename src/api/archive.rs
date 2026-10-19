@@ -120,7 +120,7 @@ pub async fn session(
             .await?
             .into_iter()
             .filter(|r| r.data["session_id"] == id)
-            .map(|r| if kind == "event" { r.data } else { r.public() })
+            .map(|r| if kind == "event" { crate::application::run_events::public(r) } else { r.public() })
             .collect::<Vec<_>>();
         result[key] = json!(rows);
     }
