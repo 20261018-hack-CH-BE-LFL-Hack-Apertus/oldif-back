@@ -1,0 +1,34 @@
+{
+  "validation_class": "official TypeScript MCP SDK over real authenticated HTTP",
+  "sdk_version": "1.32.0",
+  "checks": [
+    {
+      "check": "official_sdk_initialize",
+      "passed": true
+    },
+    {
+      "check": "only_bounded_read_tools",
+      "passed": true
+    },
+    {
+      "check": "real_search_source_ids",
+      "passed": true
+    },
+    {
+      "check": "real_source_provenance",
+      "passed": true
+    },
+    {
+      "check": "unknown_tool_rejected",
+      "passed": true
+    },
+    {
+      "check": "extra_arguments_rejected",
+      "passed": true
+    }
+  ],
+  "passed": 6,
+  "failed": 0,
+  "protocol_errors": [],
+  "provider_calls": 0
+}

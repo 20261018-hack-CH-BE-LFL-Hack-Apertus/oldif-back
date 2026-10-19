@@ -12,10 +12,25 @@ use axum::{
 use serde::Deserialize;
 use serde_json::{Value, json};
 #[derive(Deserialize, Default)]
+#[serde(deny_unknown_fields)]
 pub struct QueryParams {
     pub q: Option<String>,
     pub format: Option<String>,
     pub session_id: Option<String>,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SessionInput {title:Option<String>,language:Option<String>}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SteerInput {message:String}
+#[derive(Deserialize,serde::Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct RpcInput {jsonrpc:String,id:Option<Value>,method:String,params:Option<Value>}
+fn rpc_valid(input:&RpcInput)->bool {
+    if input.jsonrpc!="2.0"||input.method.len()>80||input.id.as_ref().is_some_and(|id|!id.is_null()&&!id.is_string()&&!id.is_number()){return false;}
+    let fields:&[&str]=match input.method.as_str(){"initialize"=>&["protocolVersion","capabilities","clientInfo","_meta"],"tools/list"=>&["cursor","_meta"],"tools/call"=>&["name","arguments","_meta"],_=>&[]};
+    input.params.as_ref().is_none_or(|value|value.is_null()||value.as_object().is_some_and(|object|object.keys().all(|key|fields.contains(&key.as_str()))))
 }
 pub async fn models(State(app): State<App>, headers: HeaderMap) -> Result<Json<Value>> {
     auth::authenticate(&app, &headers).await?;
@@ -90,11 +105,11 @@ pub async fn sessions(State(app): State<App>, headers: HeaderMap) -> Result<Json
 pub async fn create_session(
     State(app): State<App>,
     headers: HeaderMap,
-    Json(input): Json<Value>,
+    Json(input): Json<SessionInput>,
 ) -> Result<Json<Value>> {
     let user = auth::authenticate(&app, &headers).await?;
     Ok(Json(
-        json!({"session":runs::session(&app,&user,input["title"].as_str().unwrap_or("New research"),input["language"].as_str().unwrap_or("en")).await?}),
+        json!({"session":runs::session(&app,&user,input.title.as_deref().unwrap_or("New research"),input.language.as_deref().unwrap_or("en")).await?}),
     ))
 }
 pub async fn session(
@@ -143,7 +158,7 @@ pub async fn steer(
     State(app): State<App>,
     headers: HeaderMap,
     Path(id): Path<String>,
-    Json(input): Json<Value>,
+    Json(input): Json<SteerInput>,
 ) -> Result<Json<Value>> {
     let user = auth::authenticate(&app, &headers).await?;
     Ok(Json(
@@ -152,7 +167,7 @@ pub async fn steer(
             &user,
             &id,
             "steer",
-            input["message"].as_str().unwrap_or(""),
+            &input.message,
         )
         .await?,
     ))
@@ -209,8 +224,10 @@ fn download(rows: Vec<Value>, format: &str, kind: exports::ExportKind) -> Result
 pub async fn mcp(
     State(app): State<App>,
     headers: HeaderMap,
-    Json(input): Json<Value>,
+    Json(input): Json<RpcInput>,
 ) -> Result<Json<Value>> {
+    if !rpc_valid(&input){return Err(Error::bad("Invalid bounded JSON-RPC request"));}
+    let input=serde_json::to_value(input)?;
     let user = auth::authenticate(&app, &headers).await?;
     let id = input["id"].clone();
     let result = match input["method"].as_str().unwrap_or("") {
@@ -290,4 +307,17 @@ pub async fn agent_review(
     let result: Value = response.json().await?;
     let saved=app.store.put(crate::infrastructure::store::Write::new(&user.id,"assertion",&uuid::Uuid::new_v4().to_string(),json!({"kind":"agent-review","run_id":id,"state":"proposed","result":result,"human_review":false}))).await?;
     Ok(Json(saved.public()))
+}
+
+#[cfg(test)]
+mod strict_tests {
+    use super::*;
+    #[test]
+    fn ancillary_requests_reject_unexpected_fields() {
+        assert!(serde_json::from_value::<SessionInput>(json!({"title":"x","extra":true})).is_err());
+        assert!(serde_json::from_value::<SteerInput>(json!({"message":"x","extra":true})).is_err());
+        assert!(serde_json::from_value::<RpcInput>(json!({"jsonrpc":"2.0","id":1,"method":"tools/list","shell":"forbidden"})).is_err());
+        assert!(!rpc_valid(&serde_json::from_value::<RpcInput>(json!({"jsonrpc":"2.0","id":1,"method":"tools/list","params":{"shell":"forbidden"}})).unwrap()));
+        assert!(rpc_valid(&serde_json::from_value::<RpcInput>(json!({"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"fixture","version":"1"}}})).unwrap()));
+    }
 }
