@@ -3,6 +3,7 @@ pub mod auth;
 pub mod realtime;
 pub mod documents;
 pub mod document_extraction;
+pub mod diarization;
 use crate::{error::Result, state::App};
 use axum::{
     Json, Router,
@@ -53,6 +54,7 @@ pub fn router(app: App) -> Router {
         .route("/api/runs/{id}/agent-review", post(archive::agent_review))
         .route("/api/mcp", post(archive::mcp))
         .route("/api/voice/session", post(realtime::voice))
+        .route("/api/diarization", get(diarization::capabilities).post(diarization::analyze).layer(DefaultBodyLimit::max(2_900_000)))
         .route("/api/realtime", get(realtime::socket))
         .route_layer(middleware::from_fn_with_state(app.clone(), secure))
         .layer(DefaultBodyLimit::max(4_000_000))

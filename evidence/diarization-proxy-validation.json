@@ -1,0 +1,124 @@
+{
+  "validation_class": "actual local backend-to-core Nemotron3 CPU diarization on supplied synthetic two-speaker fixture",
+  "passed": 12,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "anonymous_audio_denied",
+      "passed": true
+    },
+    {
+      "check": "demo_auth",
+      "passed": true
+    },
+    {
+      "check": "capability_proxy",
+      "passed": true
+    },
+    {
+      "check": "explicit_consent_required",
+      "passed": true
+    },
+    {
+      "check": "wrong_media_rejected",
+      "passed": true
+    },
+    {
+      "check": "oversized_audio_rejected",
+      "passed": true
+    },
+    {
+      "check": "malformed_wav_rejected_by_core",
+      "passed": true
+    },
+    {
+      "check": "actual_diarization_completed",
+      "passed": true
+    },
+    {
+      "check": "input_hash_preserved",
+      "passed": true
+    },
+    {
+      "check": "no_identity_or_transcription_claim",
+      "passed": true
+    },
+    {
+      "check": "segments_within_input_duration",
+      "passed": true
+    },
+    {
+      "check": "two_anonymous_speaker_labels",
+      "passed": true
+    }
+  ],
+  "duration_seconds": 37.978625,
+  "analysis_seconds": 35.216,
+  "result": {
+    "audio_retained": false,
+    "audio_seconds": 37.978625,
+    "execution_id": "6421126e-e669-4d6c-b1d0-081cefc7afc8",
+    "identity_inference": false,
+    "input_sha256": "4933043444985247959dd357ceb76133c6d08ccc48abd9b504957e3fe8a92f0e",
+    "license": "OpenMDW-1.1",
+    "model": "nvidia/Nemotron-3-Diarization",
+    "model_revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e",
+    "model_sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+    "runtime": "NVIDIA/NeMo-Speech.cpp",
+    "runtime_version": "0.2.0",
+    "segments": [
+      {
+        "end": 8.089,
+        "speaker": "speaker_1",
+        "start": 0.0
+      },
+      {
+        "end": 17.859,
+        "speaker": "speaker_2",
+        "start": 8.961
+      },
+      {
+        "end": 27.089,
+        "speaker": "speaker_1",
+        "start": 18.721
+      },
+      {
+        "end": 36.859,
+        "speaker": "speaker_2",
+        "start": 27.931
+      }
+    ],
+    "speaker_count": 2,
+    "status": "completed",
+    "transcription_performed": false
+  },
+  "provider_calls": 0,
+  "real_human_speaker_accuracy": "NOT_RUN",
+  "audio_saved_by_backend": false,
+  "checked_at": "2026-10-19T13:01:15.218458+00:00",
+  "native_tests": {
+    "passed": 23,
+    "failed": 0,
+    "cargo_build": "PASS",
+    "validation_class": "native Rust tests plus development build"
+  },
+  "limitations": [
+    "One synthetic English two-speaker fixture; no real human speaker accuracy measurement.",
+    "Backend passes audio to the configured core after explicit consent; no provider credentials or audio persistence.",
+    "Current check used isolated local back18094 and core18084; production deployment not verified by this receipt."
+  ],
+  "implementation_files": [
+    {
+      "path": "src/api/diarization.rs",
+      "sha256": "feff5592fa0469217db148f7cad88c13328325e86bbb380fd1dd7c924cb344f5"
+    },
+    {
+      "path": "src/api/mod.rs",
+      "sha256": "9183916f6793b7aa48075c14f763d1e4319a43d58e7a22f2cc475123679635e0"
+    },
+    {
+      "path": "scripts/check_diarization_proxy.py",
+      "sha256": "35ba9ff8e15b9828965b523256edf6b977a98d2576bbd64a908fddeffc6a97aa"
+    }
+  ]
+}
