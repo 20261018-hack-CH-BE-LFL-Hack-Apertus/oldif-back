@@ -70,7 +70,7 @@ pub fn serialize(rows: &[Value], format: &str, kind: ExportKind) -> Result<(Stri
         "tsv" => {
             let mut lines = vec![match kind {
                 ExportKind::Sources => "id\ttitle\ttext\tsource_url\tsha256\tlicence",
-                ExportKind::Accepted => "run_id\trevision\tmodel\tanswer\tcitations_json\treview_decision\treview_reason\treview_actor",
+                ExportKind::Accepted => "run_id\trevision\tmodel\tanswer\tcitations_json\treview_decision\treview_reason\treview_actor\tevidence_only\tinterpretation_status\tverification_verdict",
             }.to_string()];
             for row in rows {
                 let cells = match kind {
@@ -87,6 +87,18 @@ pub fn serialize(rows: &[Value], format: &str, kind: ExportKind) -> Result<(Stri
                         row["review"]["decision"].as_str().unwrap_or("").into(),
                         row["review"]["reason"].as_str().unwrap_or("").into(),
                         row["review"]["actor"].as_str().unwrap_or("").into(),
+                        row["result"]["evidence_only"]
+                            .as_bool()
+                            .map(|value| value.to_string())
+                            .unwrap_or_default(),
+                        row["result"]["interpretation_status"]
+                            .as_str()
+                            .unwrap_or("")
+                            .into(),
+                        row["result"]["verification"]["verdict"]
+                            .as_str()
+                            .unwrap_or("")
+                            .into(),
                     ],
                 };
                 lines.push(
@@ -115,16 +127,17 @@ mod tests {
         let lines = text.lines().collect::<Vec<_>>();
         let cells = lines[1].split('\t').collect::<Vec<_>>();
         assert_eq!(lines.len(), 2);
-        assert_eq!(cells.len(), 8);
+        assert_eq!(cells.len(), 11);
         assert_eq!(&cells[..4], &["run-1", "3", "apertus-v1-5-8b", "'=a b c"]);
         assert_eq!(
             serde_json::from_str::<Value>(cells[4]).unwrap()[0]["source_id"],
             "stapfer-2027"
         );
         assert_eq!(
-            &cells[5..],
+            &cells[5..8],
             &["accepted", "Checked against source", "user-1"]
         );
+        assert_eq!(&cells[8..], &["", "", ""]);
     }
     #[test]
     fn empty_exports_keep_the_requested_columns() {
@@ -140,6 +153,23 @@ mod tests {
                 .0
                 .starts_with("id\ttitle\t")
         );
+    }
+    #[test]
+    fn accepted_tsv_identifies_unverified_interpretations() {
+        let row = json!({"run_id":"evidence-1","revision":4,"model":"apertus-v1-5-8b","result":{"answer":"Selected passages require human review.","citations":[{"source_id":"stapfer-2027","passage_id":"p048","quote":"läsen"}],"evidence_only":true,"interpretation_status":"needs_review","verification":{"verdict":"needs_revision"}},"review":{"decision":"accepted","reason":"Accept exact evidence only","actor":"reviewer"}});
+        let (text, _) = serialize(&[row], "tsv", ExportKind::Accepted).unwrap();
+        let mut lines = text.lines();
+        let headers = lines.next().unwrap().split('\t').collect::<Vec<_>>();
+        let cells = lines.next().unwrap().split('\t').collect::<Vec<_>>();
+        assert_eq!(headers.len(), cells.len());
+        for (name, expected) in [
+            ("evidence_only", "true"),
+            ("interpretation_status", "needs_review"),
+            ("verification_verdict", "needs_revision"),
+        ] {
+            let index = headers.iter().position(|header| *header == name).unwrap();
+            assert_eq!(cells[index], expected);
+        }
     }
 }
 pub async fn dataset(app: &App, owner: &str, id: &str) -> Result<Vec<Value>> {
