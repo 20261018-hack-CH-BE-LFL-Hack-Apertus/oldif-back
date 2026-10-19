@@ -310,18 +310,34 @@ pub async fn agent_review(
         .send()
         .await?;
     if !response.status().is_success() {
-        return Err(Error::bad(
-            "The agent review could not complete; the original evidence is preserved",
-        ));
+        return Err(agent_review_failure(response.status()));
     }
     let result: Value = response.json().await?;
     let saved=app.store.put(crate::infrastructure::store::Write::new(&user.id,"assertion",&uuid::Uuid::new_v4().to_string(),json!({"kind":"agent-review","run_id":id,"state":"proposed","result":result,"human_review":false}))).await?;
     Ok(Json(saved.public()))
 }
 
+fn agent_review_failure(status: reqwest::StatusCode) -> Error {
+    let status=match status.as_u16() {408|504=>504,499=>499,429=>429,400|422=>400,413=>413,_=>503};
+    Error(axum::http::StatusCode::from_u16(status).unwrap(),
+        "The agent review could not complete; the original evidence is preserved".into())
+}
+
 #[cfg(test)]
 mod strict_tests {
     use super::*;
+    #[tokio::test]
+    async fn reviewer_capacity_cancellation_and_deadline_remain_typed() {
+        use axum::response::IntoResponse;
+        for (status, code) in [(429,"BACKPRESSURE"),(499,"CANCELLED"),(504,"TIMEOUT"),(503,"UNAVAILABLE")] {
+            let response=agent_review_failure(reqwest::StatusCode::from_u16(status).unwrap()).into_response();
+            assert_eq!(response.status().as_u16(),status);
+            let bytes=axum::body::to_bytes(response.into_body(),1024).await.unwrap();
+            let body:Value=serde_json::from_slice(&bytes).unwrap();
+            assert_eq!(body["code"],code);
+            assert!(body["error"].as_str().unwrap().contains("original evidence is preserved"));
+        }
+    }
     #[test]
     fn ancillary_requests_reject_unexpected_fields() {
         assert!(serde_json::from_value::<SessionInput>(json!({"title":"x","extra":true})).is_err());
