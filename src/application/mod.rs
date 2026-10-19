@@ -15,3 +15,4 @@ pub mod document_review;
 pub mod document_export;
 pub mod document_extraction;
 pub mod document_tables;
+pub mod export_bundle;

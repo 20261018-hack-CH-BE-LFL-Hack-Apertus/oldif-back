@@ -16,6 +16,7 @@ use serde_json::{Value, json};
 pub struct QueryParams {
     pub q: Option<String>,
     pub format: Option<String>,
+    pub scope: Option<String>,
     pub session_id: Option<String>,
 }
 #[derive(Deserialize)]
@@ -186,6 +187,9 @@ pub async fn export(
     Query(query): Query<QueryParams>,
 ) -> Result<Response> {
     let user = auth::authenticate(&app, &headers).await?;
+    let scope=crate::application::export_bundle::scope(query.scope.as_deref())?;
+    if query.format.as_deref()==Some("bundle") {return bundle_download(exports::bundle_accepted(&app,&user.id,query.session_id.as_deref(),scope).await?);}
+    if scope=="public" {return Err(Error::bad("Use format=bundle for an explicitly reviewed public export"));}
     let rows = exports::accepted(&app, &user.id, query.session_id.as_deref()).await?;
     download(
         rows,
@@ -200,6 +204,9 @@ pub async fn dataset_export(
     Query(query): Query<QueryParams>,
 ) -> Result<Response> {
     let user = auth::authenticate(&app, &headers).await?;
+    let scope=crate::application::export_bundle::scope(query.scope.as_deref())?;
+    if query.format.as_deref()==Some("bundle") {return bundle_download(exports::bundle_dataset(&app,&user.id,&id,scope).await?);}
+    if scope=="public" {return Err(Error::bad("Use format=bundle for an explicitly reviewed public export"));}
     let rows = exports::dataset(&app, &user.id, &id).await?;
     crate::application::document_quarantine::authorize_sources(&app,&user.id,&rows,"private_export").await?;
     download(
@@ -207,6 +214,9 @@ pub async fn dataset_export(
         query.format.as_deref().unwrap_or("jsonl"),
         exports::ExportKind::Sources,
     )
+}
+fn bundle_download(bundle:Value)->Result<Response>{
+    let mut response=Json(bundle).into_response();response.headers_mut().insert("content-disposition",HeaderValue::from_static("attachment; filename=oldif-export.bundle.json"));Ok(response)
 }
 fn download(rows: Vec<Value>, format: &str, kind: exports::ExportKind) -> Result<Response> {
     let (body, content_type) = exports::serialize(&rows, format, kind)?;

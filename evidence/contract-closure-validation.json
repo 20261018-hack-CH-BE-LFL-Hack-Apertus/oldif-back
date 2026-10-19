@@ -1,0 +1,184 @@
+{
+  "validation_class": "actual native HTTP and WebSocket contracts; generated synthetic TXT only",
+  "passed": 43,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "authenticated",
+      "passed": true
+    },
+    {
+      "check": "legacy_upload_identity_reused_without_rekey",
+      "passed": true
+    },
+    {
+      "check": "new_distribution_ingested",
+      "passed": true
+    },
+    {
+      "check": "distribution_changes_source_identity",
+      "passed": true
+    },
+    {
+      "check": "retry_reuses_distribution_identity",
+      "passed": true
+    },
+    {
+      "check": "same_source_changed_metadata_conflicts",
+      "passed": true
+    },
+    {
+      "check": "exact_original_preserved",
+      "passed": true
+    },
+    {
+      "check": "public_rights_required_independent_of_review",
+      "passed": true
+    },
+    {
+      "check": "public_rights_explicitly_recorded",
+      "passed": true
+    },
+    {
+      "check": "public_review_required_independent_of_rights",
+      "passed": true
+    },
+    {
+      "check": "synthetic_review_recorded",
+      "passed": true
+    },
+    {
+      "check": "stale_revision_has_machine_code",
+      "passed": true
+    },
+    {
+      "check": "bundle_seven_named_files",
+      "passed": true
+    },
+    {
+      "check": "download_is_not_publication",
+      "passed": true
+    },
+    {
+      "check": "file_hashes_and_lengths_exact",
+      "passed": true
+    },
+    {
+      "check": "public_field_allowlist_excludes_internal_values",
+      "passed": true
+    },
+    {
+      "check": "public_exact_text_and_hashes_retained",
+      "passed": true
+    },
+    {
+      "check": "records.tsv_lossless_record_parity",
+      "passed": true
+    },
+    {
+      "check": "records.csv_lossless_record_parity",
+      "passed": true
+    },
+    {
+      "check": "source_change_rejection_manifests_exist",
+      "passed": true
+    },
+    {
+      "check": "private_bundle_keeps_provenance",
+      "passed": true
+    },
+    {
+      "check": "dataset_bundle_same_scope",
+      "passed": true
+    },
+    {
+      "check": "owner_isolation_on_bundle",
+      "passed": true
+    },
+    {
+      "check": "public_unbundled_path_cannot_bypass_policy",
+      "passed": true
+    },
+    {
+      "check": "unknown_export_scope_rejected",
+      "passed": true
+    },
+    {
+      "check": "strict_export_query_rejects_extra",
+      "passed": true
+    },
+    {
+      "check": "strict_session_request_rejects_extra",
+      "passed": true
+    },
+    {
+      "check": "canvas_positions_saved",
+      "passed": true
+    },
+    {
+      "check": "canvas_positions_restore_from_server",
+      "passed": true
+    },
+    {
+      "check": "canvas_cas_machine_code",
+      "passed": true
+    },
+    {
+      "check": "canvas_other_owner_cannot_reference_session",
+      "passed": true
+    },
+    {
+      "check": "canvas_out_of_range_rejected",
+      "passed": true
+    },
+    {
+      "check": "strict_steer_request_rejects_extra",
+      "passed": true
+    },
+    {
+      "check": "strict_voice_request_rejects_extra_before_provider",
+      "passed": true
+    },
+    {
+      "check": "canonical_replay_query_upgrade",
+      "passed": true
+    },
+    {
+      "check": "legacy_replay_query_upgrade",
+      "passed": true
+    },
+    {
+      "check": "conflicting_replay_aliases_reject_before_upgrade",
+      "passed": true
+    },
+    {
+      "check": "strict_ws_ancillary_command_typed_rejection",
+      "passed": true
+    },
+    {
+      "check": "empty_accepted_run_bundle_without_inference",
+      "passed": true
+    },
+    {
+      "check": "legacy_unknown_actor_time_not_fabricated",
+      "passed": true
+    },
+    {
+      "check": "detected_uncertainty_routes_to_review",
+      "passed": true
+    },
+    {
+      "check": "uncertain_review_blocks_public_export",
+      "passed": true
+    },
+    {
+      "check": "no_inference_runs_created",
+      "passed": true
+    }
+  ],
+  "elapsed_seconds": 0.2,
+  "provider_calls": 0,
+  "publication_performed": false,
+  "legacy_endpoint_exercised": true,
+  "human_historical_quality": "NOT_RUN"
+}

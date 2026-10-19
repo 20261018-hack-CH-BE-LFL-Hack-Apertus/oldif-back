@@ -130,8 +130,10 @@ pub async fn enrich(
     ))
 }
 #[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct ExportQuery {
     pub format: Option<String>,
+    pub scope: Option<String>,
 }
 pub async fn export(
     State(app): State<App>,
@@ -141,13 +143,13 @@ pub async fn export(
 ) -> Result<Response> {
     let user = auth::authenticate(&app, &headers).await?;
     let format = input.format.as_deref().unwrap_or("json");
-    let (body, media) = document_export::export(&app, &user.id, &id, format).await?;
+    let (body, media) = document_export::export(&app, &user.id, &id, format,crate::application::export_bundle::scope(input.scope.as_deref())?).await?;
     download(
         body.into_bytes(),
         media,
         &format!(
             "oldif-document-{id}.{}",
-            if format == "manifest" {
+            if format == "bundle" {"bundle.json"} else if format == "manifest" {
                 "manifest.json"
             } else {
                 format

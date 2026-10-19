@@ -11,10 +11,28 @@ pub async fn export(
     owner: &str,
     id: &str,
     format: &str,
+    scope: &str,
 ) -> Result<(String, &'static str)> {
-    super::document_quarantine::require_use(&documents::get(app,owner,id).await?,"private_export")?;
+    let document=documents::get(app,owner,id).await?;
+    super::document_quarantine::require_use(&document,if scope=="public"{"public_export"}else{"private_export"})?;
     let detail = documents::detail(app, owner, id).await?;
+    if format=="bundle" {return bundle(&detail,scope);}
+    if scope=="public" {return Err(Error::bad("Use format=bundle for an explicitly reviewed public export"));}
     serialize(&detail, format)
+}
+fn bundle(detail:&Value,scope:&str)->Result<(String,&'static str)> {
+    let document=&detail["document"];
+    if scope=="public" && (document["review"]["decision"]!="accepted"||document["review"]["human_review"]!=true){return Err(Error::bad("Public export requires an accepted human document review"));}
+    let mut rows=vec![];let mut rejected=vec![];
+    for field in ["pages","derived_sources"] {for row in detail[field].as_array().into_iter().flatten(){
+        if scope=="public"&&field=="derived_sources"&&row["transcription_review_status"]!="accepted" {rejected.push(json!({"source_id":row["id"],"reason":"TRANSCRIPTION_NOT_ACCEPTED"}));continue;}
+        rows.push(if scope=="public"{super::export_bundle::allowlist(row,"source")}else{row.clone()});
+    }}
+    let changes=if scope=="public"{json!([{"document_id":document["id"],"revision":document["version"],"review_decision":"accepted"}])}else{json!({"initial":document["initial_transformation"],"current":document["transformation"],"revisions":detail["revisions"]})};
+    let mut sources=super::export_bundle::source_manifest(&rows);
+    for source in sources.as_array_mut().unwrap(){source["acquisition"]=document["acquisition"].clone();source["document_revision"]=document["version"].clone();}
+    let bundle=super::export_bundle::build(&rows,"source",scope,sources,changes,json!(rejected))?;
+    Ok((serde_json::to_string_pretty(&bundle)?,"application/json"))
 }
 pub fn serialize(detail: &Value, format: &str) -> Result<(String, &'static str)> {
     let document = &detail["document"];
