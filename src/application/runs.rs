@@ -148,6 +148,8 @@ async fn relay(app: &App, owner: &str, sid: &str, id: &str) -> Result<()> {
             let status = event["data"]["status"].as_str().unwrap_or("failed");
             if status == "needs_review" || status == "complete" {
                 finish(app, owner, sid, id, event["data"]["result"].clone()).await?;
+            } else if status == "cancelled" {
+                cancelled(app, owner, sid, id).await?;
             } else {
                 failed(
                     app,
@@ -156,7 +158,7 @@ async fn relay(app: &App, owner: &str, sid: &str, id: &str) -> Result<()> {
                     id,
                     event["data"]["result"]["error"]
                         .as_str()
-                        .unwrap_or("Run failed or was cancelled"),
+                        .unwrap_or("Run failed"),
                 )
                 .await?;
             }
@@ -168,15 +170,18 @@ async fn relay(app: &App, owner: &str, sid: &str, id: &str) -> Result<()> {
             terminal = true;
             break;
         }
-        if matches!(kind, "error" | "failed" | "cancelled") {
+        if kind == "cancelled" {
+            cancelled(app, owner, sid, id).await?;
+            terminal = true;
+            break;
+        }
+        if matches!(kind, "error" | "failed") {
             failed(
                 app,
                 owner,
                 sid,
                 id,
-                event["data"]["message"]
-                    .as_str()
-                    .unwrap_or("Run failed or was cancelled"),
+                event["data"]["message"].as_str().unwrap_or("Run failed"),
             )
             .await?;
             terminal = true;
@@ -224,8 +229,26 @@ async fn failed(app: &App, owner: &str, sid: &str, id: &str, message: &str) -> R
     let mut data = row.data.clone();
     data["status"] = json!("failed");
     data["error"] = json!(message);
+    data["finished_at"] = json!(now());
     app.store.put(Write::update(&row, data)).await?;
     emit(app, owner, sid, id, "error", json!({"message":message})).await?;
+    Ok(())
+}
+async fn cancelled(app: &App, owner: &str, sid: &str, id: &str) -> Result<()> {
+    let row = app.store.get(owner, "run", id).await?;
+    let mut data = row.data.clone();
+    data["status"] = json!("cancelled");
+    data["finished_at"] = json!(now());
+    app.store.put(Write::update(&row, data)).await?;
+    emit(
+        app,
+        owner,
+        sid,
+        id,
+        "cancelled",
+        json!({"message":"Run cancelled"}),
+    )
+    .await?;
     Ok(())
 }
 pub async fn control(
