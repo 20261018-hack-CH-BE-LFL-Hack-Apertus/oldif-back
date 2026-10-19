@@ -13,6 +13,15 @@ pub async fn bounded(
     cap: usize,
 ) -> Result<Vec<u8>> {
     let path = config.poppler_dir.join(binary);
+    execute(config, workspace, &path, args, cap).await
+}
+pub async fn execute(
+    config: &DocumentConfig,
+    workspace: &std::path::Path,
+    path: &std::path::Path,
+    args: &[&str],
+    cap: usize,
+) -> Result<Vec<u8>> {
     if !path.is_absolute() {
         return Err(Error::unavailable());
     }

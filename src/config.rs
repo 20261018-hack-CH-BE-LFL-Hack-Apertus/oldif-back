@@ -22,6 +22,7 @@ pub struct DocumentConfig {
     pub timeout_seconds: u64,
     pub memory_mb: u64,
     pub poppler_dir: std::path::PathBuf,
+    pub tesseract: std::path::PathBuf,
 }
 impl DocumentConfig {
     fn from_env() -> Result<Self, Box<dyn std::error::Error>> {
@@ -35,6 +36,7 @@ impl DocumentConfig {
             poppler_dir: std::env::var("POPPLER_BIN_DIR")
                 .unwrap_or_else(|_| "/usr/bin".into())
                 .into(),
+            tesseract: std::env::var("TESSERACT_EXECUTABLE").unwrap_or_else(|_|"/usr/bin/tesseract".into()).into(),
         })
     }
 }

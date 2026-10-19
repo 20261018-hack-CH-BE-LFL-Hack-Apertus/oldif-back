@@ -18,16 +18,26 @@ pub async fn export(
 pub fn serialize(detail: &Value, format: &str) -> Result<(String, &'static str)> {
     let document = &detail["document"];
     let pages = detail["pages"].as_array().ok_or_else(Error::unavailable)?;
-    let manifest = json!({"schema":"oldif-document-dataset/1.0","document_id":document["id"],"document_revision":document["version"],"original_sha256":document["original_sha256"],"byte_count":document["byte_count"],"page_count":pages.len(),"licence":document["licence"],"review":document["review"],"pages":pages.iter().map(|p|json!({"source_id":p["id"],"page":p["page"],"text_sha256":p["text_sha256"],"original_sha256":p["original_sha256"]})).collect::<Vec<_>>(),"transformations":document["transformation"],"extraction":document["extraction"],"ocr_performed":false,"human_quality_metric":"NOT_RUN","training_readiness":"requires rights, privacy, bias and human quality review"});
+    let manifest = json!({"schema":"oldif-document-dataset/1.0","document_id":document["id"],"document_revision":document["version"],"original_sha256":document["original_sha256"],"byte_count":document["byte_count"],"page_count":pages.len(),"licence":document["licence"],"review":document["review"],"pages":pages.iter().map(|p|json!({"source_id":p["id"],"page":p["page"],"text_sha256":p["text_sha256"],"original_sha256":p["original_sha256"]})).collect::<Vec<_>>(),"extractions":detail["extractions"].as_array().map(|items|items.iter().map(|r|json!({"id":r["id"],"page":r["page"],"method":r["method"],"text_sha256":r["text_sha256"],"review_status":"unverified"})).collect::<Vec<_>>()),"transformations":document["transformation"],"extraction":document["extraction"],"ocr_performed":false,"human_quality_metric":"NOT_RUN","training_readiness":"requires rights, privacy, bias and human quality review"});
     match format {
         "manifest" => Ok((serde_json::to_string_pretty(&manifest)?, "application/json")),
         "json" => Ok((
             serde_json::to_string_pretty(
-                &json!({"manifest":manifest,"document":document,"pages":pages,"revisions":detail["revisions"]}),
+                &json!({"manifest":manifest,"document":document,"pages":pages,"derived_sources":detail["derived_sources"],"extractions":detail["extractions"],"revisions":detail["revisions"]}),
             )?,
             "application/json",
         )),
-        "csv" | "tsv" => tabular(document, pages, format),
+        "csv" | "tsv" => {
+            let mut all = pages.clone();
+            all.extend(
+                detail["derived_sources"]
+                    .as_array()
+                    .into_iter()
+                    .flatten()
+                    .cloned(),
+            );
+            tabular(document, &all, format)
+        }
         _ => Err(Error::bad("Choose json, csv, tsv, or manifest")),
     }
 }
@@ -46,6 +56,8 @@ fn tabular(document: &Value, pages: &[Value], format: &str) -> Result<(String, &
         "labels_json",
         "flags_json",
         "annotations_json",
+        "transcription_method",
+        "transcription_review_status",
     ];
     let delimiter = if format == "csv" { "," } else { "\t" };
     let mut lines = vec![headers.join(delimiter)];
@@ -73,6 +85,8 @@ fn tabular(document: &Value, pages: &[Value], format: &str) -> Result<(String, &
             json!(document["labels"].to_string()),
             json!(p["flags"].to_string()),
             json!(serde_json::to_string(&annotations)?),
+            p["transcription_method"].clone(),
+            p["transcription_review_status"].clone(),
         ];
         lines.push(
             fields

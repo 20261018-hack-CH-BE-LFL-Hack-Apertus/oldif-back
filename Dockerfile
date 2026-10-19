@@ -5,7 +5,7 @@ COPY Cargo.toml Cargo.lock ./
 COPY . .
 RUN cargo build --release --locked
 FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl poppler-utils && rm -rf /var/lib/apt/lists/* && useradd --uid 10001 --create-home oldif && mkdir /data && chown oldif /data
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl poppler-utils tesseract-ocr tesseract-ocr-eng tesseract-ocr-deu tesseract-ocr-fra tesseract-ocr-ita && rm -rf /var/lib/apt/lists/* && useradd --uid 10001 --create-home oldif && mkdir /data && chown oldif /data
 COPY --from=build /src/target/release/oldif-back /usr/local/bin/oldif-back
 USER 10001
 WORKDIR /data

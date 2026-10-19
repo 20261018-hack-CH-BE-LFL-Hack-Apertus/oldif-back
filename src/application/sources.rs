@@ -64,7 +64,7 @@ pub async fn search(
         .await?
         .into_iter()
         .filter(|r| {
-            !r.data["text"].as_str().unwrap_or("").trim().is_empty() && (datasets.is_empty() || datasets.iter().any(|d| r.data["dataset_id"] == d.as_str()))
+            r.data["queryable_by_default"]!=false && !r.data["text"].as_str().unwrap_or("").trim().is_empty() && (datasets.is_empty() || datasets.iter().any(|d| r.data["dataset_id"] == d.as_str()))
         })
         .collect::<Vec<_>>();
     let documents = records

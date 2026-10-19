@@ -181,7 +181,7 @@ pub async fn pages(app: &App, owner: &str, id: &str) -> Result<Vec<Value>> {
         .list(owner, "source")
         .await?
         .into_iter()
-        .filter(|r| r.data["document_id"] == id)
+        .filter(|r| r.data["document_id"] == id && r.data["derived_from"].is_null())
         .map(|r| r.public())
         .collect::<Vec<_>>();
     pages.sort_by_key(|p| p["page"].as_u64());
@@ -197,9 +197,9 @@ pub async fn detail(app: &App, owner: &str, id: &str) -> Result<Value> {
         .filter(|r| r.data["document_id"] == id)
         .map(|r| r.public())
         .collect::<Vec<_>>();
-    Ok(
-        json!({"document":document.public(),"pages":pages(app,owner,id).await?,"revisions":revisions}),
-    )
+    let derived_sources=app.store.list(owner,"source").await?.into_iter().filter(|r|r.data["document_id"]==id&&r.data["derived_from"].is_string()).map(|r|r.public()).collect::<Vec<_>>();
+    let extractions=app.store.list(owner,"document_extraction").await?.into_iter().filter(|r|r.data["document_id"]==id).map(|r|r.public()).collect::<Vec<_>>();
+    Ok(json!({"document":document.public(),"pages":pages(app,owner,id).await?,"revisions":revisions,"derived_sources":derived_sources,"extractions":extractions}))
 }
 pub async fn original(app: &App, owner: &str, id: &str) -> Result<(Record, Vec<u8>)> {
     let document = get(app, owner, id).await?;

@@ -2,6 +2,7 @@ pub mod archive;
 pub mod auth;
 pub mod realtime;
 pub mod documents;
+pub mod document_extraction;
 use crate::{error::Result, state::App};
 use axum::{
     Json, Router,
@@ -34,6 +35,8 @@ pub fn router(app: App) -> Router {
         .route("/api/documents/{id}/original", get(documents::original))
         .route("/api/documents/{id}/pages/{page}", get(documents::page))
         .route("/api/documents/{id}/pages/{page}/preview", get(documents::preview))
+        .route("/api/documents/{id}/pages/{page}/extract", post(document_extraction::extract))
+        .route("/api/documents/{id}/pages/{page}/structure", get(document_extraction::structure))
         .route("/api/documents/{id}/review", post(documents::review))
         .route("/api/documents/{id}/enrich", post(documents::enrich))
         .route("/api/documents/{id}/export", get(documents::export))

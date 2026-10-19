@@ -5,3 +5,5 @@ pub mod sources;
 pub mod documents;
 pub mod document_review;
 pub mod document_export;
+pub mod document_extraction;
+pub mod document_tables;

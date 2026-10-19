@@ -1,0 +1,311 @@
+{
+  "validation_class": "real Poppler and containerized Tesseract against a generated synthetic PDF; no provider inference",
+  "passed": 24,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "auth",
+      "passed": true
+    },
+    {
+      "check": "ingested_synthetic_pdf",
+      "passed": true
+    },
+    {
+      "check": "image_only_flag",
+      "passed": true
+    },
+    {
+      "check": "consent_required",
+      "passed": true
+    },
+    {
+      "check": "real_tesseract_completed",
+      "passed": true
+    },
+    {
+      "check": "ocr_found_expected_synthetic_terms",
+      "passed": true
+    },
+    {
+      "check": "real_word_confidence",
+      "passed": true
+    },
+    {
+      "check": "ocr_hash_and_original_provenance",
+      "passed": true
+    },
+    {
+      "check": "handwriting_unassessed",
+      "passed": true
+    },
+    {
+      "check": "original_unchanged",
+      "passed": true
+    },
+    {
+      "check": "derived_source_is_explicitly_unverified",
+      "passed": true
+    },
+    {
+      "check": "original_empty_text_not_overwritten",
+      "passed": true
+    },
+    {
+      "check": "ocr_source_requires_provider_consent",
+      "passed": true
+    },
+    {
+      "check": "real_bbox_geometry",
+      "passed": true
+    },
+    {
+      "check": "physical_page_geometry",
+      "passed": true
+    },
+    {
+      "check": "synthetic_table_candidate",
+      "passed": true
+    },
+    {
+      "check": "immutable_extraction_history",
+      "passed": true
+    },
+    {
+      "check": "export_json",
+      "passed": true
+    },
+    {
+      "check": "json_contains_ocr_provenance",
+      "passed": true
+    },
+    {
+      "check": "export_csv",
+      "passed": true
+    },
+    {
+      "check": "csv_ocr_text_hash",
+      "passed": true
+    },
+    {
+      "check": "export_tsv",
+      "passed": true
+    },
+    {
+      "check": "tsv_ocr_text_hash",
+      "passed": true
+    },
+    {
+      "check": "export_manifest",
+      "passed": true
+    }
+  ],
+  "elapsed_seconds": 3.575,
+  "document_id": "0e3a327c-124b-41ef-a105-965cea96990c",
+  "ocr_source_id": "0e3a327c-124b-41ef-a105-965cea96990c-ocr-6fc2bf41",
+  "ocr_word_count": 14,
+  "engine_version": "tesseract 5.3.0",
+  "language": "eng",
+  "synthetic_terms_recovered": 3,
+  "synthetic_terms_expected": 3,
+  "table_candidates": [
+    {
+      "bbox": [
+        50.0,
+        67.076,
+        390.032,
+        263.726
+      ],
+      "column_count": 2,
+      "method": "aligned-text-gaps",
+      "row_count": 4,
+      "rows": [
+        [
+          "Place",
+          "Year"
+        ],
+        [
+          "Bern",
+          "1799"
+        ],
+        [
+          "Zurich",
+          "1800"
+        ],
+        [
+          "Basel",
+          "1801"
+        ]
+      ],
+      "semantic_table_claim": false,
+      "status": "unverified"
+    }
+  ],
+  "provider_calls": 0,
+  "handwriting_accuracy": "NOT_RUN",
+  "historical_OCR_accuracy": "NOT_RUN",
+  "multilingual_OCR_accuracy": "NOT_RUN",
+  "observed_at": "2026-10-19T12:56:03.861946+00:00",
+  "native_validation": {
+    "passed": 22,
+    "failed": 0,
+    "commands": [
+      "cargo test --locked",
+      "cargo build --locked"
+    ],
+    "output": "   Compiling oldif-back v0.1.0 (/Users/eydrent/Documents/hackathons/20261018-hack-CH-BE-LFL-Hack-Apertus/project/project-deciphering-archives/oldif-back)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.78s\n     Running unittests src/main.rs (target/debug/deps/oldif_back-45360ba03263319a)\n\nrunning 22 tests\ntest application::exports::tests::empty_exports_keep_the_requested_columns ... ok\ntest application::documents::tests::flags_do_not_claim_ocr_or_handwriting_recognition ... ok\ntest domain::tests::rejects_bad_inputs ... ok\ntest domain::tests::exports_cannot_run_spreadsheet_formulas ... ok\ntest domain::retrieval::tests::two_named_places_support_comparison ... ok\ntest domain::retrieval::tests::named_place_excludes_unrelated_high_overlap ... ok\ntest domain::retrieval::tests::exact_source_id_takes_precedence ... ok\ntest application::document_review::tests::human_revisions_preserve_original_and_omit_unspecified_fields ... ok\ntest application::document_review::tests::enrichment_rejects_missing_empty_or_excess_pages ... ok\ntest infrastructure::document_geometry::tests::ocr_words_keep_confidence_and_physical_coordinates ... ok\ntest application::exports::tests::accepted_tsv_preserves_review_and_citations ... ok\ntest application::exports::tests::accepted_tsv_identifies_unverified_interpretations ... ok\ntest infrastructure::document_geometry::tests::geometry_preserves_unicode_and_rejects_external_entity_resolution ... ok\ntest application::document_tables::tests::repeated_columns_are_candidates_and_prose_is_not_a_verified_table ... ok\ntest infrastructure::document_parser::tests::json_import_never_fetches_urls_or_infers_missing_text ... ok\ntest domain::retrieval::tests::locations_and_words_require_boundaries ... ok\ntest infrastructure::document_parser::tests::file_type_spoofing_and_binary_text_are_rejected ... ok\ntest application::document_export::tests::exports_preserve_page_hash_review_and_spreadsheet_safety ... ok\ntest infrastructure::core::tests::event_subscription_deadline_includes_stalled_handshake ... ok\ntest infrastructure::core::tests::unary_deadline_covers_response_body_after_headers ... ok\ntest infrastructure::core::tests::unary_deadline_includes_connection_and_handshake ... ok\ntest infrastructure::core::tests::established_event_stream_outlives_request_deadline ... ok\n\ntest result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s\n\n   Compiling oldif-back v0.1.0 (/Users/eydrent/Documents/hackathons/20261018-hack-CH-BE-LFL-Hack-Apertus/project/project-deciphering-archives/oldif-back)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.13s\n"
+  },
+  "container_validation": {
+    "image": "oldif-ocr-helper:20261019",
+    "manifest": "sha256:b7faf3ccbb82b0b076d4171ac2cc5078e5846ed7676a09099d2cb5147ab5346e",
+    "network": "none",
+    "root_filesystem": "read-only",
+    "cpu": 1,
+    "memory_mb": 512,
+    "mount": "single generated page image directory, read-only",
+    "observed_languages": [
+      "deu",
+      "eng",
+      "fra",
+      "ita",
+      "osd"
+    ],
+    "ocr_languages_tested": [
+      "eng"
+    ]
+  },
+  "prior_failure_preserved": {
+    "check": "synthetic_table_candidate",
+    "before": "Columns emitted as separate Poppler blocks were not grouped",
+    "fix": "Group words by physical baseline before aligned-gap candidate detection",
+    "after": "4-row 2-column synthetic candidate detected; still unverified semantics"
+  },
+  "native_source_hashes": [
+    {
+      "path": "src/api/archive.rs",
+      "sha256": "0d8cbb074cf83a9aa469926a7d19d67c27411862331673fe309d81a97975cc2e"
+    },
+    {
+      "path": "src/api/auth.rs",
+      "sha256": "12663a7964f2e3fddb956ab39ae40462b2c1266356f9c7925eb1475e48f25fd3"
+    },
+    {
+      "path": "src/api/document_extraction.rs",
+      "sha256": "d9f06d90981136f57138aac93777b4445fcd5706af33f728cf2b20107d797c18"
+    },
+    {
+      "path": "src/api/documents.rs",
+      "sha256": "1b473a06d4db95e48aa50a4ee7cd446f6482bfa9d66a57398191a90952822800"
+    },
+    {
+      "path": "src/api/mod.rs",
+      "sha256": "c95f49bd90329ac27875e5a188de7f3c19d12f9ce0acaf69cf34f26a170734d6"
+    },
+    {
+      "path": "src/api/realtime.rs",
+      "sha256": "37cf778efcd2a562cc3162ba8edaa1cb04163ec5b6b11c89acc2d9886d80790d"
+    },
+    {
+      "path": "src/application/auth.rs",
+      "sha256": "ca3cf2cfaa818213b73e5841cba2149f97c07077b9acea2c47f2d5a5624b79a0"
+    },
+    {
+      "path": "src/application/document_export.rs",
+      "sha256": "b91f76c6dc708acd8491f4a7b7cc90888e9cf3733e6db18d51adcf715e08b3c4"
+    },
+    {
+      "path": "src/application/document_extraction.rs",
+      "sha256": "9109ed38b39389faa7fc23d9479f851d0e51a082d14c675bdfa121e6a2b1cc26"
+    },
+    {
+      "path": "src/application/document_review.rs",
+      "sha256": "6bc9b6d1ab8b2ff7de25eabaffedbf4baa973d731aec4786ce9c22df488bc342"
+    },
+    {
+      "path": "src/application/document_tables.rs",
+      "sha256": "40170efc26244abc3c067689ca0cf9a94889c9c9dd2cc4da42c154450698ddac"
+    },
+    {
+      "path": "src/application/documents.rs",
+      "sha256": "81d27f6e248818ff4cec3f50ad6079b12b5528d8755ffd1e3b149f001691dcba"
+    },
+    {
+      "path": "src/application/exports.rs",
+      "sha256": "0f5b73d2bc368f065171275e4061f7be36f73467d0b8ee92c6d33aa8b73f39ce"
+    },
+    {
+      "path": "src/application/mod.rs",
+      "sha256": "a1023793d7e223dc43f2ae6ace8ba212a0ce7031ff5e512b6f09d7caeb8135b2"
+    },
+    {
+      "path": "src/application/runs.rs",
+      "sha256": "2f9532224d47c053a281360bf592751801a4e626a581f868f00f5a6bb0db1e63"
+    },
+    {
+      "path": "src/application/sources.rs",
+      "sha256": "4901f56f0445a3aa2e533494fcb656918b365a3bfa9e0c373d2b8a3968e16948"
+    },
+    {
+      "path": "src/config.rs",
+      "sha256": "21fb6ff115740638efa80e6fe5729ba20be08b8b0f75aa2ef340bd788ada0b92"
+    },
+    {
+      "path": "src/domain/mod.rs",
+      "sha256": "ef88f44bdcd30168e803e7adc6703c35d82971d31ab968fa8c8bda4113208ef7"
+    },
+    {
+      "path": "src/domain/retrieval.rs",
+      "sha256": "793204cac8a17f0f6f42fee212b0cbb58e40cf8f326967695319884fd40cf213"
+    },
+    {
+      "path": "src/error.rs",
+      "sha256": "e986e904ec1e926d9c7cf0c32a43d53eb086010640437018c186cee9a443806b"
+    },
+    {
+      "path": "src/infrastructure/core.rs",
+      "sha256": "91ac724656f5f4e0e30c0dfe15ea183009a61148a556984db92fc45bf012a6a2"
+    },
+    {
+      "path": "src/infrastructure/document_geometry.rs",
+      "sha256": "bad4fbca0188da819ec50b6995d42c297f487b034fd3eef3b8aa1c0afd71f8b0"
+    },
+    {
+      "path": "src/infrastructure/document_parser.rs",
+      "sha256": "49244f489b88c588dfa8f2a32367ec7485747c3880baf48ff939a9bc76ead16b"
+    },
+    {
+      "path": "src/infrastructure/document_process.rs",
+      "sha256": "754ea25593303e3a6fc93838a2e1a138a3977a122b2ddf035808a1525a5d2fda"
+    },
+    {
+      "path": "src/infrastructure/document_structure.rs",
+      "sha256": "b24a2b942a1279e5b40f2aa8c6ad17e5599b138d6c68b71d37c165dd3349d8f9"
+    },
+    {
+      "path": "src/infrastructure/mod.rs",
+      "sha256": "179a95b33a0f3334b6bc843327129110f460efacdeae7399df6f7411c6b421fe"
+    },
+    {
+      "path": "src/infrastructure/store.rs",
+      "sha256": "f1960d762f5155bb7cdb09dc2497a8badf432264e55884fc3e098f480a90e9ec"
+    },
+    {
+      "path": "src/main.rs",
+      "sha256": "80354ac13ed54d925b528cfd709040b81886b7fb51a157ca3457b46fd0a32634"
+    },
+    {
+      "path": "src/state.rs",
+      "sha256": "559e3a2f90faa0e934dbc83cd90540006c9964ae63c924853d1fea268874d780"
+    }
+  ],
+  "limits": {
+    "max_geometry_nodes": 100000,
+    "max_words": 20000,
+    "max_xml_or_tsv_output_bytes": 4194304,
+    "local_processing_confirmation_required": true,
+    "provider_processing_confirmation_separate": true,
+    "ocr_source_default_search": false,
+    "handwriting_recognition_claimed": false,
+    "public_historical_gold_evaluation": "NOT_RUN"
+  }
+}

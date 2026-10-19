@@ -124,6 +124,7 @@ pub struct Enrichment {
     pub language: Option<String>,
     pub provider_processing_confirmed: bool,
     pub page_numbers: Option<Vec<usize>>,
+    pub source_ids: Option<Vec<String>>,
 }
 pub async fn enrich(app: &App, user: &User, id: &str, input: Enrichment) -> Result<Value> {
     if !input.provider_processing_confirmed {
@@ -136,7 +137,21 @@ pub async fn enrich(app: &App, user: &User, id: &str, input: Enrichment) -> Resu
         return Err(Error::bad("Document is not ready"));
     }
     let pages = documents::pages(app, &user.id, id).await?;
-    let selection = selected_pages(&pages, input.page_numbers.as_deref())?;
+    let selection = if let Some(ids) = input.source_ids {
+        if ids.is_empty() || ids.len() > 6 {
+            return Err(Error::bad("Choose one to six exact document sources"));
+        }
+        crate::application::sources::select(
+            app,
+            &user.id,
+            "document enrichment",
+            &[id.into()],
+            &ids,
+        )
+        .await?
+    } else {
+        selected_pages(&pages, input.page_numbers.as_deref())?
+    };
     if selection
         .iter()
         .map(|page| page["text"].as_str().unwrap_or("").len())

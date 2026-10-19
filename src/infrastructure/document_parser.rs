@@ -89,9 +89,9 @@ fn validate_pages(config: &DocumentConfig, pages: &[String]) -> Result<()> {
     }
     Ok(())
 }
-struct Workspace(PathBuf);
+pub(crate) struct Workspace(pub(crate) PathBuf);
 impl Workspace {
-    async fn new(bytes: &[u8]) -> Result<Self> {
+    pub(crate) async fn new(bytes: &[u8]) -> Result<Self> {
         let dir = std::env::temp_dir().join(format!("oldif-document-{}", uuid::Uuid::new_v4()));
         tokio::fs::create_dir(&dir)
             .await
