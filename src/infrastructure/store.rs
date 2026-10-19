@@ -26,6 +26,7 @@ impl Record {
         data["id"] = json!(self.id);
         data["version"] = json!(self.version);
         data["created_at"] = json!(self.created_at);
+        if self.kind=="source" {data["normalization_provenance"]=crate::application::provenance::normalization(&data);}
         data
     }
 }
