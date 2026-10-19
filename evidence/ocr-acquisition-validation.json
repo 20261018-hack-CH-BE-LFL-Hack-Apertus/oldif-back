@@ -1,0 +1,165 @@
+{
+  "validation_class": "real Poppler and containerized Tesseract against a generated synthetic PDF; no provider inference",
+  "passed": 27,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "auth",
+      "passed": true
+    },
+    {
+      "check": "ingested_synthetic_pdf",
+      "passed": true
+    },
+    {
+      "check": "image_only_flag",
+      "passed": true
+    },
+    {
+      "check": "consent_required",
+      "passed": true
+    },
+    {
+      "check": "real_tesseract_completed",
+      "passed": true
+    },
+    {
+      "check": "ocr_found_expected_synthetic_terms",
+      "passed": true
+    },
+    {
+      "check": "real_word_confidence",
+      "passed": true
+    },
+    {
+      "check": "ocr_hash_and_original_provenance",
+      "passed": true
+    },
+    {
+      "check": "handwriting_unassessed",
+      "passed": true
+    },
+    {
+      "check": "ocr_actor_parent_and_text_reference",
+      "passed": true
+    },
+    {
+      "check": "original_unchanged",
+      "passed": true
+    },
+    {
+      "check": "derived_source_is_explicitly_unverified",
+      "passed": true
+    },
+    {
+      "check": "derived_source_retains_exact_transform",
+      "passed": true
+    },
+    {
+      "check": "original_empty_text_not_overwritten",
+      "passed": true
+    },
+    {
+      "check": "ocr_source_requires_provider_consent",
+      "passed": true
+    },
+    {
+      "check": "real_bbox_geometry",
+      "passed": true
+    },
+    {
+      "check": "physical_page_geometry",
+      "passed": true
+    },
+    {
+      "check": "geometry_transform_references_physical_page",
+      "passed": true
+    },
+    {
+      "check": "synthetic_table_candidate",
+      "passed": true
+    },
+    {
+      "check": "immutable_extraction_history",
+      "passed": true
+    },
+    {
+      "check": "export_json",
+      "passed": true
+    },
+    {
+      "check": "json_contains_ocr_provenance",
+      "passed": true
+    },
+    {
+      "check": "export_csv",
+      "passed": true
+    },
+    {
+      "check": "csv_ocr_text_hash",
+      "passed": true
+    },
+    {
+      "check": "export_tsv",
+      "passed": true
+    },
+    {
+      "check": "tsv_ocr_text_hash",
+      "passed": true
+    },
+    {
+      "check": "export_manifest",
+      "passed": true
+    }
+  ],
+  "elapsed_seconds": 3.948,
+  "document_id": "f61948f36f9b1f61e2e7825e6361644a227ffca82a21ddd9477d0e9ffce2631c",
+  "ocr_source_id": "f61948f36f9b1f61e2e7825e6361644a227ffca82a21ddd9477d0e9ffce2631c-ocr-276e70f5-244c-4a37-b8bf-b461d6eed7b5",
+  "ocr_word_count": 14,
+  "engine_version": "tesseract 5.3.0",
+  "language": "eng",
+  "synthetic_terms_recovered": 3,
+  "synthetic_terms_expected": 3,
+  "table_candidates": [
+    {
+      "bbox": [
+        50.0,
+        67.076,
+        390.032,
+        263.726
+      ],
+      "column_count": 2,
+      "method": "aligned-text-gaps",
+      "row_count": 4,
+      "rows": [
+        [
+          "Place",
+          "Year"
+        ],
+        [
+          "Bern",
+          "1799"
+        ],
+        [
+          "Zurich",
+          "1800"
+        ],
+        [
+          "Basel",
+          "1801"
+        ]
+      ],
+      "semantic_table_claim": false,
+      "status": "unverified"
+    }
+  ],
+  "provider_calls": 0,
+  "handwriting_accuracy": "NOT_RUN",
+  "historical_OCR_accuracy": "NOT_RUN",
+  "multilingual_OCR_accuracy": "NOT_RUN",
+  "initial_harness_failure": {
+    "check": "OCR provenance field lookup",
+    "error": "Test used parent instead of contract parent_revision; corrected without runtime change",
+    "provider_calls": 0
+  }
+}

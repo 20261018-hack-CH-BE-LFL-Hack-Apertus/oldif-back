@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Executable document pipeline demo using only explicitly synthetic text."""
+from fixture_acquisition import acquisition
 import csv, hashlib, http.cookiejar, io, json, os, time, urllib.request
 
 FIXTURE = ("SYNTHETIC VALIDATION RECORD\nThis fictional record dated 1799 proposes teaching reading and arithmetic.\n"
@@ -17,7 +18,7 @@ def run_demo():
             body=r.read()
             return json.loads(body) if r.headers.get_content_type()=='application/json' else body
     call('/api/auth/demo',{})
-    created=call('/api/documents',FIXTURE,{'Content-Type':'text/plain','X-Document-Filename':'synthetic-archive.txt','X-Document-Metadata':json.dumps({'licence':'CC0-synthetic-fixture','rights_confirmed':True})})
+    created=call('/api/documents',FIXTURE,{'Content-Type':'text/plain','X-Document-Filename':'synthetic-archive.txt','X-Document-Metadata':json.dumps({'licence':'CC0-synthetic-fixture','rights_confirmed':True,'acquisition':acquisition(FIXTURE,'CC0-synthetic-fixture',enabled)})})
     document=created['document'];ident=document['id'];pages=created['pages']
     assert document['original_sha256']==hashlib.sha256(FIXTURE).hexdigest()
     assert call(f'/api/documents/{ident}/original')==FIXTURE

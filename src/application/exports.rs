@@ -37,6 +37,9 @@ pub async fn accepted(app: &App, owner: &str, session: Option<&str>) -> Result<V
             && session.is_none_or(|s| r.data["session_id"] == s)
     });
     runs.sort_by(|a, b| a.id.cmp(&b.id));
+    for run in &runs {
+        if let Some(sources)=run.data["sources"].as_array() {super::document_quarantine::authorize_sources(app,owner,sources,"private_export").await?;}
+    }
     let rows=runs.iter().map(|r|json!({"schema_version":"1.0","run_id":r.id,"revision":r.version,"result":r.data["result"],"review":r.data["review"],"model":r.data["model"]})).collect::<Vec<_>>();
     let bytes = serde_json::to_string(&rows)?;
     let id = hash(&bytes);

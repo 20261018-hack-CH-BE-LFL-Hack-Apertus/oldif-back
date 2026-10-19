@@ -190,6 +190,7 @@ pub async fn dataset_export(
 ) -> Result<Response> {
     let user = auth::authenticate(&app, &headers).await?;
     let rows = exports::dataset(&app, &user.id, &id).await?;
+    crate::application::document_quarantine::authorize_sources(&app,&user.id,&rows,"private_export").await?;
     download(
         rows,
         query.format.as_deref().unwrap_or("jsonl"),

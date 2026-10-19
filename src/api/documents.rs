@@ -1,5 +1,5 @@
 use crate::{
-    application::{auth, document_export, document_review, documents},
+    application::{auth, document_export, document_review, document_quarantine, documents},
     error::{Error, Result},
     infrastructure::document_parser,
     state::App,
@@ -8,7 +8,7 @@ use axum::{
     Json,
     body::Bytes,
     extract::{Path, Query, State},
-    http::{HeaderMap, HeaderValue},
+    http::{HeaderMap, HeaderValue, StatusCode},
     response::{IntoResponse, Response},
 };
 use serde::Deserialize;
@@ -25,7 +25,7 @@ pub async fn upload(
     State(app): State<App>,
     headers: HeaderMap,
     body: Bytes,
-) -> Result<Json<Value>> {
+) -> Result<Response> {
     let user = auth::authenticate(&app, &headers).await?;
     let filename = headers
         .get("x-document-filename")
@@ -43,9 +43,13 @@ pub async fn upload(
         .and_then(|h| h.to_str().ok())
         .unwrap_or("");
     let key = headers.get("idempotency-key").map(|value| value.to_str().map_err(|_| Error::bad("Invalid Idempotency-Key"))).transpose()?;
-    Ok(Json(
-        documents::upload(&app, &user.id, filename, media, metadata, key, body.to_vec()).await?,
-    ))
+    let result=documents::upload(&app, &user.id, filename, media, metadata, key, body.to_vec()).await?;
+    let status=if result["code"]=="RIGHTS_UNRESOLVED"{StatusCode::ACCEPTED}else{StatusCode::OK};
+    Ok((status,Json(result)).into_response())
+}
+pub async fn release(State(app):State<App>,headers:HeaderMap,Path(id):Path<String>,Json(input):Json<document_quarantine::Release>)->Result<Json<Value>> {
+    let user=auth::authenticate(&app,&headers).await?;
+    Ok(Json(document_quarantine::release(&app,&user.id,&id,input).await?))
 }
 pub async fn detail(
     State(app): State<App>,

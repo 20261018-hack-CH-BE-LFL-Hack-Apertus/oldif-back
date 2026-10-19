@@ -28,6 +28,7 @@ pub async fn extract(app: &App, owner: &str, id: &str, page: usize, input: Input
         )
     })?;
     let (document, bytes) = documents::original(app, owner, id).await?;
+    super::document_quarantine::require_use(&document,"local_processing")?;
     if document.data["media_type"] != "application/pdf" {
         return Err(Error::bad("Page geometry and OCR require a PDF document"));
     }
@@ -58,6 +59,7 @@ pub async fn extract(app: &App, owner: &str, id: &str, page: usize, input: Input
     result["handwriting_status"] = json!("unknown");
     result["human_review_required"] = json!(true);
     result["processing_ms"] = json!(started.elapsed().as_millis());
+    result["transformation"]=super::provenance::transformation(if input.ocr{"ocr_page"}else{"extract_text_geometry"},"Explicit local processing consent; transcription remains unverified",owner,&extraction_id,json!({"kind":"document","id":id,"version":document.version}),json!({"value_kind":"immutable_original_reference","document_id":id,"original_sha256":document.data["original_sha256"],"file_page_index":page-1}),json!({"value_kind":"immutable_record_reference","kind":"document_extraction","id":extraction_id,"version":1,"field":"text","text_sha256":result["text_sha256"]}));
     let mut writes = vec![Write::new(
         owner,
         "document_extraction",
@@ -88,7 +90,7 @@ fn ocr_source(
     result: &Value,
 ) -> Write {
     let id = document["id"].as_str().unwrap();
-    let data = json!({"id":source_id,"document_id":id,"dataset_id":id,"title":format!("{} · OCR page {page}",document["title"].as_str().unwrap_or("Document")),"page":page,"file_page_index":page-1,"printed_page_label":null,"printed_page_label_missing_reason":"not_assessed","text":result["text"],"text_sha256":result["text_sha256"],"original_sha256":document["original_sha256"],"sha256":document["original_sha256"],"record_hash_scope":"original-file-bytes","url":format!("{}/api/documents/{id}/pages/{page}",app.config.origin),"licence":document["licence"],"derived_from":format!("{id}-p{page:04}"),"extraction_id":extraction_id,"transcription_method":"tesseract-ocr","transcription_review_status":"unverified","queryable_by_default":false,"flags":{"handwriting_status":"unknown","human_review_required":true,"ocr_performed":true}});
+    let data = json!({"id":source_id,"document_id":id,"dataset_id":id,"title":format!("{} · OCR page {page}",document["title"].as_str().unwrap_or("Document")),"page":page,"file_page_index":page-1,"printed_page_label":null,"printed_page_label_missing_reason":"not_assessed","text":result["text"],"text_sha256":result["text_sha256"],"original_sha256":document["original_sha256"],"sha256":document["original_sha256"],"record_hash_scope":"original-file-bytes","url":format!("{}/api/documents/{id}/pages/{page}",app.config.origin),"licence":document["licence"],"derived_from":format!("{id}-p{page:04}"),"extraction_id":extraction_id,"transcription_method":"tesseract-ocr","transcription_review_status":"unverified","queryable_by_default":false,"transformation":result["transformation"],"flags":{"handwriting_status":"unknown","human_review_required":true,"ocr_performed":true}});
     Write::new(owner, "source", source_id, data)
 }
 pub async fn latest(app: &App, owner: &str, id: &str, page: usize) -> Result<Value> {

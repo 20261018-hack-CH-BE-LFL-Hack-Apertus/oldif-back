@@ -60,6 +60,7 @@ pub async fn start(app: &App, user: &User, input: Input) -> Result<Value> {
     if !input.provider_processing_confirmed && selected.iter().any(|source|source["document_id"].is_string()) {
         return Err(Error::bad("Confirm provider processing before researching private uploaded pages"));
     }
+    super::document_quarantine::authorize_sources(app,&user.id,&selected,"provider_processing").await?;
     if selected.is_empty() {
         return Err(Error::bad(
             "No matching source was found. Name a school or an exact source identifier from the collection",

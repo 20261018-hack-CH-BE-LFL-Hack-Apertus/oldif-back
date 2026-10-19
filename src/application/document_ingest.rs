@@ -41,7 +41,7 @@ impl Identity {
         } else {
             json!(["content-upload-v1", owner, filename, original_sha256])
         };
-        let fingerprint=digest(json!({"filename":filename,"media":media,"title":input.title,"licence":input.licence,"original_sha256":original_sha256}).to_string().as_bytes());
+        let fingerprint=digest(json!({"filename":filename,"media":media,"metadata":input,"original_sha256":original_sha256}).to_string().as_bytes());
         Ok(Self {
             id: digest(identity.to_string().as_bytes()),
             fingerprint,
@@ -94,6 +94,7 @@ mod tests {
             title: None,
             licence: "synthetic".into(),
             rights_confirmed: true,
+            acquisition: None,
         };
         let first = Identity::new(
             "owner",

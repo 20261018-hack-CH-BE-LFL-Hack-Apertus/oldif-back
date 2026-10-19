@@ -38,13 +38,18 @@ pub async fn review(app: &App, owner: &str, id: &str, input: Review) -> Result<V
             "Reload the current document revision before reviewing".into(),
         ));
     }
-    let data = revise(document.data.clone(), owner, &input)?;
-    let review = json!({"document_id":id,"actor":owner,"decision":input.decision,"reason":input.reason,"previous_version":document.version,"resulting_version":document.version+1,"changes":{"title":data["title"],"labels":data["labels"],"metadata":data["metadata"],"annotations":data["annotations"]},"original_modified":false});
+    let mut data = revise(document.data.clone(), owner, &input)?;
+    let revision_id=uuid::Uuid::new_v4().to_string();
+    let original=json!({"title":document.data["title"],"labels":document.data["labels"],"metadata":document.data["metadata"],"annotations":document.data["annotations"]});
+    let changed=json!({"title":data["title"],"labels":data["labels"],"metadata":data["metadata"],"annotations":data["annotations"]});
+    let transform=super::provenance::transformation("human_metadata_revision",&input.reason,owner,&revision_id,json!({"kind":"document","id":id,"version":document.version}),original,changed.clone());
+    data["transformation"]=transform.clone();
+    let review = json!({"document_id":id,"actor":owner,"decision":input.decision,"reason":input.reason,"previous_version":document.version,"resulting_version":document.version+1,"changes":changed,"transformation":transform,"original_modified":false});
     let rows = app
         .store
         .batch(vec![
             Write::update(&document, data),
-            Write::new(owner, "review", &uuid::Uuid::new_v4().to_string(), review),
+            Write::new(owner, "review", &revision_id, review),
         ])
         .await?;
     Ok(json!({"document":rows[0].public(),"revision":rows[1].public()}))
@@ -133,6 +138,7 @@ pub async fn enrich(app: &App, user: &User, id: &str, input: Enrichment) -> Resu
         ));
     }
     let document = documents::get(app, &user.id, id).await?;
+    super::document_quarantine::require_use(&document,"provider_processing")?;
     if document.data["status"] != "ready" {
         return Err(Error::bad("Document is not ready"));
     }

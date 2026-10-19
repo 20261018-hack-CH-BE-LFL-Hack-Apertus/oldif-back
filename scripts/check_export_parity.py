@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Verify authenticated export formats with an explicitly synthetic multiline fixture."""
+from fixture_acquisition import acquisition
 import argparse, csv, hashlib, http.cookiejar, io, json, pathlib, time, urllib.request
 
 parser = argparse.ArgumentParser()
@@ -23,7 +24,7 @@ def decoded(path): return json.loads(call(path)[0])
 call('/api/auth/demo', {})
 text = 'SYNTHETIC export fixture\nOriginal, "quoted" text.\fDeuxième page\nläsen\f'
 body = text.encode()
-headers = {'Content-Type': 'text/plain', 'X-Document-Filename': 'synthetic-export.txt', 'X-Document-Metadata': json.dumps({'title': 'SYNTHETIC export', 'licence': 'synthetic-test-only', 'rights_confirmed': True})}
+headers = {'Content-Type': 'text/plain', 'X-Document-Filename': 'synthetic-export.txt', 'X-Document-Metadata': json.dumps({'title': 'SYNTHETIC export', 'licence': 'synthetic-test-only', 'rights_confirmed': True, 'acquisition':acquisition(body,'synthetic-test-only')})}
 result = json.loads(call('/api/documents', body, headers)[0])
 doc, pages = result['document'], result['pages']; ident = doc['id']
 check('synthetic_three_pages_preserved', len(pages) == 3 and pages[-1]['text'] == '')

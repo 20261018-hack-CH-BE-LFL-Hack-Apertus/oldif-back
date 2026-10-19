@@ -12,6 +12,7 @@ pub async fn export(
     id: &str,
     format: &str,
 ) -> Result<(String, &'static str)> {
+    super::document_quarantine::require_use(&documents::get(app,owner,id).await?,"private_export")?;
     let detail = documents::detail(app, owner, id).await?;
     serialize(&detail, format)
 }
@@ -19,7 +20,7 @@ pub fn serialize(detail: &Value, format: &str) -> Result<(String, &'static str)>
     let document = &detail["document"];
     let pages = detail["pages"].as_array().ok_or_else(Error::unavailable)?;
     let ocr_performed = detail["extractions"].as_array().is_some_and(|items| items.iter().any(|item| item["method"] == "tesseract-ocr"));
-    let manifest = json!({"schema":"oldif-document-dataset/1.0","document_id":document["id"],"document_revision":document["version"],"original_sha256":document["original_sha256"],"byte_count":document["byte_count"],"page_count":pages.len(),"licence":document["licence"],"review":document["review"],"pages":pages.iter().map(|p|json!({"source_id":p["id"],"page":p["page"],"text_sha256":p["text_sha256"],"original_sha256":p["original_sha256"]})).collect::<Vec<_>>(),"extractions":detail["extractions"].as_array().map(|items|items.iter().map(|r|json!({"id":r["id"],"page":r["page"],"method":r["method"],"text_sha256":r["text_sha256"],"review_status":"unverified"})).collect::<Vec<_>>()),"transformations":document["transformation"],"extraction":document["extraction"],"ocr_performed":ocr_performed,"human_quality_metric":"NOT_RUN","training_readiness":"requires rights, privacy, bias and human quality review"});
+    let manifest = json!({"schema":"oldif-document-dataset/1.0","document_id":document["id"],"document_revision":document["version"],"original_sha256":document["original_sha256"],"byte_count":document["byte_count"],"page_count":pages.len(),"licence":document["licence"],"review":document["review"],"pages":pages.iter().map(|p|json!({"source_id":p["id"],"page":p["page"],"text_sha256":p["text_sha256"],"original_sha256":p["original_sha256"]})).collect::<Vec<_>>(),"extractions":detail["extractions"].as_array().map(|items|items.iter().map(|r|json!({"id":r["id"],"page":r["page"],"method":r["method"],"text_sha256":r["text_sha256"],"review_status":"unverified"})).collect::<Vec<_>>()),"acquisition":document["acquisition"],"transformations":{"initial":document["initial_transformation"],"current":document["transformation"],"revisions":detail["revisions"]},"extraction":document["extraction"],"ocr_performed":ocr_performed,"human_quality_metric":"NOT_RUN","training_readiness":"requires rights, privacy, bias and human quality review"});
     match format {
         "manifest" => Ok((serde_json::to_string_pretty(&manifest)?, "application/json")),
         "json" => Ok((

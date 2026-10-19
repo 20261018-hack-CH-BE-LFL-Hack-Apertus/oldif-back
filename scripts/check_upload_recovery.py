@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Fault-injected local upload recovery against a real DB; never use a production DB."""
+from fixture_acquisition import acquisition
 import argparse, hashlib, http.client, http.cookiejar, http.server, json, os, pathlib
 import subprocess, threading, time, urllib.error, urllib.parse, urllib.request
 
@@ -73,7 +74,7 @@ try:
     user = value(call(owner, '/api/auth/demo', {}))['user']['id']
     call(other, '/api/auth/demo', {})
     content = b'SYNTHETIC recovery page one.\fPage two remains exact.\f'
-    metadata = {'title':'SYNTHETIC RECOVERY fixture', 'licence':'synthetic-test-only', 'rights_confirmed':True}
+    metadata = {'title':'SYNTHETIC RECOVERY fixture', 'licence':'synthetic-test-only', 'rights_confirmed':True,'acquisition':acquisition(content,'synthetic-test-only')}
     headers = {'Content-Type':'text/plain', 'X-Document-Filename':'synthetic-recovery.txt', 'X-Document-Metadata':json.dumps(metadata), 'Idempotency-Key':'retry-1'}
     first = call(owner, '/api/documents', content, headers)
     check('injected_source_batch_failure_visible', first[0] == 503 and faults == 1)

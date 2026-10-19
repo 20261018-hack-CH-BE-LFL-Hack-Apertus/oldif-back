@@ -1,5 +1,5 @@
 use crate::{
-    application::{auth, document_ingest},
+    application::{auth, acquisition::Acquisition, document_ingest, document_quarantine, provenance},
     error::{Error, Result},
     infrastructure::{
         document_parser::{self, Parsed},
@@ -8,15 +8,17 @@ use crate::{
     state::App,
 };
 use base64::{Engine, engine::general_purpose::STANDARD};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Metadata {
     pub title: Option<String>,
     pub licence: String,
     pub rights_confirmed: bool,
+    #[serde(default)]
+    pub acquisition: Option<Acquisition>,
 }
 pub async fn upload(
     app: &App,
@@ -28,6 +30,7 @@ pub async fn upload(
     bytes: Vec<u8>,
 ) -> Result<Value> {
     validate_metadata(filename, &input)?;
+    if bytes.is_empty() || bytes.len()>app.config.documents.max_bytes { return Err(Error::bad("Document exceeds the configured byte limit")); }
     let media = document_parser::media(filename, content_type, &bytes)?;
     let identity = document_ingest::Identity::new(owner, filename, media, &input, key, &bytes)?;
     let _permit = app.document_slots.try_acquire().map_err(|_| {
@@ -37,6 +40,10 @@ pub async fn upload(
         )
     })?;
     let previous = document_ingest::existing(app, owner, &identity).await?;
+    let missing=input.acquisition.clone().unwrap_or_default().assess(&identity.original_sha256,input.rights_confirmed)?;
+    if !missing.is_empty() {
+        return document_quarantine::hold(app,owner,filename,media,&input,&bytes,&identity,previous,missing).await;
+    }
     if let Some(document) = previous.as_ref().filter(|record| record.data["status"] == "ready") {
         return Ok(json!({"document":document.public(),"pages":pages(app,owner,&document.id).await?,"idempotent_replay":true,"ingestion_resumed":false}));
     }
@@ -50,6 +57,8 @@ pub async fn upload(
         None => {
             let mut data = document_data(&identity.id, filename, media, &input, &bytes, &parsed, &hash);
             data["ingest_fingerprint"] = json!(identity.fingerprint);
+            data["transformation"] = provenance::transformation("extract_text_without_modifying_original","Explicit acquired local processing",owner,&identity.id,Value::Null,json!({"original_sha256":hash,"upload_metadata":input}),json!({"title":data["title"],"metadata":data["metadata"],"page_count":data["page_count"]}));
+            data["initial_transformation"]=data["transformation"].clone();
             app.store.put(Write::new(owner, "document", &identity.id, data)).await?
         }
     };
@@ -66,9 +75,7 @@ pub async fn upload(
     Ok(result)
 }
 fn validate_metadata(filename: &str, input: &Metadata) -> Result<()> {
-    if !input.rights_confirmed
-        || input.licence.trim().is_empty()
-        || input.licence.len() > 200
+    if input.licence.len() > 200
         || filename.is_empty()
         || filename.len() > 180
         || filename.contains(['/', '\\', '\0', '\n', '\r'])
@@ -80,7 +87,7 @@ fn validate_metadata(filename: &str, input: &Metadata) -> Result<()> {
     }
     Ok(())
 }
-fn document_data(
+pub(super) fn document_data(
     id: &str,
     filename: &str,
     media: &str,
@@ -94,13 +101,12 @@ fn document_data(
         .iter()
         .flat_map(|p| p.lines())
         .map(str::trim)
-        .find(|s| !s.is_empty())
-        .unwrap_or(filename);
+        .find(|s| !s.is_empty());
     let title = input
         .title
         .as_deref()
         .filter(|s| !s.trim().is_empty())
-        .unwrap_or(suggested)
+        .unwrap_or(suggested.unwrap_or(filename))
         .chars()
         .take(200)
         .collect::<String>();
@@ -118,8 +124,9 @@ fn document_data(
         .map(|(key, value)| (key.clone(), value.clone()))
         .collect();
     let title_supplied = input.title.as_ref().is_some_and(|value| !value.trim().is_empty());
-    let metadata_method = if media == "application/pdf" { "embedded_pdf_metadata" } else { "none" };
-    json!({"schema_version":"1.0","dataset_id":id,"title":title,"title_method":if title_supplied{"user_supplied"}else{"first_nonempty_extracted_line"},"filename":filename,"media_type":media,"original_sha256":hash,"byte_count":bytes.len(),"page_count":parsed.pages.len(),"status":"processing","licence":input.licence,"rights_confirmed":true,"labels":[],"annotations":[],"metadata":metadata,"metadata_provenance":{"method":metadata_method,"verification":"unverified_document_claim","original_sha256":hash},"extraction":parsed.metadata,"review":{"decision":"needs_review","reason":"New ingestion requires human review"},"enrichments":[],"flags":{"empty_pages":flags.iter().filter(|f|f["empty_text"]==true).count(),"suspect_pages":flags.iter().filter(|f|f["illegibility_suspected"]==true).count(),"pagination":"physical_page_order","handwriting_status":"unknown","ocr_performed":false,"privacy_review_required":true},"transformation":{"operation":"extract_text_without_modifying_original","version":"1","page_numbering":"one_based_physical_order"}})
+    let metadata_method = if media == "application/pdf" && parsed.metadata["extractor"] != "none" { "embedded_pdf_metadata" } else { "none" };
+    let licence=input.acquisition.as_ref().map(|value|value.rights_identifier.as_str()).filter(|value|!value.trim().is_empty()).unwrap_or(&input.licence);
+    json!({"schema_version":"1.0","dataset_id":id,"title":title,"title_method":if title_supplied{"user_supplied"}else if suggested.is_some(){"first_nonempty_extracted_line"}else{"filename"},"filename":filename,"media_type":media,"original_sha256":hash,"byte_count":bytes.len(),"page_count":parsed.pages.len(),"status":"processing","licence":licence,"rights_confirmed":input.rights_confirmed,"acquisition":input.acquisition,"upload_metadata":input,"labels":[],"annotations":[],"metadata":metadata,"metadata_provenance":{"method":metadata_method,"verification":"unverified_document_claim","original_sha256":hash},"extraction":parsed.metadata,"review":{"decision":"needs_review","reason":"New ingestion requires human review"},"enrichments":[],"flags":{"empty_pages":flags.iter().filter(|f|f["empty_text"]==true).count(),"suspect_pages":flags.iter().filter(|f|f["illegibility_suspected"]==true).count(),"pagination":"physical_page_order","handwriting_status":"unknown","ocr_performed":false,"privacy_review_required":true}})
 }
 pub fn page_flags(text: &str) -> Value {
     let empty = text.trim().is_empty();
@@ -132,7 +139,7 @@ pub fn page_flags(text: &str) -> Value {
             > text.chars().count().max(1);
     json!({"empty_text":empty,"illegibility_suspected":suspect,"handwriting_status":"unknown","legibility_status":if empty{"empty_or_image_only"}else{"text_extracted"},"printed_page_label":"not_assessed","model_context_limit_exceeded":text.len()>80000,"human_review_required":true,"bias":"not_assessed","missingness":if empty{"no_extractable_text; image-only, blank, or other cause unknown"}else{"text_layer_only; visual omissions not assessed"}})
 }
-async fn persist(
+pub(super) async fn persist(
     app: &App,
     document: &Record,
     bytes: &[u8],
@@ -140,10 +147,7 @@ async fn persist(
     hash: &str,
     resume: bool,
 ) -> Result<Value> {
-    let chunks = bytes.chunks(98_304).enumerate().map(|(index, chunk)| Write::new(&document.owner,"document_blob",&format!("{}-{index:04}",document.id),json!({"document_id":document.id,"index":index,"encoding":"base64","sha256":document_parser::digest(chunk),"bytes":STANDARD.encode(chunk)}))).collect::<Vec<_>>();
-    for group in chunks.chunks(8) {
-        document_ingest::persist_batch(app, group.to_vec(), resume).await?;
-    }
+    let chunks = document_quarantine::store_original(app,document,bytes,resume).await?;
     let pages = parsed
         .pages
         .iter()
@@ -167,7 +171,7 @@ async fn persist(
     }
     let mut data = document.data.clone();
     data["status"] = json!("ready");
-    data["blob_chunks"] = json!(chunks.len());
+    data["blob_chunks"] = json!(chunks);
     let dataset = json!({"name":data["title"],"title":data["title"],"record_count":pages.len(),"licence":data["licence"],"kind":"uploaded-document","document_id":document.id,"page_citations":true,"provenance":"user-attested-original-upload"});
     let records = app
         .store
@@ -180,7 +184,12 @@ async fn persist(
 }
 fn page(app: &App, document: &Record, number: usize, text: &str, hash: &str) -> Value {
     let id = format!("{}-p{number:04}", document.id);
-    json!({"id":id,"document_id":document.id,"dataset_id":document.id,"title":format!("{} · page {number}",document.data["title"].as_str().unwrap_or("Document")),"text":text,"url":format!("{}/api/documents/{}/pages/{number}",app.config.origin,document.id),"page":number,"file_page_index":number-1,"printed_page_label":null,"printed_page_label_missing_reason":"not_assessed","sha256":hash,"original_sha256":hash,"record_hash_scope":"original-file-bytes","text_sha256":document_parser::digest(text.as_bytes()),"licence":document.data["licence"],"record_locator":{"kind":"document-page","page":number,"document_id":document.id},"flags":page_flags(text),"provenance":"user-attested-original-upload"})
+    let mut data=json!({"id":id,"document_id":document.id,"dataset_id":document.id,"title":format!("{} · page {number}",document.data["title"].as_str().unwrap_or("Document")),"text":text,"url":format!("{}/api/documents/{}/pages/{number}",app.config.origin,document.id),"page":number,"file_page_index":number-1,"printed_page_label":null,"printed_page_label_missing_reason":"not_assessed","sha256":hash,"original_sha256":hash,"record_hash_scope":"original-file-bytes","text_sha256":document_parser::digest(text.as_bytes()),"licence":document.data["licence"],"record_locator":{"kind":"document-page","page":number,"document_id":document.id},"flags":page_flags(text),"provenance":"user-attested-original-upload"});
+    let mut transform=document.data["transformation"].clone();
+    transform["operation"]=json!("extract_original_page_text");transform["parent_revision"]=json!({"kind":"document_blob","document_id":document.id,"version":1});
+    transform["original"]=json!({"value_kind":"immutable_original_reference","document_id":document.id,"original_sha256":hash,"file_page_index":number-1});
+    transform["normalized"]=json!({"value_kind":"immutable_record_reference","source_id":id,"version":1,"field":"text","text_sha256":data["text_sha256"]});
+    data["transformation"]=transform;data
 }
 pub async fn get(app: &App, owner: &str, id: &str) -> Result<Record> {
     app.store.get(owner, "document", id).await

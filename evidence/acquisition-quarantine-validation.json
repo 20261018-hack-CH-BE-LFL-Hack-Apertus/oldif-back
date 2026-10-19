@@ -1,0 +1,136 @@
+{
+  "validation_class": "actual local HTTP, retained original, quarantine/release and permitted-use boundaries; synthetic TXT only",
+  "passed": 31,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "missing_acquisition_returns202_RIGHTS_UNRESOLVED",
+      "passed": true
+    },
+    {
+      "check": "all_six_fields_and_confirmation_reported",
+      "passed": true
+    },
+    {
+      "check": "quarantine_has_no_extracted_pages",
+      "passed": true
+    },
+    {
+      "check": "quarantined_original_retained_exactly",
+      "passed": true
+    },
+    {
+      "check": "other_owner_original_denied",
+      "passed": true
+    },
+    {
+      "check": "anonymous_original_denied",
+      "passed": true
+    },
+    {
+      "check": "quarantine_export_denied",
+      "passed": true
+    },
+    {
+      "check": "quarantine_provider_enrichment_denied",
+      "passed": true
+    },
+    {
+      "check": "quarantine_has_no_OCR_page",
+      "passed": true
+    },
+    {
+      "check": "quarantine_not_dataset",
+      "passed": true
+    },
+    {
+      "check": "quarantine_replay_keeps_identity",
+      "passed": true
+    },
+    {
+      "check": "release_wrong_sha_rejected",
+      "passed": true
+    },
+    {
+      "check": "release_unsafe_uri_rejected",
+      "passed": true
+    },
+    {
+      "check": "release_invalid_timestamp_rejected",
+      "passed": true
+    },
+    {
+      "check": "release_stale_revision_rejected",
+      "passed": true
+    },
+    {
+      "check": "valid_release_extracts_three_pages",
+      "passed": true
+    },
+    {
+      "check": "licence_resolves_from_rights_identifier",
+      "passed": true
+    },
+    {
+      "check": "release_retains_original_hash",
+      "passed": true
+    },
+    {
+      "check": "release_is_not_historical_approval",
+      "passed": true
+    },
+    {
+      "check": "private_export_denied_without_recorded_use",
+      "passed": true
+    },
+    {
+      "check": "dataset_export_cannot_bypass_use",
+      "passed": true
+    },
+    {
+      "check": "provider_consent_cannot_override_rights",
+      "passed": true
+    },
+    {
+      "check": "source_run_cannot_bypass_rights",
+      "passed": true
+    },
+    {
+      "check": "rights_revision_preserves_ready_pages",
+      "passed": true
+    },
+    {
+      "check": "export_allowed_after_explicit_rights_revision",
+      "passed": true
+    },
+    {
+      "check": "human_metadata_revision_saved",
+      "passed": true
+    },
+    {
+      "check": "uniform_transformation_fields_present",
+      "passed": true
+    },
+    {
+      "check": "metadata_original_and_normalized_values_retained",
+      "passed": true
+    },
+    {
+      "check": "page_provenance_points_to_immutable_values",
+      "passed": true
+    },
+    {
+      "check": "initial_licence_resolves_from_acquisition",
+      "passed": true
+    },
+    {
+      "check": "declared_upload_metadata_is_preserved",
+      "passed": true
+    }
+  ],
+  "native_tests_passed": 35,
+  "provider_calls": 0,
+  "human_historical_quality": "NOT_RUN",
+  "private_document_used": false,
+  "document_id": "3df3d12e7625cbcef162c1f08fcadd8b9cf9249a101f9437555c4e33e23e781d"
+}

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Local HTTP ingestion checks. Private document text is never printed or saved in the receipt."""
+from fixture_acquisition import acquisition
 import argparse, csv, hashlib, http.cookiejar, io, json, pathlib, time, urllib.error, urllib.request
 
 parser=argparse.ArgumentParser()
@@ -24,7 +25,7 @@ def expect(name, condition):
     if not condition: raise AssertionError(name)
 def decoded(response): return json.loads(response[1])
 def upload(agent, filename, media, content, title='Private local validation'):
-    return call(agent,'/api/documents',content,{'Content-Type':media,'X-Document-Filename':filename,'X-Document-Metadata':json.dumps({'title':title,'licence':'private-test-only','rights_confirmed':True},ensure_ascii=True)})
+    return call(agent,'/api/documents',content,{'Content-Type':media,'X-Document-Filename':filename,'X-Document-Metadata':json.dumps({'title':title,'licence':'private-test-only','rights_confirmed':True,'acquisition':acquisition(content,'private-test-only')},ensure_ascii=True)})
 started=time.monotonic(); owner=client(); other=client(); anon=client()
 expect('owner_login',call(owner,'/api/auth/demo',{})[0]==200)
 expect('other_login',call(other,'/api/auth/demo',{})[0]==200)

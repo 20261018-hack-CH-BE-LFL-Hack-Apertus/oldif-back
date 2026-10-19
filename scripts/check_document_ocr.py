@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run real local OCR and page geometry checks on a synthetic image-only PDF."""
+from fixture_acquisition import acquisition
 import argparse,csv,hashlib,http.cookiejar,io,json,pathlib,time,urllib.error,urllib.request
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--origin',required=True);p.add_argument('--pdf',type=pathlib.Path,required=True);p.add_argument('--output',type=pathlib.Path,required=True);a=p.parse_args()
 agent=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()));checks=[]
@@ -15,7 +16,7 @@ def check(name,value):
 def obj(response):return json.loads(response[1])
 started=time.monotonic();check('auth',call('/api/auth/demo',{})[0]==200)
 original=a.pdf.read_bytes();sha=hashlib.sha256(original).hexdigest()
-response=call('/api/documents',original,{'Content-Type':'application/pdf','X-Document-Filename':'synthetic-ocr.pdf','X-Document-Metadata':json.dumps({'licence':'CC0-synthetic','rights_confirmed':True})})
+response=call('/api/documents',original,{'Content-Type':'application/pdf','X-Document-Filename':'synthetic-ocr.pdf','X-Document-Metadata':json.dumps({'licence':'CC0-synthetic','rights_confirmed':True,'acquisition':acquisition(original,'CC0-synthetic')})})
 if response[0]!=200:print(response)
 check('ingested_synthetic_pdf',response[0]==200)
 doc=obj(response)['document'];ident=doc['id'];base=f'/api/documents/{ident}/pages/'
@@ -28,15 +29,18 @@ check('ocr_found_expected_synthetic_terms',all(term in ocr['text'].lower() for t
 check('real_word_confidence',len(ocr['words'])>0 and all(w['confidence'] is not None for w in ocr['words']))
 check('ocr_hash_and_original_provenance',hashlib.sha256(ocr['text'].encode()).hexdigest()==ocr['text_sha256'] and ocr['original_sha256']==sha)
 check('handwriting_unassessed',ocr['handwriting_status']=='unknown' and ocr['human_review_required'] is True)
+transform=ocr['transformation'];check('ocr_actor_parent_and_text_reference',transform['actor'] and transform['run_id']==ocr['id'] and transform['parent_revision']['id']==ident and transform['original']['original_sha256']==sha and transform['normalized']['text_sha256']==ocr['text_sha256'])
 check('original_unchanged',call(f'/api/documents/{ident}/original')[1]==original)
 source=obj(call('/api/sources/'+ocr['ocr_source_id']))
 check('derived_source_is_explicitly_unverified',source['transcription_method']=='tesseract-ocr' and source['transcription_review_status']=='unverified' and source['queryable_by_default'] is False)
+check('derived_source_retains_exact_transform',source['transformation']==transform)
 check('original_empty_text_not_overwritten',obj(call(base+'1'))['page']['text'].strip()=='')
 check('ocr_source_requires_provider_consent',call('/api/runs',{'message':'Which subjects are proposed?','model':'apertus-v1-5-8b','language':'en','dataset_ids':[ident],'source_ids':[ocr['ocr_source_id']]})[0]==400)
 response=call(base+'2/extract',{'ocr':False,'local_processing_confirmed':True})
 if response[0]!=200:print('geometry error',response)
 check('real_bbox_geometry',response[0]==200);geometry=obj(response)['structure']
 check('physical_page_geometry',geometry['page']==2 and geometry['coordinate_system']=='pdf_points' and len(geometry['words'])==8)
+check('geometry_transform_references_physical_page',geometry['transformation']['original']['file_page_index']==1 and geometry['transformation']['parent_revision']['id']==ident)
 check('synthetic_table_candidate',any(t['row_count']>=3 and t['column_count']==2 and t['status']=='unverified' for t in geometry['table_candidates']))
 detail=obj(call(f'/api/documents/{ident}'))
 check('immutable_extraction_history',len(detail['extractions'])==2 and len(detail['pages'])==2 and len(detail['derived_sources'])==1)

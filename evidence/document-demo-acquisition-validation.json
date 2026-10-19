@@ -1,0 +1,11 @@
+{
+  "fixture": "explicitly synthetic two-page text",
+  "document_id": "8c35ad8fa742cebbe551244e39f527507bcfc791e2b4080d0a4192b308555fc7",
+  "page_count": 2,
+  "original_hash_verified": true,
+  "page_hashes_verified": true,
+  "csv_text_roundtrip_verified": true,
+  "review_version": 3,
+  "enrichment": "NOT_RUN",
+  "human_quality": "NOT_RUN"
+}

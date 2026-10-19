@@ -41,6 +41,7 @@ pub fn router(app: App) -> Router {
         .route("/api/documents/{id}/pages/{page}/extract", post(document_extraction::extract))
         .route("/api/documents/{id}/pages/{page}/structure", get(document_extraction::structure))
         .route("/api/documents/{id}/review", post(documents::review))
+        .route("/api/documents/{id}/release", post(documents::release))
         .route("/api/documents/{id}/enrich", post(documents::enrich))
         .route("/api/documents/{id}/export", get(documents::export))
         .route(
