@@ -28,6 +28,13 @@ pub fn serialize(detail: &Value, format: &str) -> Result<(String, &'static str)>
             )?,
             "application/json",
         )),
+        "jsonl" => {
+            let mut rows = vec![json!({"kind":"manifest","data":manifest}), json!({"kind":"document","data":document})];
+            for (field, kind) in [("pages", "source"), ("derived_sources", "source"), ("extractions", "extraction"), ("revisions", "review")] {
+                rows.extend(detail[field].as_array().into_iter().flatten().map(|data| json!({"kind":kind,"data":data})));
+            }
+            Ok((rows.iter().map(Value::to_string).collect::<Vec<_>>().join("\n") + "\n", "application/x-ndjson"))
+        }
         "csv" | "tsv" => {
             let mut all = pages.clone();
             all.extend(
@@ -39,7 +46,7 @@ pub fn serialize(detail: &Value, format: &str) -> Result<(String, &'static str)>
             );
             tabular(document, &all, format)
         }
-        _ => Err(Error::bad("Choose json, csv, tsv, or manifest")),
+        _ => Err(Error::bad("Choose json, jsonl, csv, tsv, or manifest")),
     }
 }
 fn tabular(document: &Value, pages: &[Value], format: &str) -> Result<(String, &'static str)> {
@@ -140,5 +147,10 @@ mod tests {
         with_ocr["extractions"] = json!([{"method":"tesseract-ocr"}]);
         let manifest: Value = serde_json::from_str(&serialize(&with_ocr, "manifest").unwrap().0).unwrap();
         assert_eq!(manifest["ocr_performed"], true);
+        let jsonl = serialize(&with_ocr, "jsonl").unwrap().0;
+        let rows = jsonl.lines().map(|line| serde_json::from_str::<Value>(line).unwrap()).collect::<Vec<_>>();
+        assert_eq!(rows[0]["kind"], "manifest");
+        assert_eq!(rows[2]["data"]["text"], "original\ntext");
+        assert_eq!(rows[3]["kind"], "extraction");
     }
 }

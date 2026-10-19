@@ -67,11 +67,12 @@ pub fn serialize(rows: &[Value], format: &str, kind: ExportKind) -> Result<(Stri
                 + "\n",
             "application/x-ndjson",
         )),
-        "tsv" => {
+        "tsv" | "csv" => {
             let mut lines = vec![match kind {
                 ExportKind::Sources => "id\ttitle\ttext\tsource_url\tsha256\tlicence",
                 ExportKind::Accepted => "run_id\trevision\tmodel\tanswer\tcitations_json\treview_decision\treview_reason\treview_actor\tevidence_only\tinterpretation_status\tverification_verdict",
             }.to_string()];
+            if format == "csv" { lines[0] = lines[0].replace('\t', ","); }
             for row in rows {
                 let cells = match kind {
                     ExportKind::Sources => ["id", "title", "text", "url", "sha256", "licence"]
@@ -104,18 +105,22 @@ pub fn serialize(rows: &[Value], format: &str, kind: ExportKind) -> Result<(Stri
                 lines.push(
                     cells
                         .iter()
-                        .map(|value| tabular_cell(value))
+                        .map(|value| if format == "csv" { csv_cell(value) } else { tabular_cell(value) })
                         .collect::<Vec<_>>()
-                        .join("\t"),
+                        .join(if format == "csv" { "," } else { "\t" }),
                 );
             }
             Ok((
                 lines.join("\n") + "\n",
-                "text/tab-separated-values; charset=utf-8",
+                if format == "csv" { "text/csv; charset=utf-8" } else { "text/tab-separated-values; charset=utf-8" },
             ))
         }
-        _ => Err(Error::bad("Choose json, jsonl, or tsv")),
+        _ => Err(Error::bad("Choose json, jsonl, csv, or tsv")),
     }
+}
+fn csv_cell(value: &str) -> String {
+    let safe = if value.trim_start().starts_with(['=', '+', '-', '@']) { format!("'{value}") } else { value.to_owned() };
+    format!("\"{}\"", safe.replace('"', "\"\""))
 }
 #[cfg(test)]
 mod tests {
@@ -147,6 +152,8 @@ mod tests {
                 .0
                 .starts_with("run_id\t")
         );
+        assert_eq!(csv_cell("=formula\n\"quoted\""), "\"'=formula\n\"\"quoted\"\"\"");
+        assert!(serialize(&[], "csv", ExportKind::Accepted).unwrap().0.starts_with("run_id,revision,model,"));
         assert!(
             serialize(&[], "tsv", ExportKind::Sources)
                 .unwrap()

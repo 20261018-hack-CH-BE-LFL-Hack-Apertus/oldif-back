@@ -1,0 +1,48 @@
+{
+  "validation_class": "actual authenticated local HTTP export roundtrip with synthetic TXT",
+  "checks": [
+    {
+      "check": "synthetic_three_pages_preserved",
+      "passed": true
+    },
+    {
+      "check": "original_sha256_exact",
+      "passed": true
+    },
+    {
+      "check": "document_jsonl_mime_and_manifest",
+      "passed": true
+    },
+    {
+      "check": "document_jsonl_full_text_and_hashes",
+      "passed": true
+    },
+    {
+      "check": "document_csv_lossless_text_and_hashes",
+      "passed": true
+    },
+    {
+      "check": "document_tsv_lossless_text_and_hashes",
+      "passed": true
+    },
+    {
+      "check": "dataset_csv_multiline_roundtrip",
+      "passed": true
+    },
+    {
+      "check": "dataset_jsonl_parity",
+      "passed": true
+    },
+    {
+      "check": "empty_accepted_csv_has_review_contract",
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "failed": 0,
+  "elapsed_seconds": 2.642,
+  "native_tests_passed": 25,
+  "provider_calls": 0,
+  "human_quality_metric": "NOT_RUN",
+  "private_document_content_used": false
+}
