@@ -4,6 +4,7 @@ pub mod realtime;
 pub mod documents;
 pub mod document_extraction;
 pub mod diarization;
+pub mod preferences;
 use crate::{error::Result, state::App};
 use axum::{
     Json, Router,
@@ -25,6 +26,7 @@ pub fn router(app: App) -> Router {
         .route("/api/auth/session", get(auth::session))
         .route("/api/auth/logout", post(auth::logout))
         .route("/api/models", get(archive::models))
+        .route("/api/preferences/layouts/{scope}", get(preferences::get).put(preferences::put).layer(DefaultBodyLimit::max(16_384)))
         .route("/api/datasets", get(archive::datasets))
         .route("/api/datasets/{id}/sources", get(archive::dataset_sources))
         .route("/api/datasets/{id}/export", get(archive::dataset_export))

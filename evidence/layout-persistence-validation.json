@@ -1,0 +1,63 @@
+{
+  "validation_class": "actual authenticated local HTTP/database roundtrip using two clients for one owner and an unrelated owner",
+  "passed": 12,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "unauthenticated_denied",
+      "passed": true
+    },
+    {
+      "check": "missing_layout_has_revision_zero",
+      "passed": true
+    },
+    {
+      "check": "owner_layout_created",
+      "passed": true
+    },
+    {
+      "check": "second_client_reads_server_layout",
+      "passed": true
+    },
+    {
+      "check": "other_owner_has_no_layout",
+      "passed": true
+    },
+    {
+      "check": "stale_write_rejected",
+      "passed": true
+    },
+    {
+      "check": "second_client_update_has_next_revision",
+      "passed": true
+    },
+    {
+      "check": "first_client_sees_other_client_change",
+      "passed": true
+    },
+    {
+      "check": "unknown_scope_rejected",
+      "passed": true
+    },
+    {
+      "check": "unknown_layout_field_rejected",
+      "passed": true
+    },
+    {
+      "check": "out_of_range_rejected",
+      "passed": true
+    },
+    {
+      "check": "extra_envelope_field_rejected",
+      "passed": true
+    }
+  ],
+  "native_tests_passed": 27,
+  "provider_calls": 0,
+  "scope_limit": "Independent HTTP clients verify server persistence; browser synchronization is tested separately.",
+  "initial_harness_failure": {
+    "check": "second_client_reads_server_layout",
+    "cause": "Empty supplied cookie jar was incorrectly replaced by a new jar; fixed harness to retain the same authenticated owner session.",
+    "application_regression": false
+  }
+}
