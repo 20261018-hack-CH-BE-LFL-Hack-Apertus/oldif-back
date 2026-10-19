@@ -1,6 +1,7 @@
 pub mod archive;
 pub mod auth;
 pub mod realtime;
+pub mod documents;
 use crate::{error::Result, state::App};
 use axum::{
     Json, Router,
@@ -12,6 +13,7 @@ use axum::{
 };
 use serde_json::{Value, json};
 pub fn router(app: App) -> Router {
+    let document_limit=app.config.documents.max_bytes;
     Router::new()
         .route("/health", get(health))
         .route("/api/health", get(health))
@@ -27,6 +29,14 @@ pub fn router(app: App) -> Router {
         .route("/api/sources/{id}", get(archive::source))
         .route("/api/search", get(archive::search))
         .route("/api/import", post(archive::import))
+        .route("/api/documents", get(documents::list).post(documents::upload).layer(DefaultBodyLimit::max(document_limit)))
+        .route("/api/documents/{id}", get(documents::detail))
+        .route("/api/documents/{id}/original", get(documents::original))
+        .route("/api/documents/{id}/pages/{page}", get(documents::page))
+        .route("/api/documents/{id}/pages/{page}/preview", get(documents::preview))
+        .route("/api/documents/{id}/review", post(documents::review))
+        .route("/api/documents/{id}/enrich", post(documents::enrich))
+        .route("/api/documents/{id}/export", get(documents::export))
         .route(
             "/api/sessions",
             get(archive::sessions).post(archive::create_session),

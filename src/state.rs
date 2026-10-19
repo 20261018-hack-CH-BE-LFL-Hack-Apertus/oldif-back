@@ -13,6 +13,7 @@ pub struct App {
     pub client: reqwest::Client,
     pub events: broadcast::Sender<(String, Value)>,
     pub slots: Arc<Semaphore>,
+    pub document_slots: Arc<Semaphore>,
     pub event_lock: Arc<Mutex<()>>,
     pub limits: Arc<Mutex<HashMap<String, (u64, u32)>>>,
 }
@@ -26,6 +27,7 @@ impl App {
             store: Store::new(client.clone(), config.db_url.clone(), config.token.clone()),
             core: Core::new(&config),
             slots: Arc::new(Semaphore::new(config.max_active)),
+            document_slots: Arc::new(Semaphore::new(1)),
             client,
             config: Arc::new(config),
             events,

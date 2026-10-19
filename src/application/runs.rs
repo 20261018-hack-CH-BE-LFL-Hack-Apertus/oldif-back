@@ -21,6 +21,10 @@ pub struct Input {
     pub session_id: Option<String>,
     #[serde(default)]
     pub dataset_ids: Vec<String>,
+    #[serde(default)]
+    pub source_ids: Vec<String>,
+    #[serde(default)]
+    pub provider_processing_confirmed: bool,
 }
 pub async fn session(app: &App, user: &User, title: &str, language: &str) -> Result<Value> {
     if !domain::valid_locale(language) {
@@ -48,7 +52,10 @@ pub async fn start(app: &App, user: &User, input: Input) -> Result<Value> {
             .ok_or_else(Error::unavailable)?
             .into()
     };
-    let selected = sources::search(app, &user.id, &input.message, &input.dataset_ids).await?;
+    let selected = sources::select(app, &user.id, &input.message, &input.dataset_ids, &input.source_ids).await?;
+    if !input.provider_processing_confirmed && selected.iter().any(|source|source["document_id"].is_string()) {
+        return Err(Error::bad("Confirm provider processing before researching private uploaded pages"));
+    }
     if selected.is_empty() {
         return Err(Error::bad(
             "No matching source was found. Name a school or an exact source identifier from the collection",
@@ -91,6 +98,7 @@ fn validate(input: &Input) -> Result<()> {
         || !domain::valid_locale(&input.language)
         || !domain::valid_id(&input.model)
         || input.dataset_ids.len() > 20
+        || input.source_ids.len() > 6
     {
         return Err(Error::bad(
             "Invalid message, model, language, or dataset selection",

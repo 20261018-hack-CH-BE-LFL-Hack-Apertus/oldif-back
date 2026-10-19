@@ -64,7 +64,7 @@ pub async fn search(
         .await?
         .into_iter()
         .filter(|r| {
-            datasets.is_empty() || datasets.iter().any(|d| r.data["dataset_id"] == d.as_str())
+            !r.data["text"].as_str().unwrap_or("").trim().is_empty() && (datasets.is_empty() || datasets.iter().any(|d| r.data["dataset_id"] == d.as_str()))
         })
         .collect::<Vec<_>>();
     let documents = records
@@ -85,14 +85,28 @@ pub async fn search(
             row["retrieval_score"] = json!(score);
             row["retrieval_method"] = json!(selection.method);
             row["text_sha256"] = json!(hash(row["text"].as_str().unwrap_or("")));
-            row["record_hash_scope"] = json!(if row["metadata"].is_object() {
+            row["record_hash_scope"] = row.get("record_hash_scope").cloned().unwrap_or_else(|| json!(if row["metadata"].is_object() {
                 "canonical-source-row-json"
             } else {
                 "utf8-original-text"
-            });
+            }));
             row
         })
         .collect())
+}
+pub async fn select(app:&App,owner:&str,question:&str,datasets:&[String],ids:&[String])->Result<Vec<Value>> {
+    if ids.is_empty() { return search(app,owner,question,datasets).await; }
+    let mut selected=vec![];
+    let mut seen=std::collections::HashSet::new();
+    for id in ids {
+        if !seen.insert(id) { return Err(Error::bad("Source selection contains duplicates")); }
+        let row=get(app,owner,id).await?.public();
+        if row["text"].as_str().unwrap_or("").trim().is_empty() || (!datasets.is_empty()&&!datasets.iter().any(|d|row["dataset_id"]==d.as_str())) { return Err(Error::bad("Selected source is empty or outside the selected collection")); }
+        let mut row=row; row["retrieval_method"]=json!("explicit-source-selection");
+        row["text_sha256"]=json!(hash(row["text"].as_str().unwrap_or("")));
+        selected.push(row);
+    }
+    Ok(selected)
 }
 
 pub async fn import(app: &App, owner: &str, input: Value) -> Result<Value> {

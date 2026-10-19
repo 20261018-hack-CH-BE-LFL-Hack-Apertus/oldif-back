@@ -1,0 +1,306 @@
+{
+  "validation_class": "actual local HTTP + PDF extraction and database round trip; no model calls",
+  "checks": [
+    {
+      "check": "owner_login",
+      "passed": true
+    },
+    {
+      "check": "other_login",
+      "passed": true
+    },
+    {
+      "check": "unauthenticated_list_denied",
+      "passed": true
+    },
+    {
+      "check": "actual_pdf_ingested",
+      "passed": true
+    },
+    {
+      "check": "pdf_physical_pages_202",
+      "passed": true
+    },
+    {
+      "check": "original_hash_matches",
+      "passed": true
+    },
+    {
+      "check": "all_page_text_hashes_match",
+      "passed": true
+    },
+    {
+      "check": "all_pages_have_original_provenance",
+      "passed": true
+    },
+    {
+      "check": "handwriting_not_fabricated",
+      "passed": true
+    },
+    {
+      "check": "original_download_exact",
+      "passed": true
+    },
+    {
+      "check": "authenticated_png_preview",
+      "passed": true
+    },
+    {
+      "check": "other_owner_denied",
+      "passed": true
+    },
+    {
+      "check": "other_owner_denied/original",
+      "passed": true
+    },
+    {
+      "check": "other_owner_denied/pages/1",
+      "passed": true
+    },
+    {
+      "check": "other_owner_denied/pages/1/preview",
+      "passed": true
+    },
+    {
+      "check": "other_owner_denied/export?format=json",
+      "passed": true
+    },
+    {
+      "check": "other_owner_list_empty",
+      "passed": true
+    },
+    {
+      "check": "invalid_page_denied",
+      "passed": true
+    },
+    {
+      "check": "human_revision_saved",
+      "passed": true
+    },
+    {
+      "check": "stale_revision_rejected",
+      "passed": true
+    },
+    {
+      "check": "review_cannot_overwrite_original",
+      "passed": true
+    },
+    {
+      "check": "review_history_and_annotations_retained",
+      "passed": true
+    },
+    {
+      "check": "export_json",
+      "passed": true
+    },
+    {
+      "check": "export_manifest",
+      "passed": true
+    },
+    {
+      "check": "manifest_review_explicit",
+      "passed": true
+    },
+    {
+      "check": "export_csv",
+      "passed": true
+    },
+    {
+      "check": "csv_lossless_text_and_hash",
+      "passed": true
+    },
+    {
+      "check": "export_tsv",
+      "passed": true
+    },
+    {
+      "check": "tsv_lossless_text_and_hash",
+      "passed": true
+    },
+    {
+      "check": "enrich_without_provider_consent_denied",
+      "passed": true
+    },
+    {
+      "check": "spoofed_pdf_rejected",
+      "passed": true
+    },
+    {
+      "check": "binary_txt_rejected",
+      "passed": true
+    },
+    {
+      "check": "txt_empty_page_preserved",
+      "passed": true
+    },
+    {
+      "check": "json_page_import",
+      "passed": true
+    }
+  ],
+  "passed": 34,
+  "failed": 0,
+  "elapsed_seconds": 2.118,
+  "pdf_bytes": 3007418,
+  "pdf_pages": 202,
+  "empty_pages": 1,
+  "suspect_pages": 1,
+  "private_content_saved_in_receipt": false,
+  "provider_calls": 0,
+  "human_gold_quality": "NOT_RUN",
+  "performance_1000_pages": "NOT_RUN",
+  "document_id": "e8d6a3c4-132e-4d51-993b-1f2ae109b821",
+  "txt_document_id": "cda83d98-b743-41e7-b315-e676ecd08b8b",
+  "observed_at": "2026-10-19T12:41:48.013896+00:00",
+  "native_validation": {
+    "commands": [
+      "cargo test --locked",
+      "cargo build --locked"
+    ],
+    "output": "   Compiling oldif-back v0.1.0 (/Users/eydrent/Documents/hackathons/20261018-hack-CH-BE-LFL-Hack-Apertus/project/project-deciphering-archives/oldif-back)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.30s\n     Running unittests src/main.rs (target/debug/deps/oldif_back-c4155e24be8e4e80)\n\nrunning 19 tests\ntest application::exports::tests::empty_exports_keep_the_requested_columns ... ok\ntest application::documents::tests::flags_do_not_claim_ocr_or_handwriting_recognition ... ok\ntest domain::tests::rejects_bad_inputs ... ok\ntest domain::retrieval::tests::two_named_places_support_comparison ... ok\ntest domain::retrieval::tests::exact_source_id_takes_precedence ... ok\ntest domain::tests::exports_cannot_run_spreadsheet_formulas ... ok\ntest application::document_review::tests::human_revisions_preserve_original_and_omit_unspecified_fields ... ok\ntest domain::retrieval::tests::named_place_excludes_unrelated_high_overlap ... ok\ntest application::document_review::tests::enrichment_rejects_missing_empty_or_excess_pages ... ok\ntest infrastructure::document_parser::tests::file_type_spoofing_and_binary_text_are_rejected ... ok\ntest infrastructure::document_parser::tests::json_import_never_fetches_urls_or_infers_missing_text ... ok\ntest application::exports::tests::accepted_tsv_preserves_review_and_citations ... ok\ntest application::exports::tests::accepted_tsv_identifies_unverified_interpretations ... ok\ntest domain::retrieval::tests::locations_and_words_require_boundaries ... ok\ntest application::document_export::tests::exports_preserve_page_hash_review_and_spreadsheet_safety ... ok\ntest infrastructure::core::tests::unary_deadline_covers_response_body_after_headers ... ok\ntest infrastructure::core::tests::event_subscription_deadline_includes_stalled_handshake ... ok\ntest infrastructure::core::tests::unary_deadline_includes_connection_and_handshake ... ok\ntest infrastructure::core::tests::established_event_stream_outlives_request_deadline ... ok\n\ntest result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s\n\n   Compiling oldif-back v0.1.0 (/Users/eydrent/Documents/hackathons/20261018-hack-CH-BE-LFL-Hack-Apertus/project/project-deciphering-archives/oldif-back)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.41s\n",
+    "passed": 19,
+    "failed": 0
+  },
+  "db_commit": "0f20762f6d7183bcc5272490ecc2dae08dcd2132",
+  "limits": {
+    "max_upload_bytes": 16777216,
+    "max_document_pages": 300,
+    "max_document_text_bytes": 8388608,
+    "max_page_text_bytes": 1000000,
+    "max_enrichment_text_bytes": 80000,
+    "pdf_cpu_seconds_per_command": 30,
+    "pdf_wall_seconds_per_command": 30,
+    "linux_process_address_space_mb": 512,
+    "macos_address_space_limit": "not supported; CPU/file/descriptor/time/output bounds exercised",
+    "concurrent_document_operations": 1,
+    "ocr": "not yet implemented in this initial receipt",
+    "handwriting": "unknown; no recognition claimed",
+    "antivirus_scan": "not implemented; parser and container isolation are not an antivirus scan"
+  },
+  "excluded_from_receipt": [
+    "private PDF text",
+    "private PDF bytes",
+    "private page images",
+    "cookies",
+    "internal tokens",
+    "provider keys"
+  ],
+  "reference_shape": {
+    "inspected": "samples/repos/other/bantender/backend/app/parsing/models.py",
+    "reused_concepts": [
+      "one-based page provenance",
+      "explicit anomaly flags",
+      "separate observed and human-reviewed fields"
+    ],
+    "commercial_tender_domain_logic_copied": false
+  },
+  "export_contract": {
+    "formats": [
+      "json",
+      "csv",
+      "tsv",
+      "manifest"
+    ],
+    "tabular_text_column": "text_json; JSON-decode this cell to recover exact source text",
+    "original_download": "authenticated, byte-identical",
+    "manifest": "page and original SHA256, revision, review, extraction operation and explicit NOT_RUN quality denominators"
+  },
+  "native_source_hashes": [
+    {
+      "path": "src/api/archive.rs",
+      "sha256": "0d8cbb074cf83a9aa469926a7d19d67c27411862331673fe309d81a97975cc2e"
+    },
+    {
+      "path": "src/api/auth.rs",
+      "sha256": "12663a7964f2e3fddb956ab39ae40462b2c1266356f9c7925eb1475e48f25fd3"
+    },
+    {
+      "path": "src/api/documents.rs",
+      "sha256": "1b473a06d4db95e48aa50a4ee7cd446f6482bfa9d66a57398191a90952822800"
+    },
+    {
+      "path": "src/api/mod.rs",
+      "sha256": "7db73a7811f383203205f9e4c4921fc278d31485c40342a94cc630cbcb74d596"
+    },
+    {
+      "path": "src/api/realtime.rs",
+      "sha256": "37cf778efcd2a562cc3162ba8edaa1cb04163ec5b6b11c89acc2d9886d80790d"
+    },
+    {
+      "path": "src/application/auth.rs",
+      "sha256": "ca3cf2cfaa818213b73e5841cba2149f97c07077b9acea2c47f2d5a5624b79a0"
+    },
+    {
+      "path": "src/application/document_export.rs",
+      "sha256": "6d53693b809c8d17124a5394cc4712c12f3d47e7a43e430d3e3c847b97cd8791"
+    },
+    {
+      "path": "src/application/document_review.rs",
+      "sha256": "25fd7d66ee5e2a1ce8b8e9d1626e5cf818c3ce7ba024cd1e36946a3f5aba4d93"
+    },
+    {
+      "path": "src/application/documents.rs",
+      "sha256": "ab0ad46ca21c8cd7cd741815cad7c863d9084623649a7e41d6b688da849ec7cf"
+    },
+    {
+      "path": "src/application/exports.rs",
+      "sha256": "0f5b73d2bc368f065171275e4061f7be36f73467d0b8ee92c6d33aa8b73f39ce"
+    },
+    {
+      "path": "src/application/mod.rs",
+      "sha256": "e38c24bb8d6d704c35ab053cc729014e87b64c53bed6af658707c2939aec14b6"
+    },
+    {
+      "path": "src/application/runs.rs",
+      "sha256": "d0febe5c5aafb1f9a04d3243f48a5ec324ac04a07efbdba5031a99c655c1a533"
+    },
+    {
+      "path": "src/application/sources.rs",
+      "sha256": "c2b4adfa7fdd611dfa472dfb298c9a4f5aa130c582513dac9e7b58852078c82b"
+    },
+    {
+      "path": "src/config.rs",
+      "sha256": "f726d882f3dc409fc73e4042ec36ffc0a3b03709774315baad7697738bdcca08"
+    },
+    {
+      "path": "src/domain/mod.rs",
+      "sha256": "ef88f44bdcd30168e803e7adc6703c35d82971d31ab968fa8c8bda4113208ef7"
+    },
+    {
+      "path": "src/domain/retrieval.rs",
+      "sha256": "793204cac8a17f0f6f42fee212b0cbb58e40cf8f326967695319884fd40cf213"
+    },
+    {
+      "path": "src/error.rs",
+      "sha256": "e986e904ec1e926d9c7cf0c32a43d53eb086010640437018c186cee9a443806b"
+    },
+    {
+      "path": "src/infrastructure/core.rs",
+      "sha256": "91ac724656f5f4e0e30c0dfe15ea183009a61148a556984db92fc45bf012a6a2"
+    },
+    {
+      "path": "src/infrastructure/document_parser.rs",
+      "sha256": "7b7a395202c444e5657b8847a350882c8bf34d2a3933e97347d4a342c3ff932f"
+    },
+    {
+      "path": "src/infrastructure/document_process.rs",
+      "sha256": "139e2a9810bc249067db72fab72ec12e9fbc560b60142dc1725659516a94a8d5"
+    },
+    {
+      "path": "src/infrastructure/mod.rs",
+      "sha256": "acd1374df8c52eda320285b27343ab6079c9b2c6c2edc0f17086cfdfc5251d48"
+    },
+    {
+      "path": "src/infrastructure/store.rs",
+      "sha256": "f1960d762f5155bb7cdb09dc2497a8badf432264e55884fc3e098f480a90e9ec"
+    },
+    {
+      "path": "src/main.rs",
+      "sha256": "80354ac13ed54d925b528cfd709040b81886b7fb51a157ca3457b46fd0a32634"
+    },
+    {
+      "path": "src/state.rs",
+      "sha256": "559e3a2f90faa0e934dbc83cd90540006c9964ae63c924853d1fea268874d780"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "fixture": "explicitly synthetic two-page text",
+  "document_id": "bdaf0833-66b6-4d52-b816-84fc7954f302",
+  "page_count": 2,
+  "original_hash_verified": true,
+  "page_hashes_verified": true,
+  "csv_text_roundtrip_verified": true,
+  "review_version": 3,
+  "enrichment": {
+    "status": "complete",
+    "run_id": "7edbc9a6-7d13-4559-b255-493b5ba8a187",
+    "model": "apertus-v1-5-8b",
+    "abstained": false,
+    "evidence_only": true,
+    "citation_count": 1,
+    "citations": [
+      {
+        "page": 1,
+        "quote": "SYNTHETIC VALIDATION RECORD",
+        "text_sha256": "ad0e41d7ab0e226e94d7061c52832d76a9b012869baa8fe651908759870a3e60"
+      }
+    ],
+    "provider_calls": 5,
+    "result": {
+      "abstained": false,
+      "answer": "The selected source passages are shown for human review; the model interpretation could not be verified.",
+      "citations": [
+        {
+          "char_end": 27,
+          "char_start": 0,
+          "licence": "CC0-synthetic-fixture",
+          "locator_kind": "page",
+          "offset_unit": "unicode_scalar_value",
+          "page": 1,
+          "passage_id": "p001",
+          "quote": "SYNTHETIC VALIDATION RECORD",
+          "record_hash_scope": "original-file-bytes",
+          "sha256": "3c4573b58fba15076eb193cdcd5d4f6d742d357a496466c34af45fe921d44ce7",
+          "source_id": "bdaf0833-66b6-4d52-b816-84fc7954f302-p0001",
+          "text_sha256": "ad0e41d7ab0e226e94d7061c52832d76a9b012869baa8fe651908759870a3e60",
+          "title": "SYNTHETIC VALIDATION RECORD \u00b7 page 1",
+          "url": "http://localhost:3000/api/documents/bdaf0833-66b6-4d52-b816-84fc7954f302/pages/1"
+        }
+      ],
+      "entities": [],
+      "evidence_only": true,
+      "human_review_required": true,
+      "interpretation_status": "needs_review",
+      "locale": "en",
+      "model": "apertus-v1-5-8b",
+      "proposals": [],
+      "source_fidelity": "exact_quotes_checked_human_review_required",
+      "timeline": [],
+      "uncertainty": [
+        "The selected source passages are shown for human review; the model interpretation could not be verified."
+      ],
+      "verification": {
+        "human_review_required": true,
+        "independent_pass": true,
+        "output_policy": "evidence_only",
+        "reason": "model_interpretation_not_verified",
+        "same_model": true,
+        "verdict": "needs_revision"
+      }
+    },
+    "historical_accuracy_claimed": false
+  },
+  "human_quality": "NOT_RUN"
+}

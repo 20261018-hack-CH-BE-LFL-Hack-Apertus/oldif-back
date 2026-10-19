@@ -20,6 +20,8 @@ tracing-subscriber = { version = "=0.3.23", features = ["json", "env-filter"] }
 tonic = "=0.14.6"
 tonic-prost = "=0.14.6"
 prost = "=0.14.4"
+base64 = "=0.22.1"
+libc = "=0.2.191"
 
 [build-dependencies]
 tonic-prost-build = "=0.14.6"
