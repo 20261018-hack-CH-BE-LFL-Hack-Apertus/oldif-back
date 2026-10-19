@@ -113,7 +113,7 @@ fn validate(input: &Input) -> Result<()> {
 fn core_source(row: &Value) -> Value {
     let text = row["text"].as_str().unwrap_or("");
     // The core receives complete records so exact-quote validation uses the original text.
-    json!({"id":row["id"],"title":row["title"],"text":text,"url":row["url"],"page":row["page"],"sha256":row["sha256"],"text_sha256":row["text_sha256"],"record_hash_scope":row["record_hash_scope"],"licence":row["licence"],"transcription_method":row["transcription_method"],"transcription_review_status":row["transcription_review_status"]})
+    json!({"id":row["id"],"title":row["title"],"text":text,"url":row["url"],"page":row["page"],"sha256":row["sha256"],"text_sha256":row["text_sha256"],"record_hash_scope":row["record_hash_scope"],"licence":row["licence"],"transcription_method":row["transcription_method"],"transcription_review_status":row["transcription_review_status"],"file_page_index":row["file_page_index"],"printed_page_label":row["printed_page_label"],"printed_page_label_missing_reason":row["printed_page_label_missing_reason"]})
 }
 async fn history(app: &App, owner: &str, sid: &str) -> Result<Vec<Value>> {
     let rows = app.store.list(owner, "message").await?;

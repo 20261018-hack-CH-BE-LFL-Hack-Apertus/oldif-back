@@ -171,7 +171,7 @@ async fn persist(
 }
 fn page(app: &App, document: &Record, number: usize, text: &str, hash: &str) -> Value {
     let id = format!("{}-p{number:04}", document.id);
-    json!({"id":id,"document_id":document.id,"dataset_id":document.id,"title":format!("{} · page {number}",document.data["title"].as_str().unwrap_or("Document")),"text":text,"url":format!("{}/api/documents/{}/pages/{number}",app.config.origin,document.id),"page":number,"sha256":hash,"original_sha256":hash,"record_hash_scope":"original-file-bytes","text_sha256":document_parser::digest(text.as_bytes()),"licence":document.data["licence"],"record_locator":{"kind":"document-page","page":number,"document_id":document.id},"flags":page_flags(text),"provenance":"user-attested-original-upload"})
+    json!({"id":id,"document_id":document.id,"dataset_id":document.id,"title":format!("{} · page {number}",document.data["title"].as_str().unwrap_or("Document")),"text":text,"url":format!("{}/api/documents/{}/pages/{number}",app.config.origin,document.id),"page":number,"file_page_index":number-1,"printed_page_label":null,"printed_page_label_missing_reason":"not_assessed","sha256":hash,"original_sha256":hash,"record_hash_scope":"original-file-bytes","text_sha256":document_parser::digest(text.as_bytes()),"licence":document.data["licence"],"record_locator":{"kind":"document-page","page":number,"document_id":document.id},"flags":page_flags(text),"provenance":"user-attested-original-upload"})
 }
 pub async fn get(app: &App, owner: &str, id: &str) -> Result<Record> {
     app.store.get(owner, "document", id).await

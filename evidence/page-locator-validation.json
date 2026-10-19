@@ -1,0 +1,22 @@
+{
+  "validation_class": "actual isolated backend HTTP synthetic TXT upload",
+  "checks": {
+    "two_pages": true,
+    "zero_based_indices": true,
+    "one_based_pages": true,
+    "printed_labels_unknown": true,
+    "empty_title_auto_provenance": true,
+    "txt_metadata_not_claimed_pdf": true
+  },
+  "passed": 6,
+  "failed": 0,
+  "native_tests": {
+    "passed": 25,
+    "failed": 0,
+    "build": "PASS"
+  },
+  "core_native_tests": 39,
+  "provider_calls": 0,
+  "private_pdf_read": false,
+  "document_id": "aa2c6d4e-9584-4b15-8065-281b8cf393cf"
+}
