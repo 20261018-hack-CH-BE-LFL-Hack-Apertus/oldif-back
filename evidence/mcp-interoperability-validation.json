@@ -1,0 +1,74 @@
+{
+  "validation_class": "official TypeScript MCP SDK over real authenticated HTTP",
+  "sdk_version": "1.32.0",
+  "checks": [
+    {
+      "check": "official_sdk_initialize",
+      "passed": true
+    },
+    {
+      "check": "only_bounded_read_tools",
+      "passed": true
+    },
+    {
+      "check": "real_search_source_ids",
+      "passed": true
+    },
+    {
+      "check": "real_source_provenance",
+      "passed": true
+    },
+    {
+      "check": "unknown_tool_rejected",
+      "passed": true
+    },
+    {
+      "check": "extra_arguments_rejected",
+      "passed": true
+    }
+  ],
+  "passed": 6,
+  "failed": 0,
+  "protocol_errors": [],
+  "provider_calls": 0,
+  "historical_failure": {
+    "validation_class": "official TypeScript MCP SDK over real authenticated HTTP",
+    "sdk_version": "1.32.0",
+    "checks": [
+      {
+        "check": "official_sdk_initialize",
+        "passed": true
+      },
+      {
+        "check": "only_bounded_read_tools",
+        "passed": true
+      },
+      {
+        "check": "real_search_source_ids",
+        "passed": true
+      },
+      {
+        "check": "real_source_provenance",
+        "passed": true
+      },
+      {
+        "check": "unknown_tool_rejected",
+        "passed": true
+      },
+      {
+        "check": "extra_arguments_rejected",
+        "passed": false
+      }
+    ],
+    "passed": 5,
+    "failed": 1,
+    "protocol_errors": [],
+    "provider_calls": 0
+  },
+  "native_tests": {
+    "passed": 25,
+    "failed": 0,
+    "cargo_build": "PASS"
+  },
+  "protocol_scope": "Authenticated stateless read-only tools using the negotiated existing2025-03-26 protocol; not a complete MCP feature conformance claim."
+}

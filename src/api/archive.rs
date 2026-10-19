@@ -225,6 +225,11 @@ pub async fn mcp(
         }
         "tools/call" => {
             let args = &input["params"]["arguments"];
+            let name = input["params"]["name"].as_str().unwrap_or("");
+            if !crate::application::mcp::valid_arguments(name, args) {
+                return Ok(Json(json!({"jsonrpc":"2.0","id":id,"error":{"code":-32602,"message":"Tool arguments do not match the bounded input schema"}})));
+            }
+            auth::limit(&app, &format!("mcp:{}", user.id), 30).await?;
             let data = match input["params"]["name"].as_str().unwrap_or("") {
                 "search_archives" => json!(
                     sources::search(&app, &user.id, args["query"].as_str().unwrap_or(""), &[])
@@ -239,7 +244,12 @@ pub async fn mcp(
                     ));
                 }
             };
-            json!({"content":[{"type":"text","text":data.to_string()}],"isError":false})
+            let text = data.to_string();
+            if text.len() > 262_144 {
+                json!({"content":[{"type":"text","text":"Result exceeds the bounded tool response; select a smaller source set in the archive UI"}],"isError":true})
+            } else {
+                json!({"content":[{"type":"text","text":text}],"isError":false})
+            }
         }
         _ => {
             return Ok(Json(
