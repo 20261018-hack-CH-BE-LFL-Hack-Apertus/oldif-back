@@ -142,7 +142,15 @@ fn decode_write((record, write): (proto::Record, Write)) -> Result<Record> {
         return Err(Error::unavailable());
     }
     let record = decode(record, &write.owner, &write.kind)?;
-    if record.data != write.data {
+    let mut expected = write.data;
+    if write.kind == "event" {
+        let sequence = record.data["sequence"].as_i64();
+        if expected["sequence"].as_i64() != Some(0) || !sequence.is_some_and(|value| value > 0) {
+            return Err(Error::unavailable());
+        }
+        expected["sequence"] = serde_json::json!(sequence.unwrap());
+    }
+    if record.data != expected {
         return Err(Error::unavailable());
     }
     Ok(record)

@@ -52,6 +52,61 @@ fn validates_write_receipt_identity_revision_and_exact_content() {
     overflow.expected_version = i64::MAX;
     assert!(decode_write((record(), overflow)).is_err());
 }
+fn event_receipt() -> (proto::Record, Write) {
+    let data = json!({"sequence":0,"event_id":"event-one","type":"started","run_id":"run-one","session_id":"session-one","data":{"status":"running"}});
+    let write = Write::new("alice", "event", "event-one", data.clone());
+    let mut receipt = record();
+    receipt.kind = "event".into();
+    receipt.id = "event-one".into();
+    let mut committed = data;
+    committed["sequence"] = json!(631);
+    receipt.data_json = serde_json::to_vec(&committed).unwrap();
+    (receipt, write)
+}
+#[test]
+fn accepts_only_database_assigned_event_sequence() {
+    let (receipt, write) = event_receipt();
+    let committed = decode_write((receipt, write)).unwrap();
+    assert_eq!(committed.data["sequence"], 631);
+    assert_eq!(committed.data["data"]["status"], "running");
+}
+#[test]
+fn rejects_invalid_event_sequences_and_other_content_changes() {
+    for sequence in [json!(0), json!(-1), json!(1.5), json!("631"), json!(null), json!(u64::MAX)] {
+        let (mut receipt, write) = event_receipt();
+        let mut data: serde_json::Value = serde_json::from_slice(&receipt.data_json).unwrap();
+        data["sequence"] = sequence;
+        receipt.data_json = serde_json::to_vec(&data).unwrap();
+        assert!(decode_write((receipt, write)).is_err());
+    }
+    for key in ["event_id", "type", "run_id", "session_id", "data", "extra"] {
+        let (mut receipt, write) = event_receipt();
+        let mut data: serde_json::Value = serde_json::from_slice(&receipt.data_json).unwrap();
+        data[key] = json!("altered");
+        receipt.data_json = serde_json::to_vec(&data).unwrap();
+        assert!(decode_write((receipt, write)).is_err(), "accepted changed {key}");
+    }
+    let (receipt, mut write) = event_receipt();
+    write.data["sequence"] = json!(631);
+    assert!(decode_write((receipt, write)).is_err());
+}
+#[test]
+fn event_sequence_exception_cannot_change_identity_or_other_record_kinds() {
+    for field in ["owner", "kind", "id", "version"] {
+        let (mut receipt, write) = event_receipt();
+        match field {
+            "owner" => receipt.owner = "bob".into(),
+            "kind" => receipt.kind = "source".into(),
+            "id" => receipt.id = "event-other".into(),
+            _ => receipt.version = 2,
+        }
+        assert!(decode_write((receipt, write)).is_err());
+    }
+    let (mut receipt, mut write) = event_receipt();
+    receipt.kind = "source".into();
+    write.kind = "source".into();
+    assert!(decode_write((receipt, write)).is_err());
+}
 #[test]
 fn maps_only_expected_storage_errors_without_exposing_internal_details() {
     for (code, expected) in [
