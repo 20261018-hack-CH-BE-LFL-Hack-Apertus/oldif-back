@@ -52,7 +52,11 @@ pub async fn accepted(app: &App, owner: &str, session: Option<&str>) -> Result<V
     }
     Ok(rows)
 }
-pub fn serialize(rows: &[Value], format: &str) -> Result<(String, &'static str)> {
+pub enum ExportKind {
+    Sources,
+    Accepted,
+}
+pub fn serialize(rows: &[Value], format: &str, kind: ExportKind) -> Result<(String, &'static str)> {
     match format {
         "json" => Ok((serde_json::to_string_pretty(rows)?, "application/json")),
         "jsonl" => Ok((
@@ -64,12 +68,31 @@ pub fn serialize(rows: &[Value], format: &str) -> Result<(String, &'static str)>
             "application/x-ndjson",
         )),
         "tsv" => {
-            let mut lines = vec!["id\ttitle\ttext\tsource_url\tsha256\tlicence".to_string()];
+            let mut lines = vec![match kind {
+                ExportKind::Sources => "id\ttitle\ttext\tsource_url\tsha256\tlicence",
+                ExportKind::Accepted => "run_id\trevision\tmodel\tanswer\tcitations_json\treview_decision\treview_reason\treview_actor",
+            }.to_string()];
             for row in rows {
-                lines.push(
-                    ["id", "title", "text", "url", "sha256", "licence"]
+                let cells = match kind {
+                    ExportKind::Sources => ["id", "title", "text", "url", "sha256", "licence"]
                         .iter()
-                        .map(|k| tabular_cell(row[*k].as_str().unwrap_or("")))
+                        .map(|k| row[*k].as_str().unwrap_or("").to_owned())
+                        .collect::<Vec<_>>(),
+                    ExportKind::Accepted => vec![
+                        row["run_id"].as_str().unwrap_or("").into(),
+                        row["revision"].to_string(),
+                        row["model"].as_str().unwrap_or("").into(),
+                        row["result"]["answer"].as_str().unwrap_or("").into(),
+                        row["result"]["citations"].to_string(),
+                        row["review"]["decision"].as_str().unwrap_or("").into(),
+                        row["review"]["reason"].as_str().unwrap_or("").into(),
+                        row["review"]["actor"].as_str().unwrap_or("").into(),
+                    ],
+                };
+                lines.push(
+                    cells
+                        .iter()
+                        .map(|value| tabular_cell(value))
                         .collect::<Vec<_>>()
                         .join("\t"),
                 );
@@ -80,6 +103,43 @@ pub fn serialize(rows: &[Value], format: &str) -> Result<(String, &'static str)>
             ))
         }
         _ => Err(Error::bad("Choose json, jsonl, or tsv")),
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn accepted_tsv_preserves_review_and_citations() {
+        let row = json!({"run_id":"run-1","revision":3,"model":"apertus-v1-5-8b","result":{"answer":"=a\tb\nc","citations":[{"source_id":"stapfer-2027","quote":"läsen"}]},"review":{"decision":"accepted","reason":"Checked against source","actor":"user-1"}});
+        let (text, _) = serialize(&[row], "tsv", ExportKind::Accepted).unwrap();
+        let lines = text.lines().collect::<Vec<_>>();
+        let cells = lines[1].split('\t').collect::<Vec<_>>();
+        assert_eq!(lines.len(), 2);
+        assert_eq!(cells.len(), 8);
+        assert_eq!(&cells[..4], &["run-1", "3", "apertus-v1-5-8b", "'=a b c"]);
+        assert_eq!(
+            serde_json::from_str::<Value>(cells[4]).unwrap()[0]["source_id"],
+            "stapfer-2027"
+        );
+        assert_eq!(
+            &cells[5..],
+            &["accepted", "Checked against source", "user-1"]
+        );
+    }
+    #[test]
+    fn empty_exports_keep_the_requested_columns() {
+        assert!(
+            serialize(&[], "tsv", ExportKind::Accepted)
+                .unwrap()
+                .0
+                .starts_with("run_id\t")
+        );
+        assert!(
+            serialize(&[], "tsv", ExportKind::Sources)
+                .unwrap()
+                .0
+                .starts_with("id\ttitle\t")
+        );
     }
 }
 pub async fn dataset(app: &App, owner: &str, id: &str) -> Result<Vec<Value>> {

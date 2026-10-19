@@ -176,7 +176,11 @@ pub async fn export(
 ) -> Result<Response> {
     let user = auth::authenticate(&app, &headers).await?;
     let rows = exports::accepted(&app, &user.id, query.session_id.as_deref()).await?;
-    download(rows, query.format.as_deref().unwrap_or("jsonl"))
+    download(
+        rows,
+        query.format.as_deref().unwrap_or("jsonl"),
+        exports::ExportKind::Accepted,
+    )
 }
 pub async fn dataset_export(
     State(app): State<App>,
@@ -186,10 +190,14 @@ pub async fn dataset_export(
 ) -> Result<Response> {
     let user = auth::authenticate(&app, &headers).await?;
     let rows = exports::dataset(&app, &user.id, &id).await?;
-    download(rows, query.format.as_deref().unwrap_or("jsonl"))
+    download(
+        rows,
+        query.format.as_deref().unwrap_or("jsonl"),
+        exports::ExportKind::Sources,
+    )
 }
-fn download(rows: Vec<Value>, format: &str) -> Result<Response> {
-    let (body, content_type) = exports::serialize(&rows, format)?;
+fn download(rows: Vec<Value>, format: &str, kind: exports::ExportKind) -> Result<Response> {
+    let (body, content_type) = exports::serialize(&rows, format, kind)?;
     let mut response = body.into_response();
     response
         .headers_mut()
