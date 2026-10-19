@@ -11,6 +11,8 @@ pub struct Config {
     pub core_request_seconds: u64,
     pub covenant_url: Option<String>,
     pub token: String,
+    pub core_token: String,
+    pub covenant_token: Option<String>,
     pub origin: String,
     pub secure_cookie: bool,
     pub session_seconds: u64,
@@ -39,7 +41,9 @@ impl DocumentConfig {
             poppler_dir: std::env::var("POPPLER_BIN_DIR")
                 .unwrap_or_else(|_| "/usr/bin".into())
                 .into(),
-            tesseract: std::env::var("TESSERACT_EXECUTABLE").unwrap_or_else(|_|"/usr/bin/tesseract".into()).into(),
+            tesseract: std::env::var("TESSERACT_EXECUTABLE")
+                .unwrap_or_else(|_| "/usr/bin/tesseract".into())
+                .into(),
         })
     }
 }
@@ -55,6 +59,30 @@ impl Config {
             return Err("INTERNAL_SERVICE_TOKEN must be at least 32 characters".into());
         }
         let origin = std::env::var("APP_ORIGIN")?;
+        let allow_local = std::env::var("OLDIF_ALLOW_SHARED_LOCAL_TOKEN").as_deref() == Ok("true")
+            && local_origin(&origin);
+        let core_token = scoped_token(
+            "OLDIF_CORE_TOKEN",
+            std::env::var("OLDIF_CORE_TOKEN").ok(),
+            &token,
+            allow_local,
+        )?;
+        let covenant_url = std::env::var("OLDIF_COVENANT_URL")
+            .ok()
+            .filter(|s| !s.is_empty());
+        let covenant_token = if covenant_url.is_some() {
+            Some(scoped_token(
+                "OLDIF_COVENANT_TOKEN",
+                std::env::var("OLDIF_COVENANT_TOKEN").ok(),
+                &token,
+                allow_local,
+            )?)
+        } else {
+            None
+        };
+        if !allow_local && covenant_token.as_deref() == Some(&core_token) {
+            return Err("Core and covenant credentials must differ".into());
+        }
         let db_grpc_url = std::env::var("OLDIF_DB_GRPC_URL")
             .ok()
             .filter(|url| !url.trim().is_empty());
@@ -75,10 +103,10 @@ impl Config {
             core_request_seconds: std::env::var("CORE_REQUEST_TIMEOUT_SECONDS")
                 .unwrap_or_else(|_| "20".into())
                 .parse()?,
-            covenant_url: std::env::var("OLDIF_COVENANT_URL")
-                .ok()
-                .filter(|s| !s.is_empty()),
+            covenant_url,
             token,
+            core_token,
+            covenant_token,
             secure_cookie: origin.starts_with("https://"),
             origin,
             session_seconds: std::env::var("SESSION_SECONDS")
@@ -89,5 +117,64 @@ impl Config {
                 .parse()?,
             documents: DocumentConfig::from_env()?,
         })
+    }
+}
+
+fn local_origin(origin: &str) -> bool {
+    reqwest::Url::parse(origin).is_ok_and(|url| {
+        url.scheme() == "http"
+            && matches!(url.host_str(), Some("localhost" | "127.0.0.1" | "[::1]"))
+    })
+}
+fn scoped_token(
+    name: &str,
+    value: Option<String>,
+    database: &str,
+    allow_local: bool,
+) -> Result<String, Box<dyn std::error::Error>> {
+    let value = value
+        .or_else(|| allow_local.then(|| database.to_owned()))
+        .ok_or_else(|| {
+            format!("Set {name}; shared credentials require explicit local-only configuration")
+        })?;
+    if value.len() < 32 || value.starts_with("replace-") || (!allow_local && value == database) {
+        return Err(format!(
+            "{name} must contain at least 32 characters and differ from the database credential"
+        )
+        .into());
+    }
+    Ok(value)
+}
+#[cfg(test)]
+mod credential_tests {
+    use super::*;
+    #[test]
+    fn production_credentials_are_required_and_distinct() {
+        let database = "d".repeat(32);
+        assert!(scoped_token("test", None, &database, false).is_err());
+        assert!(scoped_token("test", Some(database.clone()), &database, false).is_err());
+        assert!(scoped_token("test", Some("c".repeat(32)), &database, false).is_ok());
+        assert_eq!(
+            scoped_token("test", None, &database, true).unwrap(),
+            database
+        );
+    }
+    #[test]
+    fn shared_test_credentials_are_restricted_to_explicit_loopback_http() {
+        for origin in [
+            "http://localhost:3000",
+            "http://127.0.0.1:18090",
+            "http://[::1]:3000",
+        ] {
+            assert!(local_origin(origin));
+        }
+        for origin in [
+            "https://oldif.example",
+            "http://localhost.example",
+            "http://example.org",
+            "garbage",
+        ] {
+            assert!(!local_origin(origin));
+        }
     }
 }

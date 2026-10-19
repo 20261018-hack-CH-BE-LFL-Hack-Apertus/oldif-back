@@ -17,7 +17,7 @@ impl Core {
     pub fn new(config: &Config) -> Self {
         Self {
             url: config.core_grpc_url.clone(),
-            token: config.token.clone(),
+            token: config.core_token.clone(),
             connect_timeout: Duration::from_secs(config.core_connect_seconds.clamp(1, 120)),
             request_timeout: Duration::from_secs(config.core_request_seconds.clamp(1, 120)),
         }
@@ -83,7 +83,7 @@ impl Core {
 async fn deadline<T>(duration: Duration, work: impl Future<Output = Result<T>>) -> Result<T> {
     tokio::time::timeout(duration, work)
         .await
-        .map_err(|_| crate::error::Error::unavailable())?
+        .map_err(|_| crate::error::Error::timeout())?
 }
 
 #[cfg(test)]

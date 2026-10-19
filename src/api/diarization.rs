@@ -16,7 +16,7 @@ pub async fn capabilities(State(app): State<App>, headers: HeaderMap) -> Result<
     let response = app
         .client
         .get(format!("{}/v1/diarization", app.config.core_url))
-        .bearer_auth(&app.config.token)
+        .bearer_auth(&app.config.core_token)
         .send()
         .await?;
     checked(response).await
@@ -32,7 +32,7 @@ pub async fn analyze(
     let response = app
         .client
         .post(format!("{}/v1/diarization", app.config.core_url))
-        .bearer_auth(&app.config.token)
+        .bearer_auth(&app.config.core_token)
         .header("Content-Type", "audio/wav")
         .header("X-Local-Processing-Confirmed", "true")
         .body(body)
