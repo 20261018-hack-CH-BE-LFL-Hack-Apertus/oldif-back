@@ -109,16 +109,21 @@ fn event_sequence_exception_cannot_change_identity_or_other_record_kinds() {
 }
 #[test]
 fn maps_only_expected_storage_errors_without_exposing_internal_details() {
-    for (code, expected) in [
-        (tonic::Code::NotFound, 404),
-        (tonic::Code::AlreadyExists, 409),
-        (tonic::Code::InvalidArgument, 400),
-        (tonic::Code::Unauthenticated, 503),
-        (tonic::Code::Unavailable, 503),
-        (tonic::Code::DataLoss, 503),
+    for (code, expected, machine_code) in [
+        (tonic::Code::NotFound, 404, "NOT_FOUND"),
+        (tonic::Code::AlreadyExists, 409, "REVISION_CONFLICT"),
+        (tonic::Code::Aborted, 409, "REVISION_CONFLICT"),
+        (tonic::Code::InvalidArgument, 400, "INVALID_REQUEST"),
+        (tonic::Code::DeadlineExceeded, 504, "TIMEOUT"),
+        (tonic::Code::Cancelled, 499, "CANCELLED"),
+        (tonic::Code::ResourceExhausted, 429, "BACKPRESSURE"),
+        (tonic::Code::Unauthenticated, 503, "UNAVAILABLE"),
+        (tonic::Code::Unavailable, 503, "UNAVAILABLE"),
+        (tonic::Code::DataLoss, 503, "UNAVAILABLE"),
     ] {
         let mapped = status(Status::new(code, "private database diagnostic"));
         assert_eq!(mapped.0.as_u16(), expected);
+        assert_eq!(mapped.code(), machine_code);
         assert!(!mapped.1.contains("private"));
     }
 }
@@ -153,14 +158,9 @@ async fn all_database_calls_bound_stalled_connection_handshakes() {
         })
         .await;
         task.abort();
-        assert_eq!(
-            result
-                .expect("call exceeded deadline")
-                .unwrap_err()
-                .0
-                .as_u16(),
-            503
-        );
+        let error = result.expect("call exceeded deadline").unwrap_err();
+        assert_eq!(error.0.as_u16(), 504);
+        assert_eq!(error.code(), "TIMEOUT");
         assert!(started.elapsed() >= client.request_timeout);
     }
 }

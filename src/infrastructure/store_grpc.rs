@@ -196,13 +196,13 @@ fn status(error: Status) -> Error {
             "This record changed; reload before saving".into(),
         ),
         tonic::Code::InvalidArgument => Error::bad("Invalid record"),
-        _ => Error::unavailable(),
+        _ => Error::from(error),
     }
 }
 async fn deadline<T>(duration: Duration, work: impl Future<Output = Result<T>>) -> Result<T> {
     tokio::time::timeout(duration, work)
         .await
-        .map_err(|_| Error::unavailable())?
+        .map_err(|_| Error::timeout())?
 }
 
 #[cfg(test)]

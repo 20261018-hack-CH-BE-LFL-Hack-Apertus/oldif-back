@@ -81,14 +81,9 @@ async fn list_deadline_includes_all_frames_and_never_returns_partial_success() {
     let result =
         tokio::time::timeout(Duration::from_millis(400), client.list("alice", "source")).await;
     task.abort();
-    assert_eq!(
-        result
-            .expect("stream body exceeded deadline")
-            .unwrap_err()
-            .0
-            .as_u16(),
-        503
-    );
+    let error = result.expect("stream body exceeded deadline").unwrap_err();
+    assert_eq!(error.0.as_u16(), 504);
+    assert_eq!(error.code(), "TIMEOUT");
     assert!(started.elapsed() >= Duration::from_millis(60));
 }
 #[tokio::test]
