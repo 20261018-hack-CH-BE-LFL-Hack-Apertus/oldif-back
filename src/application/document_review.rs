@@ -90,10 +90,22 @@ fn revise(mut data: Value, owner: &str, input: &Review) -> Result<Value> {
         data["metadata"] = json!(metadata);
     }
     if let Some(annotations) = &input.annotations {
-        data["annotations"] = annotations_value(
+        let updates = annotations_value(
             annotations,
             data["page_count"].as_u64().unwrap_or(0) as usize,
         )?;
+        let mut merged = data["annotations"]
+            .as_array()
+            .cloned()
+            .ok_or_else(Error::unavailable)?;
+        for annotation in updates.as_array().unwrap() {
+            if let Some(existing) = merged.iter_mut().find(|item| item["page"] == annotation["page"]) {
+                *existing = annotation.clone();
+            } else {
+                merged.push(annotation.clone());
+            }
+        }
+        data["annotations"] = json!(merged);
     }
     let unresolved=data["annotations"].as_array().is_some_and(|items|items.iter().any(|a|a["missing_page"]==true||a["reading_order_status"]=="uncertain"||["illegible","partially_legible"].iter().any(|v|a["legibility_status"]==*v)));
     data["review"] = json!({"decision":if unresolved{"needs_review"}else{input.decision.as_str()},"reason":input.reason,"actor":owner,"human_review":true});
@@ -240,6 +252,31 @@ mod tests {
         let original=json!({"page_count":2,"annotations":[],"title":"source"});
         let input:Review=serde_json::from_value(json!({"expected_version":1,"decision":"accepted","reason":"Compared source","annotations":[{"page":1,"labels":[],"bias":"","missingness":"one page absent","handwriting_status":"unknown","legibility_status":"legible","note":"","missing_page":true,"reading_order_status":"uncertain"}]})).unwrap();
         let updated=revise(original,"owner",&input).unwrap();assert_eq!(updated["review"]["decision"],"needs_review");assert_eq!(updated["annotations"][0]["method"],"human_annotation");
+    }
+    #[test]
+    fn page_review_preserves_other_pages_and_requires_all_flags_resolved() {
+        let unresolved = json!({"page":1,"labels":["retain"],"bias":"","missingness":"missing leaf","handwriting_status":"unknown","legibility_status":"legible","note":"original annotation","missing_page":true,"reading_order_status":"uncertain","method":"human_annotation"});
+        let original = json!({"original_sha256":"immutable","page_count":2,"annotations":[unresolved.clone()]});
+        let page_two = json!({"page":2,"labels":["second page"],"bias":"","missingness":"","handwriting_status":"printed","legibility_status":"legible","note":"checked page two","missing_page":false,"reading_order_status":"verified"});
+        let input: Review = serde_json::from_value(json!({"expected_version":1,"decision":"accepted","reason":"Reviewed page two","annotations":[page_two]})).unwrap();
+        let updated = revise(original, "owner", &input).unwrap();
+        assert_eq!(updated["annotations"].as_array().unwrap().len(), 2);
+        assert_eq!(updated["annotations"][0], unresolved);
+        assert_eq!(updated["review"]["decision"], "needs_review");
+        assert_eq!(updated["original_sha256"], "immutable");
+
+        let no_annotations: Review = serde_json::from_value(json!({"expected_version":2,"decision":"accepted","reason":"Metadata-only review","annotations":[]})).unwrap();
+        let unchanged = revise(updated.clone(), "owner", &no_annotations).unwrap();
+        assert_eq!(unchanged["annotations"], updated["annotations"]);
+        assert_eq!(unchanged["review"]["decision"], "needs_review");
+
+        let page_one = json!({"page":1,"labels":["resolved"],"bias":"","missingness":"","handwriting_status":"printed","legibility_status":"legible","note":"checked original","missing_page":false,"reading_order_status":"verified"});
+        let resolved: Review = serde_json::from_value(json!({"expected_version":3,"decision":"accepted","reason":"Resolved page one","annotations":[page_one]})).unwrap();
+        let accepted = revise(unchanged, "owner", &resolved).unwrap();
+        assert_eq!(accepted["annotations"].as_array().unwrap().len(), 2);
+        assert_eq!(accepted["annotations"][1], updated["annotations"][1]);
+        assert_eq!(accepted["annotations"][0]["labels"], json!(["resolved"]));
+        assert_eq!(accepted["review"]["decision"], "accepted");
     }
     #[test]
     fn human_revisions_preserve_original_and_omit_unspecified_fields() {
