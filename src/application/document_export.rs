@@ -18,7 +18,8 @@ pub async fn export(
 pub fn serialize(detail: &Value, format: &str) -> Result<(String, &'static str)> {
     let document = &detail["document"];
     let pages = detail["pages"].as_array().ok_or_else(Error::unavailable)?;
-    let manifest = json!({"schema":"oldif-document-dataset/1.0","document_id":document["id"],"document_revision":document["version"],"original_sha256":document["original_sha256"],"byte_count":document["byte_count"],"page_count":pages.len(),"licence":document["licence"],"review":document["review"],"pages":pages.iter().map(|p|json!({"source_id":p["id"],"page":p["page"],"text_sha256":p["text_sha256"],"original_sha256":p["original_sha256"]})).collect::<Vec<_>>(),"extractions":detail["extractions"].as_array().map(|items|items.iter().map(|r|json!({"id":r["id"],"page":r["page"],"method":r["method"],"text_sha256":r["text_sha256"],"review_status":"unverified"})).collect::<Vec<_>>()),"transformations":document["transformation"],"extraction":document["extraction"],"ocr_performed":false,"human_quality_metric":"NOT_RUN","training_readiness":"requires rights, privacy, bias and human quality review"});
+    let ocr_performed = detail["extractions"].as_array().is_some_and(|items| items.iter().any(|item| item["method"] == "tesseract-ocr"));
+    let manifest = json!({"schema":"oldif-document-dataset/1.0","document_id":document["id"],"document_revision":document["version"],"original_sha256":document["original_sha256"],"byte_count":document["byte_count"],"page_count":pages.len(),"licence":document["licence"],"review":document["review"],"pages":pages.iter().map(|p|json!({"source_id":p["id"],"page":p["page"],"text_sha256":p["text_sha256"],"original_sha256":p["original_sha256"]})).collect::<Vec<_>>(),"extractions":detail["extractions"].as_array().map(|items|items.iter().map(|r|json!({"id":r["id"],"page":r["page"],"method":r["method"],"text_sha256":r["text_sha256"],"review_status":"unverified"})).collect::<Vec<_>>()),"transformations":document["transformation"],"extraction":document["extraction"],"ocr_performed":ocr_performed,"human_quality_metric":"NOT_RUN","training_readiness":"requires rights, privacy, bias and human quality review"});
     match format {
         "manifest" => Ok((serde_json::to_string_pretty(&manifest)?, "application/json")),
         "json" => Ok((
@@ -134,5 +135,10 @@ mod tests {
         assert_eq!(manifest["pages"][0]["page"], 1);
         assert_eq!(manifest["pages"][0]["text_sha256"], "def");
         assert_eq!(manifest["human_quality_metric"], "NOT_RUN");
+        assert_eq!(manifest["ocr_performed"], false);
+        let mut with_ocr = detail;
+        with_ocr["extractions"] = json!([{"method":"tesseract-ocr"}]);
+        let manifest: Value = serde_json::from_str(&serialize(&with_ocr, "manifest").unwrap().0).unwrap();
+        assert_eq!(manifest["ocr_performed"], true);
     }
 }
