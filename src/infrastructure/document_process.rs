@@ -73,7 +73,7 @@ pub async fn execute(
         },
     )
     .await
-    .map_err(|_| Error::bad("PDF extraction timed out"))?;
+    .map_err(|_| Error::timeout())?;
     output
 }
 fn resource_limits(cpu: u64, memory: u64, file_size: u64) -> std::io::Result<()> {

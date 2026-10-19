@@ -52,6 +52,8 @@ impl From<serde_json::Error> for Error {
 }
 impl From<tonic::Status> for Error {
     fn from(error: tonic::Status) -> Self {
+        let mut source=std::error::Error::source(&error);
+        while let Some(cause)=source {if cause.is::<tonic::TimeoutExpired>(){return Self::timeout();}source=cause.source();}
         match error.code(){tonic::Code::DeadlineExceeded=>Self::timeout(),tonic::Code::Cancelled=>Self::cancelled(),tonic::Code::ResourceExhausted=>Self::backpressure(),tonic::Code::AlreadyExists|tonic::Code::Aborted=>Self(StatusCode::CONFLICT,"Reload the current revision".into()),_=>Self::unavailable()}
     }
 }

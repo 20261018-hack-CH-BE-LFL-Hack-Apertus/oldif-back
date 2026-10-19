@@ -1,0 +1,14 @@
+{
+  "validation_class": "native loopback TCP blackhole and delayed HTTP2 response tests",
+  "passed": 48,
+  "failed": 0,
+  "provider_calls": 0,
+  "initial_result": {
+    "passed": 47,
+    "failed": 1,
+    "case": "unary_deadline_includes_connection_and_handshake",
+    "observed_code": "CANCELLED",
+    "required_code": "TIMEOUT"
+  },
+  "fix": "Classify the typed tonic::TimeoutExpired source as TIMEOUT; ordinary remote cancellation remains CANCELLED. Handshake and response-body deadline tests assert the machine code; established streams remain unbounded by unary timeout."
+}

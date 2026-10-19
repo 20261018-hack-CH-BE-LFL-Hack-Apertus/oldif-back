@@ -124,11 +124,8 @@ mod tests {
             tokio::time::timeout(Duration::from_millis(400), core.events("fixture", 0)).await;
         server.abort();
         accepted.await.unwrap();
-        assert!(
-            result
-                .expect("event subscription deadline was not enforced")
-                .is_err()
-        );
+        let error=result.expect("event subscription deadline was not enforced").err().expect("subscription should time out");
+        assert_eq!(error.code(),"TIMEOUT");
         assert!(started.elapsed() >= deadline);
     }
 
@@ -148,11 +145,8 @@ mod tests {
             .await;
             server.abort();
             accepted.await.unwrap();
-            assert!(
-                result
-                    .expect("total unary deadline was not enforced")
-                    .is_err()
-            );
+            let error=result.expect("total unary deadline was not enforced").err().expect("unary should time out");
+            assert_eq!(error.code(),"TIMEOUT");
             assert!(started.elapsed() >= deadline);
         }
     }
@@ -232,11 +226,8 @@ mod tests {
         let (core, server) = delayed_frames().await;
         let result = tokio::time::timeout(Duration::from_millis(400), core.models()).await;
         server.abort();
-        assert!(
-            result
-                .expect("unary response body exceeded its deadline")
-                .is_err()
-        );
+        let error=result.expect("unary response body exceeded its deadline").err().expect("response body should time out");
+        assert_eq!(error.code(),"TIMEOUT");
     }
     #[tokio::test]
     async fn established_event_stream_outlives_request_deadline() {
