@@ -6,16 +6,20 @@ use crate::{
     state::App,
 };
 use serde_json::{Value, json};
+use serde::Deserialize;
 use uuid::Uuid;
 
-pub async fn review(app: &App, owner: &str, run_id: &str, input: Value) -> Result<Value> {
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ReviewInput {pub decision:String,pub reason:String,pub expected_version:i64}
+pub async fn review(app: &App, owner: &str, run_id: &str, input: ReviewInput) -> Result<Value> {
     let run = app.store.get(owner, "run", run_id).await?;
-    let decision = input["decision"].as_str().unwrap_or("");
-    let reason = input["reason"].as_str().unwrap_or("").trim();
+    let decision = input.decision.as_str();
+    let reason = input.reason.trim();
     if !["accepted", "rejected"].contains(&decision) || reason.is_empty() || reason.len() > 4000 {
         return Err(Error::bad("A review decision and reason are required"));
     }
-    if input["expected_version"].as_i64() != Some(run.version) {
+    if input.expected_version != run.version {
         return Err(Error(
             axum::http::StatusCode::CONFLICT,
             "Reload the current run revision before reviewing".into(),
@@ -25,9 +29,12 @@ pub async fn review(app: &App, owner: &str, run_id: &str, input: Value) -> Resul
         return Err(Error::bad("Only completed runs can be reviewed"));
     }
     let mut data = run.data.clone();
-    data["review"] = json!({"decision":decision,"reason":reason,"actor":owner});
+    let normalized=json!({"decision":decision,"reason":reason,"actor":owner});
+    let previous=if run.data["review"].is_object(){json!({"decision":run.data["review"]["decision"],"reason":run.data["review"]["reason"],"actor":run.data["review"]["actor"]})}else{Value::Null};
+    let transform=super::provenance::transformation("human_research_review",reason,owner,run_id,json!({"kind":"run","id":run_id,"version":run.version}),previous,normalized.clone());
+    data["review"]=normalized;data["review"]["transformation"]=transform.clone();
     let review_id = Uuid::new_v4().to_string();
-    let records=app.store.batch(vec![Write::update(&run,data),Write::new(owner,"review",&review_id,json!({"run_id":run_id,"decision":decision,"reason":reason,"actor":owner,"previous_version":run.version,"resulting_version":run.version+1}))]).await?;
+    let records=app.store.batch(vec![Write::update(&run,data),Write::new(owner,"review",&review_id,json!({"run_id":run_id,"decision":decision,"reason":reason,"actor":owner,"previous_version":run.version,"resulting_version":run.version+1,"transformation":transform}))]).await?;
     Ok(records[0].public())
 }
 pub async fn accepted(app: &App, owner: &str, session: Option<&str>) -> Result<Vec<Value>> {

@@ -1,0 +1,148 @@
+{
+  "validation_class": "actual native backend and core processes, real DB persistence, deterministic loopback fake provider; no external inference",
+  "passed": 33,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "authenticated",
+      "passed": true
+    },
+    {
+      "check": "synthetic_source_ingested",
+      "passed": true
+    },
+    {
+      "check": "concurrent_intents_both_acknowledged",
+      "passed": true
+    },
+    {
+      "check": "concurrent_intents_share_run_and_session",
+      "passed": true
+    },
+    {
+      "check": "fake_provider_entered_once",
+      "passed": true
+    },
+    {
+      "check": "restart_retry_reuses_committed_run",
+      "passed": true
+    },
+    {
+      "check": "recovered_result_complete_with_validated_quote",
+      "passed": true
+    },
+    {
+      "check": "evidence_only_and_hashes_preserved",
+      "passed": true
+    },
+    {
+      "check": "messages_created_once",
+      "passed": true
+    },
+    {
+      "check": "live_terminal_includes_current_review_version",
+      "passed": true
+    },
+    {
+      "check": "immediate_review_uses_emitted_revision",
+      "passed": true
+    },
+    {
+      "check": "review_provenance_binds_actor_run_parent_and_values",
+      "passed": true
+    },
+    {
+      "check": "review_rejects_untyped_actor_injection",
+      "passed": true
+    },
+    {
+      "check": "event_ids_and_sequences_unique",
+      "passed": true
+    },
+    {
+      "check": "canonical_core_ids_are_preserved",
+      "passed": true
+    },
+    {
+      "check": "one_synthetic_workflow_only",
+      "passed": true
+    },
+    {
+      "check": "changed_message_conflicts",
+      "passed": true
+    },
+    {
+      "check": "changed_model_conflicts",
+      "passed": true
+    },
+    {
+      "check": "invalid_key_rejected",
+      "passed": true
+    },
+    {
+      "check": "unknown_input_field_rejected",
+      "passed": true
+    },
+    {
+      "check": "session_ack_is_retry_compatible",
+      "passed": true
+    },
+    {
+      "check": "websocket_upgrade_authenticated",
+      "passed": true
+    },
+    {
+      "check": "ws_reused_control_ack_is_separate",
+      "passed": true
+    },
+    {
+      "check": "ws_replays_same_committed_event_ids",
+      "passed": true
+    },
+    {
+      "check": "retry_and_ws_do_not_call_provider",
+      "passed": true
+    },
+    {
+      "check": "injected_storage_failure_surfaces",
+      "passed": true
+    },
+    {
+      "check": "lost_commit_recovers_complete_result",
+      "passed": true
+    },
+    {
+      "check": "lost_commit_does_not_duplicate_provider_work",
+      "passed": true
+    },
+    {
+      "check": "core_received_frozen_idempotency_and_history",
+      "passed": true
+    },
+    {
+      "check": "other_owner_cannot_reuse_session_or_source",
+      "passed": true
+    },
+    {
+      "check": "owner_isolation_does_not_call_provider",
+      "passed": true
+    },
+    {
+      "check": "enrichment_retry_keeps_run_and_document_revision",
+      "passed": true
+    },
+    {
+      "check": "enrichment_retry_does_not_rebill",
+      "passed": true
+    }
+  ],
+  "provider_calls": 0,
+  "synthetic_provider_http_calls": 15,
+  "synthetic_workflows_expected": 3,
+  "storage_failures_injected": 1,
+  "backend_restarts": 1,
+  "elapsed_seconds": 1.911,
+  "human_quality": "NOT_RUN",
+  "native_tests_passed": 38,
+  "error": null
+}

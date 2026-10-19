@@ -129,6 +129,8 @@ try:
  check('messages_created_once',len(data['messages'])==2 and len(data['runs'])==1)
  events=data['events'];done=next(event for event in events if event['type']=='done');check('live_terminal_includes_current_review_version',done['data']['review_version']==run['version'])
  check('immediate_review_uses_emitted_revision',call('/api/runs/'+rid+'/review',{'decision':'rejected','reason':'Synthetic transport fixture only; no historical approval','expected_version':done['data']['review_version']})[0]==200)
+ reviewed=snapshot(sid)['runs'][0];transform=reviewed['review']['transformation'];check('review_provenance_binds_actor_run_parent_and_values',transform['actor']==reviewed['review']['actor'] and transform['run_id']==rid and transform['parent_revision']['version']==run['version'] and transform['original'] is None and transform['normalized']['decision']=='rejected')
+ check('review_rejects_untyped_actor_injection',call('/api/runs/'+rid+'/review',{'decision':'accepted','reason':'Injected actor fixture','expected_version':reviewed['version'],'actor':'forged'})[0]==422)
  check('event_ids_and_sequences_unique',len({event['event_id'] for event in events})==len(events) and len({event['sequence'] for event in events})==len(events))
  check('canonical_core_ids_are_preserved',all(event['event_id']==rid+':'+str(event['data']['core_sequence']) for event in events if 'core_sequence' in event['data']))
  check('one_synthetic_workflow_only',len(calls)==5)

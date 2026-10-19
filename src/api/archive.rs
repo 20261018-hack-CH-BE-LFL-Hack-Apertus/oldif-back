@@ -134,7 +134,7 @@ pub async fn review(
     State(app): State<App>,
     headers: HeaderMap,
     Path(id): Path<String>,
-    Json(input): Json<Value>,
+    Json(input): Json<exports::ReviewInput>,
 ) -> Result<Json<Value>> {
     let user = auth::authenticate(&app, &headers).await?;
     Ok(Json(exports::review(&app, &user.id, &id, input).await?))
