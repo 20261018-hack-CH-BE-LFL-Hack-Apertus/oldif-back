@@ -11,7 +11,7 @@ p=argparse.ArgumentParser();p.add_argument('--db',required=True);p.add_argument(
 if urllib.parse.urlparse(a.db).hostname not in ('127.0.0.1','localhost'):p.error('Only an isolated loopback database is supported')
 for port in (18116,18117,18118,18119,50068):
  with socket.socket() as probe:probe.bind(('127.0.0.1',port))
-token=a.token_file.read_text().strip();base='http://127.0.0.1:18116';origin='http://localhost:3050';checks=[];calls=[];hold=threading.Event();entered=threading.Event();fail_run_write=False;failures_injected=0
+token=a.token_file.read_text().strip();base='http://127.0.0.1:18116';origin='http://localhost:3050';checks=[];calls=[];hold=threading.Event();entered=threading.Event();fail_run_write=False;failures_injected=0;reject_public_reads=False;public_reads_rejected=0
 def check(name,ok):
  checks.append({'check':name,'passed':bool(ok)})
  if not ok:raise AssertionError(name)
@@ -41,7 +41,9 @@ class Database(Quiet):
  def do_GET(self):self.forward()
  def do_POST(self):self.forward()
  def forward(self):
-  global fail_run_write,failures_injected
+  global fail_run_write,failures_injected,public_reads_rejected
+  if reject_public_reads and self.command=='GET' and self.path.startswith('/v1/records/source?') and urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get('owner')==['public']:
+   public_reads_rejected+=1;self.send(503,{'error':'injected-unrelated-public-list-failure'});return
   body=self.rfile.read(int(self.headers.get('Content-Length','0'))) if self.command=='POST' else None
   if body and fail_run_write and self.path=='/v1/batch':
    rows=json.loads(body).get('items',[])
@@ -117,6 +119,11 @@ try:
  content=b'School in 1799.';meta={'rights_confirmed':True,'licence':'CC0-synthetic','acquisition':acquisition(content,'CC0-synthetic',provider=True)}
  status,body=call('/api/documents',content,{'Content-Type':'text/plain','X-Document-Filename':'synthetic-retry.txt','X-Document-Metadata':json.dumps(meta)})
  check('synthetic_source_ingested',status==200);document=json.loads(body);source=document['pages'][0]
+ reject_public_reads=True
+ check('private_dataset_export_avoids_unrelated_public_corpus',call('/api/datasets/'+document['document']['id']+'/export?format=csv')[0]==200 and public_reads_rejected==0)
+ check('public_read_fault_control_is_effective',call('/api/datasets/stapfer-1799/export?format=csv')[0]==503 and public_reads_rejected==1)
+ reject_public_reads=False
+ check('published_collection_export_remains_available',call('/api/datasets/stapfer-1799/export?format=json')[0]==200)
  run_input={'message':'What year is named in this synthetic source?','language':'en','source_ids':[source['id']],'provider_processing_confirmed':True,'idempotency_key':'synthetic-retry-once'}
  with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:responses=list(pool.map(lambda _:call('/api/runs',run_input),range(2)))
  check('concurrent_intents_both_acknowledged',all(status==200 for status,_ in responses));created=[json.loads(body) for _,body in responses];rid=created[0]['run_id'];sid=created[0]['session_id']
@@ -164,7 +171,7 @@ finally:
  hold.set();stop(backend);stop(core)
  for server in servers:server.shutdown();server.server_close()
  log.close()
- report={'validation_class':'actual native backend and core processes, real DB persistence, deterministic loopback fake provider; no external inference','passed':sum(row['passed'] for row in checks),'failed':sum(not row['passed'] for row in checks)+(1 if error and all(row['passed'] for row in checks) else 0),'checks':checks,'provider_calls':0,'synthetic_provider_http_calls':len(calls),'synthetic_workflows_expected':3,'storage_failures_injected':failures_injected,'backend_restarts':restarts,'elapsed_seconds':round(time.monotonic()-started,3),'human_quality':'NOT_RUN','native_tests_passed':38,'error':error}
+ report={'validation_class':'actual native backend and core processes, real DB persistence, deterministic loopback fake provider; no external inference','passed':sum(row['passed'] for row in checks),'failed':sum(not row['passed'] for row in checks)+(1 if error and all(row['passed'] for row in checks) else 0),'checks':checks,'provider_calls':0,'synthetic_provider_http_calls':len(calls),'synthetic_workflows_expected':3,'storage_failures_injected':failures_injected,'unrelated_public_list_failures_injected':public_reads_rejected,'backend_restarts':restarts,'elapsed_seconds':round(time.monotonic()-started,3),'human_quality':'NOT_RUN','native_tests_passed':38,'error':error}
  a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({key:report[key] for key in ('passed','failed','provider_calls','synthetic_provider_http_calls','error')}))
  if error:
   safe_log=log.name;a.output.with_suffix('.process.log').write_bytes(pathlib.Path(safe_log).read_bytes())

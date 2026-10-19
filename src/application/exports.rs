@@ -1,5 +1,5 @@
 use crate::{
-    application::{auth::hash, sources},
+    application::auth::hash,
     domain::tabular_cell,
     error::{Error, Result},
     infrastructure::store::Write,
@@ -190,8 +190,12 @@ mod tests {
     }
 }
 pub async fn dataset(app: &App, owner: &str, id: &str) -> Result<Vec<Value>> {
-    let mut rows = sources::all(app, owner)
-        .await?
+    let scope=match app.store.get(owner,"dataset",id).await {
+        Ok(_)=>owner,
+        Err(error) if error.0==axum::http::StatusCode::NOT_FOUND=>{app.store.get("public","dataset",id).await?;"public"},
+        Err(error)=>return Err(error),
+    };
+    let mut rows = app.store.list(scope,"source").await?
         .into_iter()
         .filter(|r| r.data["dataset_id"] == id)
         .map(|r| r.public())
