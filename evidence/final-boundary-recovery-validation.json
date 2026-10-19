@@ -156,6 +156,6 @@
   "backend_restarts": 1,
   "elapsed_seconds": 2.445,
   "human_quality": "NOT_RUN",
-  "native_tests_passed": 38,
-  "error": null
+  "error": null,
+  "native_test_scope": "Native48-test result is separately recorded in evidence/deadline-error-classification.json"
 }

@@ -2,7 +2,7 @@
 """Bounded HTTP/WebSocket acceptance using generated TXT; no provider calls."""
 import argparse,base64,csv,hashlib,http.cookiejar,io,json,os,pathlib,socket,struct,time,urllib.error,urllib.parse,urllib.request
 from fixture_acquisition import acquisition
-p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--legacy-base');p.add_argument('--origin',default='http://localhost:3050');p.add_argument('--output',type=pathlib.Path,required=True);a=p.parse_args();checks=[];started=time.monotonic()
+p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--legacy-base');p.add_argument('--origin',default='http://localhost:3050');p.add_argument('--output',type=pathlib.Path,required=True);a=p.parse_args();checks=[];started=time.monotonic();failure=None
 jar=http.cookiejar.CookieJar();one=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar));other=urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
 def call(path,data=None,method=None,base=None,client=one,headers=None):
  h={'Origin':a.origin,**(headers or {})}
@@ -93,6 +93,9 @@ try:
  update=call(path+'/review',{'expected_version':doc['version'],'decision':'accepted','reason':'Synthetic unresolved page condition','annotations':[annotation]});check('detected_uncertainty_routes_to_review',update[0]==200 and obj(update)['document']['review']['decision']=='needs_review' and obj(update)['revision']['decision']=='needs_review')
  check('uncertain_review_blocks_public_export',call(path+'/export?format=bundle&scope=public')[0]==400)
  check('no_inference_runs_created',obj(call('/api/sessions/'+sid))['runs']==[])
+except Exception as error:
+ failure=type(error).__name__+': '+str(error)
+ raise
 finally:
- report={'validation_class':'actual native HTTP and WebSocket contracts; generated synthetic TXT only','passed':sum(c['passed'] for c in checks),'failed':sum(not c['passed'] for c in checks),'checks':checks,'elapsed_seconds':round(time.monotonic()-started,3),'provider_calls':0,'publication_performed':False,'legacy_endpoint_exercised':bool(a.legacy_base),'human_historical_quality':'NOT_RUN'}
+ report={'validation_class':'actual native HTTP and WebSocket contracts; generated synthetic TXT only','passed':sum(c['passed'] for c in checks),'failed':sum(not c['passed'] for c in checks)+(1 if failure and all(c['passed'] for c in checks) else 0),'error':failure,'checks':checks,'elapsed_seconds':round(time.monotonic()-started,3),'provider_calls':0,'publication_performed':False,'legacy_endpoint_exercised':bool(a.legacy_base),'human_historical_quality':'NOT_RUN'}
  a.output.write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({'passed':report['passed'],'failed':report['failed'],'provider_calls':0}))
