@@ -19,8 +19,14 @@ struct Placements { evidence: String, activity: String }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Archive { width: f64, height: f64, source: bool, review: bool, reverse: bool }
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Canvas {session_id:String,positions:std::collections::BTreeMap<String,Position>,selected_source_id:Option<String>}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Position {x:f64,y:f64}
 fn key(scope:&str)->Result<String> {
-    if !["workbench","archive"].contains(&scope) { return Err(Error::missing()); }
+    if !["workbench","archive","canvas"].contains(&scope) { return Err(Error::missing()); }
     Ok(format!("layout-{scope}"))
 }
 fn validate(scope:&str, input:&Input)->Result<()> {
@@ -40,6 +46,11 @@ fn validate(scope:&str, input:&Input)->Result<()> {
             let _=(value.source,value.review,value.reverse);
             between(value.width,25.,70.)&&between(value.height,25.,75.)
         },
+        "canvas"=>{
+            let value:Canvas=serde_json::from_value(input.layout.clone()).map_err(|_|Error::bad("Invalid canvas layout"))?;
+            crate::domain::valid_id(&value.session_id)&&value.selected_source_id.as_deref().is_none_or(crate::domain::valid_id)&&value.positions.len()<=100
+                &&value.positions.iter().all(|(id,p)|!id.is_empty()&&id.len()<=200&&between(p.x,-10000.,10000.)&&between(p.y,-10000.,10000.))
+        },
         _=>false,
     };
     if !valid { return Err(Error::bad("Layout exceeds supported bounds")); }
@@ -58,6 +69,11 @@ pub async fn get(State(app):State<App>,headers:HeaderMap,Path(scope):Path<String
 pub async fn put(State(app):State<App>,headers:HeaderMap,Path(scope):Path<String>,Json(input):Json<Input>)->Result<Json<Value>> {
     let user=auth::authenticate(&app,&headers).await?;
     validate(&scope,&input)?;
+    if scope=="canvas" {
+        let value:Canvas=serde_json::from_value(input.layout.clone())?;
+        app.store.get(&user.id,"conversation",&value.session_id).await?;
+        if let Some(id)=value.selected_source_id {crate::application::sources::get(&app,&user.id,&id).await?;}
+    }
     auth::limit(&app,&format!("layout:{}",user.id),120).await?;
     let id=key(&scope)?;let prior=current(&app,&user.id,&id).await?;
     if prior.as_ref().map(|r|r.version).unwrap_or(0)!=input.expected_version { return Err(Error(StatusCode::CONFLICT,"REVISION_CONFLICT: reload the current layout before saving".into())); }
@@ -69,6 +85,14 @@ pub async fn put(State(app):State<App>,headers:HeaderMap,Path(scope):Path<String
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn canvas_positions_are_bounded_and_strict() {
+        let mut input=Input{expected_version:0,layout:json!({"session_id":"session-1","positions":{"node-1":{"x":25,"y":-20}},"selected_source_id":null})};
+        assert!(validate("canvas",&input).is_ok());
+        input.layout["positions"]["node-1"]["x"]=json!(10001);assert!(validate("canvas",&input).is_err());
+        input.layout["positions"]["node-1"]=json!({"x":25,"y":20,"script":true});assert!(validate("canvas",&input).is_err());
+        input.layout["positions"]=json!((0..101).map(|i|(format!("n{i}"),json!({"x":1,"y":1}))).collect::<std::collections::BTreeMap<_,_>>());assert!(validate("canvas",&input).is_err());
+    }
     #[test]
     fn layout_rejects_unknown_fields_scopes_and_out_of_range_values() {
         let layout=json!({"width":48,"height":60,"source":true,"review":true,"reverse":false});
