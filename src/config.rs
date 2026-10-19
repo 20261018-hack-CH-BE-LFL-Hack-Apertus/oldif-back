@@ -4,6 +4,8 @@ pub struct Config {
     pub db_url: String,
     pub core_url: String,
     pub core_grpc_url: String,
+    pub core_connect_seconds: u64,
+    pub core_request_seconds: u64,
     pub covenant_url: Option<String>,
     pub token: String,
     pub origin: String,
@@ -23,6 +25,12 @@ impl Config {
             db_url: std::env::var("OLDIF_DB_URL")?,
             core_url: std::env::var("OLDIF_CORE_URL")?,
             core_grpc_url: std::env::var("OLDIF_CORE_GRPC_URL")?,
+            core_connect_seconds: std::env::var("CORE_CONNECT_TIMEOUT_SECONDS")
+                .unwrap_or_else(|_| "5".into())
+                .parse()?,
+            core_request_seconds: std::env::var("CORE_REQUEST_TIMEOUT_SECONDS")
+                .unwrap_or_else(|_| "20".into())
+                .parse()?,
             covenant_url: std::env::var("OLDIF_COVENANT_URL")
                 .ok()
                 .filter(|s| !s.is_empty()),
