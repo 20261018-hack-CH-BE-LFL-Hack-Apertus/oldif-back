@@ -44,17 +44,17 @@ pub async fn finish(app:&App,owner:&str,sid:&str,id:&str,mut result:Value,termin
     emit_id(app,owner,sid,id,"evidence",result.clone(),&format!("backend:{id}:evidence")).await?;
     emit_id(app,owner,sid,id,"done",result,terminal_id).await?;Ok(())
 }
-pub async fn stop(app:&App,owner:&str,sid:&str,id:&str,status:&str,message:&str,terminal_id:&str)->Result<()> {
+pub async fn stop(app:&App,owner:&str,sid:&str,id:&str,status:&str,message:&str,terminal_id:&str,code:&str)->Result<()> {
     {
         let _lock=app.event_lock.lock().await;
         let row=app.store.get(owner,"run",id).await?;
         if row.data["status"]!="running" && row.data["status"]!=status {return Ok(());}
         if row.data["status"]=="running" {
-            let mut data=row.data.clone();data["status"]=json!(status);data["error"]=json!(message);data["finished_at"]=json!(now());data["terminal_event_id"]=json!(terminal_id);
+            let mut data=row.data.clone();data["status"]=json!(status);data["error"]=json!(message);data["error_code"]=json!(code);data["finished_at"]=json!(now());data["terminal_event_id"]=json!(terminal_id);
             app.store.put(Write::update(&row,data)).await?;
         }
     }
-    emit_id(app,owner,sid,id,if status=="cancelled"{"cancelled"}else{"error"},json!({"message":message}),terminal_id).await?;Ok(())
+    emit_id(app,owner,sid,id,if status=="cancelled"{"cancelled"}else{"error"},json!({"message":message,"code":code}),terminal_id).await?;Ok(())
 }
 pub async fn restore_terminal(app:&App,owner:&str,row:&Record)->Result<()> {
     let sid=row.data["session_id"].as_str().ok_or_else(Error::unavailable)?;
@@ -62,7 +62,7 @@ pub async fn restore_terminal(app:&App,owner:&str,row:&Record)->Result<()> {
     let terminal=row.data["terminal_event_id"].as_str().unwrap_or(&fallback);
     match row.data["status"].as_str() {
         Some("complete")=>finish(app,owner,sid,&row.id,row.data["result"].clone(),terminal).await,
-        Some("failed"|"cancelled")=>stop(app,owner,sid,&row.id,row.data["status"].as_str().unwrap(),row.data["error"].as_str().unwrap_or("Run ended"),terminal).await,
+        Some("failed"|"cancelled")=>stop(app,owner,sid,&row.id,row.data["status"].as_str().unwrap(),row.data["error"].as_str().unwrap_or("Run ended"),terminal,row.data["error_code"].as_str().unwrap_or(if row.data["status"]=="cancelled"{"CANCELLED"}else{"UNAVAILABLE"})).await,
         _=>Ok(()),
     }
 }

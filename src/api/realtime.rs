@@ -18,9 +18,37 @@ use futures_util::{SinkExt, StreamExt};
 use serde::Deserialize;
 use serde_json::{Value, json};
 #[derive(Deserialize, Default)]
+#[serde(deny_unknown_fields)]
 pub struct Connect {
     session_id: Option<String>,
     after_sequence: Option<u64>,
+    last_sequence: Option<u64>,
+}
+impl Connect {
+    fn cursor(&self)->Result<u64>{
+        if self.last_sequence.zip(self.after_sequence).is_some_and(|(a,b)|a!=b){return Err(Error::bad("Conflicting last_sequence and after_sequence"));}
+        Ok(self.last_sequence.or(self.after_sequence).unwrap_or(0))
+    }
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Steer {run_id:String,message:String}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Cancel {run_id:String}
+#[derive(Deserialize,serde::Serialize)]
+#[serde(deny_unknown_fields)]
+struct VoiceOffer {sdp:String,locale:String}
+fn ancillary(input:&Value)->Result<()> {
+    let mut body=input.clone();let kind=body.get("type").and_then(Value::as_str).ok_or_else(||Error::bad("Realtime type is required"))?.to_owned();
+    body.as_object_mut().ok_or_else(||Error::bad("Expected command object"))?.remove("type");
+    match kind.as_str(){
+        "message"=>Ok(()),
+        "subscribe"=>{let value:Connect=serde_json::from_value(body)?;value.cursor()?;if value.session_id.as_deref().is_none_or(|id|!crate::domain::valid_id(id)){return Err(Error::bad("Valid session_id is required"));}Ok(())},
+        "steer"=>{let value:Steer=serde_json::from_value(body)?;if !crate::domain::valid_id(&value.run_id)||value.message.trim().is_empty()||value.message.len()>8000{return Err(Error::bad("Invalid steering command"));}Ok(())},
+        "cancel"=>{let value:Cancel=serde_json::from_value(body)?;if !crate::domain::valid_id(&value.run_id){return Err(Error::bad("Invalid cancellation command"));}Ok(())},
+        _=>Err(Error::bad("Unsupported realtime command")),
+    }
 }
 pub async fn socket(
     State(app): State<App>,
@@ -28,6 +56,7 @@ pub async fn socket(
     Query(query): Query<Connect>,
     ws: WebSocketUpgrade,
 ) -> Result<Response> {
+    query.cursor()?;
     auth::origin(&app, &headers)?;
     let user = auth::authenticate(&app, &headers).await?;
     if let Some(id) = &query.session_id {
@@ -41,8 +70,8 @@ pub async fn socket(
 async fn handle(socket: WebSocket, app: App, user: User, query: Connect, headers: HeaderMap) {
     let (mut tx, mut rx) = socket.split();
     let mut events = app.events.subscribe();
+    let mut last = query.cursor().unwrap_or(0);
     let mut sid = query.session_id;
-    let mut last = query.after_sequence.unwrap_or(0);
     if let Some(id) = &sid {
         if let Ok(rows) = replay(&app, &user, id, last).await {
             for event in rows {
@@ -64,12 +93,13 @@ async fn handle(socket: WebSocket, app: App, user: User, query: Connect, headers
                 let Some(Ok(message))=incoming else{break;};
                 if let Message::Close(_)=message{break;}
                 if let Message::Text(text)=message {
-                    let input=match serde_json::from_str::<Value>(&text){Ok(value)=>value,Err(_)=>{let _=tx.send(Message::Text(json!({"type":"error","data":{"message":"Invalid JSON message"}}).to_string().into())).await;continue;}};
+                    let input=match serde_json::from_str::<Value>(&text){Ok(value)=>value,Err(_)=>{let _=tx.send(Message::Text(json!({"type":"error","data":{"message":"Invalid JSON message","code":"INVALID_REQUEST"}}).to_string().into())).await;continue;}};
+                    if let Err(e)=ancillary(&input) {let _=tx.send(Message::Text(json!({"type":"error","data":{"message":e.1,"code":e.code()}}).to_string().into())).await;continue;}
                     if input["type"]=="subscribe" {
                         if let Some(id)=input["session_id"].as_str() {
-                            match replay(&app,&user,id,input["after_sequence"].as_u64().unwrap_or(0)).await {
-                                Ok(rows)=>{sid=Some(id.into());last=input["after_sequence"].as_u64().unwrap_or(0);for event in rows{last=last.max(event["sequence"].as_u64().unwrap_or(0));if tx.send(Message::Text(event.to_string().into())).await.is_err(){return;}}},
-                                Err(e)=>{let _=tx.send(Message::Text(json!({"type":"error","data":{"message":e.1}}).to_string().into())).await;}
+                            match replay(&app,&user,id,input["last_sequence"].as_u64().or_else(||input["after_sequence"].as_u64()).unwrap_or(0)).await {
+                                Ok(rows)=>{sid=Some(id.into());last=input["last_sequence"].as_u64().or_else(||input["after_sequence"].as_u64()).unwrap_or(0);for event in rows{last=last.max(event["sequence"].as_u64().unwrap_or(0));if tx.send(Message::Text(event.to_string().into())).await.is_err(){return;}}},
+                                Err(e)=>{let _=tx.send(Message::Text(json!({"type":"error","data":{"message":e.1,"code":e.code()}}).to_string().into())).await;}
                             }
                         }continue;
                     }
@@ -82,7 +112,7 @@ async fn handle(socket: WebSocket, app: App, user: User, query: Connect, headers
                                 if let Ok(rows)=replay(&app,&user,id,0).await {for event in rows.into_iter().filter(|event|event["run_id"]==created["run_id"]) {last=last.max(event["sequence"].as_u64().unwrap_or(0));if tx.send(Message::Text(event.to_string().into())).await.is_err(){return;}}}
                             }
                         }},
-                        Err(e)=>{if tx.send(Message::Text(json!({"type":"error","data":{"message":e.1}}).to_string().into())).await.is_err(){break;}}
+                        Err(e)=>{if tx.send(Message::Text(json!({"type":"error","data":{"message":e.1,"code":e.code()}}).to_string().into())).await.is_err(){break;}}
                     }
                 }
             },
@@ -91,7 +121,7 @@ async fn handle(socket: WebSocket, app: App, user: User, query: Connect, headers
                     let sequence=event["sequence"].as_u64().unwrap_or(0);if sequence<=last{continue;}last=sequence;
                     if tx.send(Message::Text(event.to_string().into())).await.is_err(){break;}
                 },
-                Err(tokio::sync::broadcast::error::RecvError::Lagged(_))=>{let _=tx.send(Message::Text(json!({"type":"resync_required","data":{"message":"Reconnect to restore committed events"}}).to_string().into())).await;break;},
+                Err(tokio::sync::broadcast::error::RecvError::Lagged(_))=>{let _=tx.send(Message::Text(json!({"type":"resync_required","data":{"message":"Reconnect to restore committed events","code":"BACKPRESSURE"}}).to_string().into())).await;break;},
                 Err(tokio::sync::broadcast::error::RecvError::Closed)=>break,
                 _=>{}
             },
@@ -141,7 +171,7 @@ pub async fn voice(State(app): State<App>, headers: HeaderMap, offer: String) ->
     let user = auth::authenticate(&app, &headers).await?;
     auth::limit(&app, &format!("voice:{}", user.id), 5).await?;
     let session = if offer.trim_start().starts_with('{') {
-        serde_json::from_str::<Value>(&offer)?
+        serde_json::to_value(serde_json::from_str::<VoiceOffer>(&offer)?)?
     } else {
         json!({"sdp":offer,"locale":headers.get("x-oldif-locale").and_then(|v|v.to_str().ok()).unwrap_or("en")})
     };
@@ -153,7 +183,7 @@ pub async fn voice(State(app): State<App>, headers: HeaderMap, offer: String) ->
     let response = app
         .client
         .post(format!("{}/v1/realtime/session", app.config.core_url))
-        .bearer_auth(&app.config.token)
+        .bearer_auth(&app.config.core_token)
         .json(&session)
         .send()
         .await?;
@@ -167,4 +197,18 @@ pub async fn voice(State(app): State<App>, headers: HeaderMap, offer: String) ->
     out.headers_mut()
         .insert("content-type", HeaderValue::from_static("application/sdp"));
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn replay_aliases_reject_conflicts_and_unknown_commands() {
+        for input in [json!({"last_sequence":5}),json!({"after_sequence":5}),json!({"last_sequence":5,"after_sequence":5})] {assert_eq!(serde_json::from_value::<Connect>(input).unwrap().cursor().unwrap(),5);}
+        assert!(serde_json::from_value::<Connect>(json!({"last_sequence":5,"after_sequence":4})).unwrap().cursor().is_err());
+        assert!(serde_json::from_value::<Connect>(json!({"last_sequence":5,"extra":true})).is_err());
+        assert!(ancillary(&json!({"type":"subscribe","session_id":"session-1","last_sequence":5})).is_ok());
+        for input in [json!({"type":"cancel","run_id":"run-1","message":"unexpected"}),json!({"type":"steer","run_id":"run-1","message":"ok","extra":true}),json!({"type":"subscribe","session_id":"session-1","last_sequence":5,"after_sequence":4})] {assert!(ancillary(&input).is_err());}
+        assert!(serde_json::from_value::<VoiceOffer>(json!({"sdp":"v=0","locale":"en","provider_key":"forbidden"})).is_err());
+    }
 }

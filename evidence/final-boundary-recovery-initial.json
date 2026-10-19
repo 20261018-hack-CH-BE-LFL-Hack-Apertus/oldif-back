@@ -1,0 +1,20 @@
+{
+  "validation_class": "actual native backend and core processes, real DB persistence, deterministic loopback fake provider; no external inference",
+  "passed": 0,
+  "failed": 1,
+  "checks": [],
+  "provider_calls": 0,
+  "synthetic_provider_http_calls": 0,
+  "synthetic_workflows_expected": 3,
+  "storage_failures_injected": 0,
+  "unrelated_public_list_failures_injected": 0,
+  "backend_restarts": 0,
+  "elapsed_seconds": 21.078,
+  "human_quality": "NOT_RUN",
+  "native_tests_passed": 38,
+  "error": "AssertionError: process health deadline",
+  "failure_class": "HARNESS_CONFIGURATION",
+  "diagnosis": "The old fixture reused its DB token for core; the new strict per-caller configuration rejected startup before any provider call. The fixture now supplies distinct loopback credentials.",
+  "startup_log_sha256": "5f495c774e8b3b3021f95259260c1ad7c8d0881aba923d3b899e41f6ef6c0abc",
+  "startup_log_retention": "Temporary process log removed after preserving failure diagnosis and hash; no provider call occurred."
+}

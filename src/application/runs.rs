@@ -78,7 +78,7 @@ fn spawn_relay(app:&App,user:&User,run:&crate::infrastructure::store::Record,per
     let app=app.clone();let owner=user.id.clone();let id=run.id.clone();let sid=run.data["session_id"].as_str().unwrap_or("").to_owned();
     tokio::spawn(async move {
         let (_guard,_permit)=(guard,permit);
-        if let Err(error)=relay(&app,&owner,&sid,&id).await {let _=run_events::stop(&app,&owner,&sid,&id,"failed",&error.1,&format!("backend:{id}:transport-error")).await;}
+        if let Err(error)=relay(&app,&owner,&sid,&id).await {let _=run_events::stop(&app,&owner,&sid,&id,"failed",&error.1,&format!("backend:{id}:transport-error"),error.code()).await;}
     });
 }
 fn validate(input: &Input) -> Result<()> {
@@ -126,11 +126,11 @@ async fn relay(app:&App,owner:&str,sid:&str,id:&str)->Result<()> {
         if kind=="run.completed" {
             let status=event["data"]["status"].as_str().unwrap_or("failed");
             if matches!(status,"needs_review"|"complete") {run_events::finish(app,owner,sid,id,event["data"]["result"].clone(),&canonical).await?;}
-            else {run_events::stop(app,owner,sid,id,if status=="cancelled"{"cancelled"}else{"failed"},event["data"]["result"]["error"].as_str().unwrap_or("Run ended without a result"),&canonical).await?;}
+            else {run_events::stop(app,owner,sid,id,if status=="cancelled"{"cancelled"}else{"failed"},event["data"]["result"]["error"].as_str().unwrap_or("Run ended without a result"),&canonical,event["data"]["result"]["code"].as_str().unwrap_or(if status=="cancelled"{"CANCELLED"}else{"UNAVAILABLE"})).await?;}
             return Ok(());
         }
         if matches!(kind,"done"|"complete"|"result") {run_events::finish(app,owner,sid,id,event["data"].clone(),&canonical).await?;return Ok(());}
-        if matches!(kind,"error"|"failed"|"cancelled") {run_events::stop(app,owner,sid,id,if kind=="cancelled"{"cancelled"}else{"failed"},event["data"]["message"].as_str().unwrap_or("Run ended without a result"),&canonical).await?;return Ok(());}
+        if matches!(kind,"error"|"failed"|"cancelled") {run_events::stop(app,owner,sid,id,if kind=="cancelled"{"cancelled"}else{"failed"},event["data"]["message"].as_str().unwrap_or("Run ended without a result"),&canonical,event["data"]["code"].as_str().unwrap_or(if kind=="cancelled"{"CANCELLED"}else{"UNAVAILABLE"})).await?;return Ok(());}
         let mut data=event["data"].clone();if !data.is_object(){data=json!({"value":data});}
         data["kind"]=json!(kind);data["agent"]=event["agent"].clone();data["core_sequence"]=json!(sequence);
         run_events::emit_id(app,owner,sid,id,if kind=="delta"{"delta"}else{"trace"},data,&canonical).await?;
@@ -153,7 +153,7 @@ pub async fn control(
     let response = app
         .client
         .post(format!("{}/v1/runs/{id}/{action}", app.config.core_url))
-        .bearer_auth(&app.config.token)
+        .bearer_auth(&app.config.core_token)
         .json(&json!({"message":message}))
         .send()
         .await?;

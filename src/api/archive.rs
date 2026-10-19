@@ -278,7 +278,7 @@ pub async fn agent_review(
     let response = app
         .client
         .post(format!("{url}/v1/openclaw/review"))
-        .bearer_auth(&app.config.token)
+        .bearer_auth(app.config.covenant_token.as_deref().ok_or_else(Error::unavailable)?)
         .json(&json!({"run_id":id}))
         .send()
         .await?;
