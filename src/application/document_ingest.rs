@@ -14,6 +14,7 @@ pub struct Identity {
     pub id: String,
     pub fingerprint: String,
     pub original_sha256: String,
+    pub legacy_id: Option<String>,
 }
 impl Identity {
     pub fn new(
@@ -36,16 +37,21 @@ impl Identity {
             ));
         }
         let original_sha256 = digest(bytes);
+        let legacy = json!(["content-upload-v1", owner, filename, original_sha256]);
+        let distribution=input.acquisition.as_ref().map(|a|a.distribution_uri.as_str()).filter(|v|!v.is_empty());
         let identity = if let Some(key) = key {
             json!(["explicit-upload-key-v1", owner, key])
+        } else if let Some(distribution) = distribution {
+            json!(["content-distribution-v2", owner, original_sha256, distribution])
         } else {
-            json!(["content-upload-v1", owner, filename, original_sha256])
+            legacy.clone()
         };
         let fingerprint=digest(json!({"filename":filename,"media":media,"metadata":input,"original_sha256":original_sha256}).to_string().as_bytes());
         Ok(Self {
             id: digest(identity.to_string().as_bytes()),
             fingerprint,
             original_sha256,
+            legacy_id: if key.is_none() && distribution.is_some() {Some(digest(legacy.to_string().as_bytes()))} else {None},
         })
     }
 }
@@ -57,7 +63,17 @@ pub async fn existing(app: &App, owner: &str, identity: &Identity) -> Result<Opt
             }
             Ok(Some(record))
         }
-        Err(error) if error.0 == StatusCode::NOT_FOUND => Ok(None),
+        Err(error) if error.0 == StatusCode::NOT_FOUND => {
+            if let Some(id)=&identity.legacy_id {
+                match app.store.get(owner,"document",id).await {
+                    Ok(record) if record.data["ingest_fingerprint"]==identity.fingerprint=>return Ok(Some(record)),
+                    Ok(_)=>{},
+                    Err(error) if error.0==StatusCode::NOT_FOUND=>{},
+                    Err(error)=>return Err(error),
+                }
+            }
+            Ok(None)
+        },
         Err(error) => Err(error),
     }
 }
@@ -88,6 +104,20 @@ pub async fn persist_batch(app: &App, items: Vec<Write>, resume: bool) -> Result
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn new_identity_binds_distribution_without_rekeying_explicit_retries() {
+        let mut input=Metadata{title:None,licence:"synthetic".into(),rights_confirmed:true,acquisition:Some(super::super::acquisition::Acquisition{distribution_uri:"urn:fixture:a".into(),..Default::default()})};
+        let first=Identity::new("owner","one.txt","text/plain",&input,None,b"same").unwrap();
+        let renamed=Identity::new("owner","two.txt","text/plain",&input,None,b"same").unwrap();
+        assert_eq!(first.id,renamed.id);
+        assert_ne!(first.fingerprint,renamed.fingerprint);
+        assert!(first.legacy_id.is_some());
+        input.acquisition.as_mut().unwrap().distribution_uri="urn:fixture:b".into();
+        assert_ne!(first.id,Identity::new("owner","one.txt","text/plain",&input,None,b"same").unwrap().id);
+        let explicit=Identity::new("owner","one.txt","text/plain",&input,Some("retry"),b"same").unwrap();
+        assert_eq!(explicit.id,digest(json!(["explicit-upload-key-v1","owner","retry"]).to_string().as_bytes()));
+        assert!(explicit.legacy_id.is_none());
+    }
     #[test]
     fn upload_identity_binds_owner_content_and_retry_metadata() {
         let input = Metadata {
