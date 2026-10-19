@@ -75,14 +75,10 @@ pub async fn search(
         json!({"sources":sources::search(&app,&user.id,query.q.as_deref().unwrap_or(""),&[]).await?}),
     ))
 }
-pub async fn import(
-    State(app): State<App>,
-    headers: HeaderMap,
-    Json(input): Json<Value>,
-) -> Result<Json<Value>> {
-    let user = auth::authenticate(&app, &headers).await?;
-    auth::limit(&app, &format!("import:{}", user.id), 5).await?;
-    Ok(Json(sources::import(&app, &user.id, input).await?))
+pub async fn import(State(app):State<App>,headers:HeaderMap)->Result<Response> {
+    let user=auth::authenticate(&app,&headers).await?;
+    auth::limit(&app,&format!("import:{}",user.id),5).await?;
+    Ok((axum::http::StatusCode::GONE,Json(json!({"code":"LEGACY_IMPORT_RETIRED","error":"Upload the original file through the acquisition-aware document endpoint. Existing records remain readable.","migration":{"method":"POST","path":"/api/documents","body":"original_file_bytes","metadata_header":"X-Document-Metadata","formats":["application/pdf","text/plain","application/json"]}}))).into_response())
 }
 pub async fn sessions(State(app): State<App>, headers: HeaderMap) -> Result<Json<Value>> {
     let user = auth::authenticate(&app, &headers).await?;

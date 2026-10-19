@@ -1,0 +1,51 @@
+{
+  "validation_class": "actual authenticated HTTP; synthetic JSON original only",
+  "passed": 10,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "authenticated",
+      "passed": true
+    },
+    {
+      "check": "legacy_write_returns_typed410",
+      "passed": true
+    },
+    {
+      "check": "migration_directs_raw_document_upload",
+      "passed": true
+    },
+    {
+      "check": "legacy_write_creates_no_dataset",
+      "passed": true
+    },
+    {
+      "check": "existing_published_record_remains_readable",
+      "passed": true
+    },
+    {
+      "check": "raw_json_without_acquisition_is_quarantined",
+      "passed": true
+    },
+    {
+      "check": "quarantine_retains_exact_json_original",
+      "passed": true
+    },
+    {
+      "check": "valid_acquisition_releases_json_records",
+      "passed": true
+    },
+    {
+      "check": "json_whitespace_and_original_hash_preserved",
+      "passed": true
+    },
+    {
+      "check": "released_json_exact_transcriptions_retained",
+      "passed": true
+    }
+  ],
+  "provider_calls": 0,
+  "legacy_write_status": 410,
+  "existing_read_compatibility": true,
+  "raw_original_sha256": "b52b33efa3daf040126e8ee9e2c1ca84f21e09fb79056f2b2254912e0a7abd33"
+}
