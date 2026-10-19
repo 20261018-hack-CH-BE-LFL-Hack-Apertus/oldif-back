@@ -1,0 +1,1627 @@
+{
+  "observed_at": "2026-10-19T13:38:16.074136+00:00",
+  "validation_class": "bounded concurrent authenticated API reads",
+  "runtime": "Local native Rust backend and SQLite adapter on Apple Silicon; browser artifacts built in Apple Container. Eight client workers; no production-capacity claim.",
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "logical_cpus": 16
+  },
+  "workers": 8,
+  "requests": 200,
+  "passed": 200,
+  "failed": 0,
+  "elapsed_seconds": 0.407,
+  "latency_ms": {
+    "median": 15.079,
+    "p95": 26.37,
+    "max": 35.244
+  },
+  "requests_per_second": 491.75,
+  "provider_calls": 0,
+  "response_contents_retained": false,
+  "production_capacity_claimed": false,
+  "thousand_page_pipeline_claimed": false,
+  "requests_detail": [
+    {
+      "index": 0,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 16.407
+    },
+    {
+      "index": 1,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 23.248
+    },
+    {
+      "index": 2,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 16.0
+    },
+    {
+      "index": 3,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.663
+    },
+    {
+      "index": 4,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 15.605
+    },
+    {
+      "index": 5,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 28.659
+    },
+    {
+      "index": 6,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 19.819
+    },
+    {
+      "index": 7,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 29.121
+    },
+    {
+      "index": 8,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.487
+    },
+    {
+      "index": 9,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.231
+    },
+    {
+      "index": 10,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.433
+    },
+    {
+      "index": 11,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.432
+    },
+    {
+      "index": 12,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.674
+    },
+    {
+      "index": 13,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.999
+    },
+    {
+      "index": 14,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.672
+    },
+    {
+      "index": 15,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.265
+    },
+    {
+      "index": 16,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.839
+    },
+    {
+      "index": 17,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.161
+    },
+    {
+      "index": 18,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.623
+    },
+    {
+      "index": 19,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 23.797
+    },
+    {
+      "index": 20,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.234
+    },
+    {
+      "index": 21,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.086
+    },
+    {
+      "index": 22,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 5.596
+    },
+    {
+      "index": 23,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.624
+    },
+    {
+      "index": 24,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 6.985
+    },
+    {
+      "index": 25,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.831
+    },
+    {
+      "index": 26,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.987
+    },
+    {
+      "index": 27,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.07
+    },
+    {
+      "index": 28,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.82
+    },
+    {
+      "index": 29,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.831
+    },
+    {
+      "index": 30,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 6.201
+    },
+    {
+      "index": 31,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 14.925
+    },
+    {
+      "index": 32,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.883
+    },
+    {
+      "index": 33,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.428
+    },
+    {
+      "index": 34,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.812
+    },
+    {
+      "index": 35,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.422
+    },
+    {
+      "index": 36,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.462
+    },
+    {
+      "index": 37,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 13.608
+    },
+    {
+      "index": 38,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.302
+    },
+    {
+      "index": 39,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 30.462
+    },
+    {
+      "index": 40,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 14.626
+    },
+    {
+      "index": 41,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.572
+    },
+    {
+      "index": 42,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.735
+    },
+    {
+      "index": 43,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 23.96
+    },
+    {
+      "index": 44,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.179
+    },
+    {
+      "index": 45,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 23.683
+    },
+    {
+      "index": 46,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 14.725
+    },
+    {
+      "index": 47,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 23.603
+    },
+    {
+      "index": 48,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.694
+    },
+    {
+      "index": 49,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 28.041
+    },
+    {
+      "index": 50,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.667
+    },
+    {
+      "index": 51,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.425
+    },
+    {
+      "index": 52,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 25.0
+    },
+    {
+      "index": 53,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 26.96
+    },
+    {
+      "index": 54,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 15.838
+    },
+    {
+      "index": 55,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 35.244
+    },
+    {
+      "index": 56,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.628
+    },
+    {
+      "index": 57,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.837
+    },
+    {
+      "index": 58,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.716
+    },
+    {
+      "index": 59,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.719
+    },
+    {
+      "index": 60,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.643
+    },
+    {
+      "index": 61,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.072
+    },
+    {
+      "index": 62,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 15.372
+    },
+    {
+      "index": 63,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 29.45
+    },
+    {
+      "index": 64,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.996
+    },
+    {
+      "index": 65,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.188
+    },
+    {
+      "index": 66,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.334
+    },
+    {
+      "index": 67,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.462
+    },
+    {
+      "index": 68,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.171
+    },
+    {
+      "index": 69,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.12
+    },
+    {
+      "index": 70,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 14.291
+    },
+    {
+      "index": 71,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 26.309
+    },
+    {
+      "index": 72,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.153
+    },
+    {
+      "index": 73,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.142
+    },
+    {
+      "index": 74,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.498
+    },
+    {
+      "index": 75,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 14.352
+    },
+    {
+      "index": 76,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.27
+    },
+    {
+      "index": 77,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 26.578
+    },
+    {
+      "index": 78,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 5.865
+    },
+    {
+      "index": 79,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 15.352
+    },
+    {
+      "index": 80,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.312
+    },
+    {
+      "index": 81,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.713
+    },
+    {
+      "index": 82,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.558
+    },
+    {
+      "index": 83,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.857
+    },
+    {
+      "index": 84,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.672
+    },
+    {
+      "index": 85,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 22.338
+    },
+    {
+      "index": 86,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.893
+    },
+    {
+      "index": 87,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 24.669
+    },
+    {
+      "index": 88,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 6.435
+    },
+    {
+      "index": 89,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 11.34
+    },
+    {
+      "index": 90,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.198
+    },
+    {
+      "index": 91,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.359
+    },
+    {
+      "index": 92,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.501
+    },
+    {
+      "index": 93,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.842
+    },
+    {
+      "index": 94,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.904
+    },
+    {
+      "index": 95,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 25.358
+    },
+    {
+      "index": 96,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.44
+    },
+    {
+      "index": 97,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.947
+    },
+    {
+      "index": 98,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.573
+    },
+    {
+      "index": 99,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.35
+    },
+    {
+      "index": 100,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.235
+    },
+    {
+      "index": 101,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 22.347
+    },
+    {
+      "index": 102,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.287
+    },
+    {
+      "index": 103,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 27.184
+    },
+    {
+      "index": 104,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 14.004
+    },
+    {
+      "index": 105,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 14.875
+    },
+    {
+      "index": 106,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.117
+    },
+    {
+      "index": 107,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.306
+    },
+    {
+      "index": 108,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.088
+    },
+    {
+      "index": 109,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 16.339
+    },
+    {
+      "index": 110,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 16.289
+    },
+    {
+      "index": 111,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 24.165
+    },
+    {
+      "index": 112,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.574
+    },
+    {
+      "index": 113,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 15.394
+    },
+    {
+      "index": 114,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.374
+    },
+    {
+      "index": 115,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 14.769
+    },
+    {
+      "index": 116,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.638
+    },
+    {
+      "index": 117,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 16.969
+    },
+    {
+      "index": 118,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.373
+    },
+    {
+      "index": 119,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.246
+    },
+    {
+      "index": 120,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.79
+    },
+    {
+      "index": 121,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.522
+    },
+    {
+      "index": 122,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.408
+    },
+    {
+      "index": 123,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 13.694
+    },
+    {
+      "index": 124,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.208
+    },
+    {
+      "index": 125,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.155
+    },
+    {
+      "index": 126,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.783
+    },
+    {
+      "index": 127,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 24.828
+    },
+    {
+      "index": 128,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.278
+    },
+    {
+      "index": 129,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.128
+    },
+    {
+      "index": 130,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 14.543
+    },
+    {
+      "index": 131,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.908
+    },
+    {
+      "index": 132,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.928
+    },
+    {
+      "index": 133,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.717
+    },
+    {
+      "index": 134,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.736
+    },
+    {
+      "index": 135,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 24.436
+    },
+    {
+      "index": 136,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.008
+    },
+    {
+      "index": 137,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.311
+    },
+    {
+      "index": 138,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.27
+    },
+    {
+      "index": 139,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.774
+    },
+    {
+      "index": 140,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.322
+    },
+    {
+      "index": 141,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.989
+    },
+    {
+      "index": 142,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.879
+    },
+    {
+      "index": 143,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 26.37
+    },
+    {
+      "index": 144,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 14.456
+    },
+    {
+      "index": 145,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 15.233
+    },
+    {
+      "index": 146,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.907
+    },
+    {
+      "index": 147,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 24.529
+    },
+    {
+      "index": 148,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.959
+    },
+    {
+      "index": 149,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 15.71
+    },
+    {
+      "index": 150,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 5.102
+    },
+    {
+      "index": 151,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 26.177
+    },
+    {
+      "index": 152,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 7.614
+    },
+    {
+      "index": 153,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.366
+    },
+    {
+      "index": 154,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.63
+    },
+    {
+      "index": 155,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.418
+    },
+    {
+      "index": 156,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.689
+    },
+    {
+      "index": 157,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 22.097
+    },
+    {
+      "index": 158,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.326
+    },
+    {
+      "index": 159,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.004
+    },
+    {
+      "index": 160,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 13.05
+    },
+    {
+      "index": 161,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.575
+    },
+    {
+      "index": 162,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.328
+    },
+    {
+      "index": 163,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.86
+    },
+    {
+      "index": 164,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.504
+    },
+    {
+      "index": 165,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.9
+    },
+    {
+      "index": 166,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 8.234
+    },
+    {
+      "index": 167,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 25.27
+    },
+    {
+      "index": 168,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.447
+    },
+    {
+      "index": 169,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 24.364
+    },
+    {
+      "index": 170,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 9.21
+    },
+    {
+      "index": 171,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 21.034
+    },
+    {
+      "index": 172,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 17.587
+    },
+    {
+      "index": 173,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.553
+    },
+    {
+      "index": 174,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.255
+    },
+    {
+      "index": 175,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 31.851
+    },
+    {
+      "index": 176,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.076
+    },
+    {
+      "index": 177,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 14.216
+    },
+    {
+      "index": 178,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.591
+    },
+    {
+      "index": 179,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 14.751
+    },
+    {
+      "index": 180,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 14.198
+    },
+    {
+      "index": 181,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.737
+    },
+    {
+      "index": 182,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.353
+    },
+    {
+      "index": 183,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 25.241
+    },
+    {
+      "index": 184,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 6.971
+    },
+    {
+      "index": 185,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 16.099
+    },
+    {
+      "index": 186,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 5.121
+    },
+    {
+      "index": 187,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 20.97
+    },
+    {
+      "index": 188,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.559
+    },
+    {
+      "index": 189,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 17.609
+    },
+    {
+      "index": 190,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.337
+    },
+    {
+      "index": 191,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 22.135
+    },
+    {
+      "index": 192,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.114
+    },
+    {
+      "index": 193,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 16.646
+    },
+    {
+      "index": 194,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 12.935
+    },
+    {
+      "index": 195,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 19.985
+    },
+    {
+      "index": 196,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 10.089
+    },
+    {
+      "index": 197,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 18.197
+    },
+    {
+      "index": 198,
+      "path": "/api/documents",
+      "status": 200,
+      "bytes": 16,
+      "shape_valid": true,
+      "milliseconds": 11.636
+    },
+    {
+      "index": 199,
+      "path": "/api/datasets",
+      "status": 200,
+      "bytes": 58155,
+      "shape_valid": true,
+      "milliseconds": 15.571
+    }
+  ]
+}
