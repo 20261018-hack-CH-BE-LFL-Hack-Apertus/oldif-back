@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-19T14:13:55.542915+00:00",
+  "validation_class": "actual separate compiled Rust processes; backend gRPC to SQLite database service; database HTTP used only by test observer",
+  "checks": [
+    {
+      "check": "backend_ready_with_only_grpc_database_transport",
+      "passed": true
+    },
+    {
+      "check": "anonymous_backend_access_denied",
+      "passed": true
+    }
+  ],
+  "passed": 2,
+  "failed": 1,
+  "failure": "KeyError: 'source_count'",
+  "elapsed_seconds": 4.852,
+  "provider_calls": 0,
+  "backend_http_database_url": "unreachable loopback endpoint",
+  "source_data": "existing licensed public seeds plus synthetic session; no private original documents",
+  "back_binary_sha256": "8ebf9f7d18226a27a3e882ea41429c962ee718b6237191ae1b159eca207382b9",
+  "db_binary_sha256": "873883a9cbbc41decd427856ecd3085f378ad5df574dded8d8338ae1cd1fb41f",
+  "source_state": "Compiled current transport candidate with concurrent acquisition changes; exact binary hashes identify the executed artifacts.",
+  "failure_class": "Test harness expected source_count; actual dataset contract uses record_count. No product remediation was required."
+}

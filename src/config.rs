@@ -2,6 +2,9 @@
 pub struct Config {
     pub bind: String,
     pub db_url: String,
+    pub db_grpc_url: Option<String>,
+    pub db_connect_seconds: u64,
+    pub db_request_seconds: u64,
     pub core_url: String,
     pub core_grpc_url: String,
     pub core_connect_seconds: u64,
@@ -52,9 +55,18 @@ impl Config {
             return Err("INTERNAL_SERVICE_TOKEN must be at least 32 characters".into());
         }
         let origin = std::env::var("APP_ORIGIN")?;
+        let db_grpc_url = std::env::var("OLDIF_DB_GRPC_URL")
+            .ok()
+            .filter(|url| !url.trim().is_empty());
+        if let Some(url) = &db_grpc_url {
+            tonic::transport::Endpoint::from_shared(url.clone())?;
+        }
         Ok(Self {
             bind: std::env::var("BACK_BIND")?,
             db_url: std::env::var("OLDIF_DB_URL")?,
+            db_grpc_url,
+            db_connect_seconds: number("DB_CONNECT_TIMEOUT_SECONDS", 5)?.clamp(1, 120),
+            db_request_seconds: number("DB_REQUEST_TIMEOUT_SECONDS", 120)?.clamp(1, 120),
             core_url: std::env::var("OLDIF_CORE_URL")?,
             core_grpc_url: std::env::var("OLDIF_CORE_GRPC_URL")?,
             core_connect_seconds: std::env::var("CORE_CONNECT_TIMEOUT_SECONDS")

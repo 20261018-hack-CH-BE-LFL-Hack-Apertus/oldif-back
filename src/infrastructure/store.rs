@@ -1,3 +1,4 @@
+use super::store_grpc::GrpcStore;
 use crate::domain::valid_id;
 use crate::error::{Error, Result};
 use serde::{Deserialize, Serialize};
@@ -8,6 +9,7 @@ pub struct Store {
     client: reqwest::Client,
     url: String,
     token: String,
+    grpc: Option<GrpcStore>,
 }
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Record {
@@ -56,10 +58,26 @@ impl Write {
     }
 }
 impl Store {
-    pub fn new(client: reqwest::Client, url: String, token: String) -> Self {
-        Self { client, url, token }
+    pub fn new(client: reqwest::Client, config: &crate::config::Config) -> Self {
+        let grpc = config.db_grpc_url.as_ref().map(|url| {
+            GrpcStore::new(
+                url.clone(),
+                config.token.clone(),
+                config.db_connect_seconds,
+                config.db_request_seconds,
+            )
+        });
+        Self {
+            client,
+            url: config.db_url.clone(),
+            token: config.token.clone(),
+            grpc,
+        }
     }
     pub async fn list(&self, owner: &str, kind: &str) -> Result<Vec<Record>> {
+        if let Some(grpc) = &self.grpc {
+            return grpc.list(owner, kind).await;
+        }
         let response = self
             .client
             .get(format!("{}/v1/records/{kind}", self.url))
@@ -74,6 +92,9 @@ impl Store {
         if !valid_id(id) {
             return Err(Error::bad("Invalid identifier"));
         }
+        if let Some(grpc) = &self.grpc {
+            return grpc.get(owner, kind, id).await;
+        }
         let response = self
             .client
             .get(format!("{}/v1/records/{kind}/{id}", self.url))
@@ -84,6 +105,9 @@ impl Store {
         Ok(serde_json::from_value(checked(response).await?)?)
     }
     pub async fn batch(&self, items: Vec<Write>) -> Result<Vec<Record>> {
+        if let Some(grpc) = &self.grpc {
+            return grpc.batch(items).await;
+        }
         let response = self
             .client
             .post(format!("{}/v1/batch", self.url))
@@ -113,3 +137,7 @@ async fn checked(response: reqwest::Response) -> Result<Value> {
         _ => Err(Error::unavailable()),
     }
 }
+
+#[cfg(test)]
+#[path = "store_transport_tests.rs"]
+mod tests;

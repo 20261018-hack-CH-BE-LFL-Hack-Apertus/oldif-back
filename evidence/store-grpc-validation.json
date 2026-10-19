@@ -1,0 +1,72 @@
+{
+  "at": "2026-10-19T14:14:51.863982+00:00",
+  "validation_class": "actual separate compiled Rust processes; backend gRPC to SQLite database service; database HTTP used only by test observer",
+  "checks": [
+    {
+      "check": "backend_ready_with_only_grpc_database_transport",
+      "passed": true
+    },
+    {
+      "check": "anonymous_backend_access_denied",
+      "passed": true
+    },
+    {
+      "check": "both_seeded_collections_visible",
+      "passed": true
+    },
+    {
+      "check": "grpc_streamed_full_large_collection",
+      "passed": true
+    },
+    {
+      "check": "large_collection_exact_text_hashes",
+      "passed": true
+    },
+    {
+      "check": "session_created_over_grpc",
+      "passed": true
+    },
+    {
+      "check": "other_owner_cannot_read_session",
+      "passed": true
+    },
+    {
+      "check": "grpc_write_visible_to_http_same_revision",
+      "passed": true
+    },
+    {
+      "check": "http_cas_update_succeeds",
+      "passed": true
+    },
+    {
+      "check": "http_write_visible_to_grpc_same_revision",
+      "passed": true
+    },
+    {
+      "check": "stale_http_revision_conflicts",
+      "passed": true
+    },
+    {
+      "check": "stale_write_did_not_change_grpc_record",
+      "passed": true
+    },
+    {
+      "check": "database_requires_internal_token",
+      "passed": true
+    },
+    {
+      "check": "logout_invalidates_grpc_session",
+      "passed": true
+    }
+  ],
+  "passed": 14,
+  "failed": 0,
+  "failure": null,
+  "elapsed_seconds": 5.007,
+  "provider_calls": 0,
+  "backend_http_database_url": "unreachable loopback endpoint",
+  "source_data": "existing licensed public seeds plus synthetic session; no private original documents",
+  "back_binary_sha256": "8ebf9f7d18226a27a3e882ea41429c962ee718b6237191ae1b159eca207382b9",
+  "db_binary_sha256": "873883a9cbbc41decd427856ecd3085f378ad5df574dded8d8338ae1cd1fb41f",
+  "source_state": "Compiled current transport candidate with concurrent acquisition changes; exact binary hashes identify the executed artifacts."
+}

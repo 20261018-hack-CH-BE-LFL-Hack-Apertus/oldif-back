@@ -1,0 +1,27 @@
+syntax = "proto3";
+package oldif.store.v1;
+
+service RecordStore {
+  rpc Get(RecordKey) returns (Record);
+  rpc List(CollectionKey) returns (stream Record);
+  rpc Write(WriteBatch) returns (RecordBatch);
+}
+message CollectionKey { string owner = 1; string kind = 2; }
+message RecordKey { string owner = 1; string kind = 2; string id = 3; }
+message Record {
+  string owner = 1;
+  string kind = 2;
+  string id = 3;
+  int64 version = 4;
+  bytes data_json = 5;
+  int64 created_at = 6;
+}
+message Mutation {
+  string owner = 1;
+  string kind = 2;
+  string id = 3;
+  int64 expected_version = 4;
+  bytes data_json = 5;
+}
+message WriteBatch { repeated Mutation items = 1; }
+message RecordBatch { repeated Record records = 1; }

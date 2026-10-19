@@ -24,7 +24,7 @@ impl App {
             .build()?;
         let (events, _) = broadcast::channel(2048);
         Ok(Self {
-            store: Store::new(client.clone(), config.db_url.clone(), config.token.clone()),
+            store: Store::new(client.clone(), &config),
             core: Core::new(&config),
             slots: Arc::new(Semaphore::new(config.max_active)),
             document_slots: Arc::new(Semaphore::new(1)),
