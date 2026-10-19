@@ -18,7 +18,7 @@ pub async fn seed(app: &App) -> Result<()> {
         .await
         .is_ok()
     {
-        return Ok(());
+        return super::stapfer_seed::seed(app).await;
     }
     let dataset = json!({"name":"Stapfer-Enquête 1799","title":"Stapfer-Enquête 1799","description":"105 published school-survey transcriptions supplied by the University of Bern challenge","record_count":rows.len(),"licence":"terms_open","source_url":"https://www.stapferenquete.ch/","kind":"published-transcription","page_citations":false,"provenance":"supplied-challenge-workbook"});
     let mut writes = vec![Write::new("public", "dataset", "stapfer-1799", dataset)];
@@ -30,7 +30,7 @@ pub async fn seed(app: &App) -> Result<()> {
         writes.push(Write::new("public", "source", &id, row));
     }
     app.store.batch(writes).await?;
-    Ok(())
+    super::stapfer_seed::seed(app).await
 }
 pub async fn datasets(app: &App, owner: &str) -> Result<Vec<Value>> {
     let mut rows = app.store.list("public", "dataset").await?;

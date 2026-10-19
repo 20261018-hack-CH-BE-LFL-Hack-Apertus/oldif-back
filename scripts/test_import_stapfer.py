@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Reproducible importer safety checks. Synthetic rows contain no historical claims."""
+import argparse
+import json
+import pathlib
+import tempfile
+import unittest
+import zipfile
+
+import openpyxl
+import import_stapfer as importer
+
+
+def row(answer="A synthetic answer."):
+    return ["Synthetic school", "unknown", "unknown", "TEST.1", answer,
+            "SYNTHETIC", 42, None, None, None, None, "Synthetic validation fixture"]
+
+
+def fixture(path, rows, headers=None):
+    book = openpyxl.Workbook()
+    book.active.title = "Worksheet"
+    book.active.append(headers or importer.HEADERS)
+    for values in rows:
+        book.active.append(values)
+    book.save(path)
+    book.close()
+
+
+class ImportChecks(unittest.TestCase):
+    def test_blank_and_numeric_answers_have_distinct_meanings(self):
+        self.assertEqual(importer.assess(row(None)), "empty_answer")
+        self.assertIsNone(importer.assess(row(17)))
+        self.assertEqual(importer.answer_text(17), "17")
+        self.assertEqual(importer.assess(row(float("nan"))), "nonfinite_answer")
+
+    def test_untrusted_cells_and_addresses_are_rejected(self):
+        self.assertEqual(importer.assess(row("=HYPERLINK(\"https://invalid.example\")")), "formula_cell")
+        bad = row(); bad[6] = "../../other"
+        self.assertEqual(importer.assess(bad), "invalid_transcription_id")
+        bad = row(); bad[3] = ""
+        self.assertEqual(importer.assess(bad), "missing_question")
+        self.assertEqual(importer.assess(row(True)), "nontext_answer")
+        self.assertEqual(importer.assess(row("x" * 100_001)), "answer_too_large")
+
+    def test_real_workbook_keeps_rejections_and_exact_answer_spans(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "fixture.xlsx"
+            invalid = row(); invalid[6] = "invalid"
+            fixture(path, [row("Original ä\ntext"), row(None), row(17), row("=2+2"), invalid])
+            book = importer.read_workbook(path)
+            sources = importer.group_sources(book)
+            self.assertEqual(len(sources), 1)
+            source = sources[0]
+            self.assertEqual(source["provenance"]["expected_row_count"], 3)
+            self.assertEqual(source["provenance"]["missing_row_count"], 1)
+            self.assertEqual(source["provenance"]["accepted_row_count"], 2)
+            for actual, expected in zip(source["provenance"]["accepted_rows"], ["Original ä\ntext", "17"]):
+                value = source["text"][actual["answer_start_char"]:actual["answer_end_char"]]
+                self.assertEqual(value, expected)
+                self.assertEqual(actual["answer_sha256"], importer.digest(value.encode()))
+            self.assertEqual([r["reason"] for r in book["rows"] if r["reason"]],
+                             ["empty_answer", "formula_cell", "invalid_transcription_id"])
+
+    def test_conflicting_transcription_metadata_is_not_merged(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "fixture.xlsx"
+            other = row(); other[0] = "Different school"
+            fixture(path, [row(), other])
+            book = importer.read_workbook(path)
+            self.assertEqual(importer.group_sources(book), [])
+            self.assertTrue(all(r["reason"] == "conflicting_transcription_metadata" for r in book["rows"]))
+
+    def test_headers_extra_columns_and_active_packages_are_bounded(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "fixture.xlsx"
+            fixture(path, [row()], ["bad"] + importer.HEADERS[1:])
+            with self.assertRaisesRegex(ValueError, "unexpected_headers"):
+                importer.read_workbook(path)
+            fixture(path, [row() + ["unmapped"]])
+            self.assertEqual(importer.read_workbook(path)["rows"][0]["reason"], "unmapped_nonempty_column")
+            with zipfile.ZipFile(path, "a") as package:
+                package.writestr("xl/externalLinks/externalLink1.xml", "<test/>")
+            with self.assertRaisesRegex(ValueError, "active_workbook_content"):
+                importer.read_workbook(path)
+            fixture(path, [row()])
+            with zipfile.ZipFile(path, "a") as package:
+                package.writestr("xl/entity-test.xml", '<!DOCTYPE x [<!ENTITY a SYSTEM "file:///etc/passwd">]><x>&a;</x>')
+            with self.assertRaisesRegex(ValueError, "workbook_xml_entities"):
+                importer.read_workbook(path)
+
+
+def rejection_receipt():
+    with tempfile.TemporaryDirectory() as directory:
+        path = pathlib.Path(directory) / "synthetic-invalid.xlsx"
+        bad_id = row(); bad_id[6] = "../escape"
+        missing_question = row(); missing_question[3] = ""
+        fixture(path, [row(None), row("=2+2"), bad_id, missing_question, row(True), row() + ["unmapped"]])
+        book = importer.read_workbook(path)
+        return {"fixture_class": "synthetic XLSX generated by test_import_stapfer.py",
+                "fixture_sha256": book["sha256"], "original_fixture_persisted": False,
+                "rows": [importer.rejection(r) for r in book["rows"]], "provider_calls": 0}
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--receipt", type=pathlib.Path)
+    args = parser.parse_args()
+    result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(ImportChecks))
+    if args.receipt:
+        receipt = rejection_receipt()
+        receipt.update({"tests_run": result.testsRun, "failures": len(result.failures), "errors": len(result.errors)})
+        args.receipt.parent.mkdir(parents=True, exist_ok=True)
+        args.receipt.write_text(json.dumps(receipt, indent=2) + "\n")
+    raise SystemExit(not result.wasSuccessful())

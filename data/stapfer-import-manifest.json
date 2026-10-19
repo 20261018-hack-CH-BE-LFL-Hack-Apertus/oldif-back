@@ -1,0 +1,893 @@
+{
+  "schema_version": "1.0",
+  "row_hash_scope": "canonical JSON array of first 12 raw cell values",
+  "canonical_json": "UTF-8, ensure_ascii=false, sorted object keys, compact separators, no NaN",
+  "files": [
+    {
+      "file": "export_antworten.xlsx",
+      "sha256": "766c58b65f108a31b60caac55d836ba3a1baba74afe89a1d36ed916031056557",
+      "bytes": 104755,
+      "sheet": "Worksheet",
+      "data_rows": 105,
+      "accepted_rows": 105,
+      "rejected_rows": 0
+    },
+    {
+      "file": "export_antworten(1).xlsx",
+      "sha256": "624b0438d3cacf6d597d9c51bc15077c585bc5f9a721eecfa4efb82fa653fcae",
+      "bytes": 1572579,
+      "sheet": "Worksheet",
+      "data_rows": 14801,
+      "accepted_rows": 14743,
+      "rejected_rows": 58
+    }
+  ],
+  "legacy_source_file_sha256": "18a98b5d27ecb204117fb181768b90baa42b4f49eb03d19cdf41f026ee6590e4",
+  "legacy_sources_unchanged": true,
+  "legacy_row_audit": [
+    {
+      "id": "stapfer-2027",
+      "legacy_record_sha256": "390853416efd296bdd4bfb1efec937b0a77669392728fbba2b25b212bee12dbc",
+      "text_sha256": "ffcb8050b1895e5db11892fc46701c3e332f75202ebbd5ecec433758dde5184e",
+      "locator": "export_antworten.xlsx#Worksheet!A2:L2",
+      "row": 2,
+      "row_sha256": "b2e15be8b2e031cc1f7932d3e829ae4eb0796d54277673e14af5e9bdc49c7a37"
+    },
+    {
+      "id": "stapfer-347",
+      "legacy_record_sha256": "11ae741fecf6ccaadbea83ddbe13dd4964a56a4d69c2bc83f612ca81aa82ef9d",
+      "text_sha256": "9bdfe6a9b59a1d0368d732e412acd63f7cb705ab7832f25d6f2fe26f96523952",
+      "locator": "export_antworten.xlsx#Worksheet!A3:L3",
+      "row": 3,
+      "row_sha256": "57ddc7f934dd8c0eb9be76be2b10241b1988b3d80ad8cde0960c9979bceeb51e"
+    },
+    {
+      "id": "stapfer-1933",
+      "legacy_record_sha256": "a834dbb604dfb31e348d1c29c9920ae776b763edac461e88482bd05dcd4eea30",
+      "text_sha256": "6cd5fba3f3f9339d3e3e340991646acb4530585db35ea10a4413db487be87cfa",
+      "locator": "export_antworten.xlsx#Worksheet!A4:L4",
+      "row": 4,
+      "row_sha256": "4deed80f6bbac9af443919480ca6c66a5f5b1a971a0de373f8e9bdfe19eba8fd"
+    },
+    {
+      "id": "stapfer-1935",
+      "legacy_record_sha256": "59f7226cfefb31b959f41ae92810a24df67e0e41b519d7a659fc64472fb5bbc4",
+      "text_sha256": "31e7b731e34df8b421a2866548b41f0e143180320352464564030c37308c31da",
+      "locator": "export_antworten.xlsx#Worksheet!A5:L5",
+      "row": 5,
+      "row_sha256": "a3cc35e3ea60e9c198ceda13d49d518bef0c925abccb9559f69aad011b3282d3"
+    },
+    {
+      "id": "stapfer-2041",
+      "legacy_record_sha256": "93f8e2c66c6319c4bbd7dc039786dbd64b6d8f254b67efc2038bdd9c1f94f500",
+      "text_sha256": "90dc4a292f6d54837c2841978f9812794ebd21adb4705c6ba872dd673af2d845",
+      "locator": "export_antworten.xlsx#Worksheet!A6:L6",
+      "row": 6,
+      "row_sha256": "1121775f71abe6e6ca6a7bf829aaf679bbf09cd5406c132814ab4d1f33d7173a"
+    },
+    {
+      "id": "stapfer-516",
+      "legacy_record_sha256": "74646d88adfd148b5587dcdc39e5965e7a8ccfdfb397f1c6007294bf5357bfaf",
+      "text_sha256": "aded5f82c186c12ca621c7c49a121040099e9c73c3cd29fe4994a6fc643951f6",
+      "locator": "export_antworten.xlsx#Worksheet!A7:L7",
+      "row": 7,
+      "row_sha256": "ef9ec61983a52657d4c8cf93642085303c2e2b79007d87f7bef0722fb1f8d3e5"
+    },
+    {
+      "id": "stapfer-2255",
+      "legacy_record_sha256": "42391f60452a79dfeb8f81d3b3a1d74711f2b0fecef908be07ddfee4590ce204",
+      "text_sha256": "ed4de093223447303f01b001cb2f27d8a5dbd424ffaebbefd124cf6a2ba50528",
+      "locator": "export_antworten.xlsx#Worksheet!A8:L8",
+      "row": 8,
+      "row_sha256": "e079fab2b60765bfbbc2c728b85ed51836faafc74e1039da80639bafe6b20f9f"
+    },
+    {
+      "id": "stapfer-2331",
+      "legacy_record_sha256": "5d3941853d4d40a6569626e5a786a222f648fc51ef85148df2b2e4e53617d010",
+      "text_sha256": "830a68765e2fbe41a6bdb2dbdd49ca116069a1607b8f0ea34b48f93da213138e",
+      "locator": "export_antworten.xlsx#Worksheet!A9:L9",
+      "row": 9,
+      "row_sha256": "859ee1a2c595dad0c44d75327afd504fb922f7fb3e7cfaa2aa2b624247a8144a"
+    },
+    {
+      "id": "stapfer-2333",
+      "legacy_record_sha256": "7ee34501f3b1e5e646e9f3ad7cd64771e07ccd8fc4e7d20a7200f28bbae5df02",
+      "text_sha256": "f31d5e7b52da4351261401e03f9802f190885d261d9f26e32bef09363f16d14d",
+      "locator": "export_antworten.xlsx#Worksheet!A10:L10",
+      "row": 10,
+      "row_sha256": "3957e308b431cfccedbcdca23b8a8ebb122486d9f496c913f17f477a7b47f36a"
+    },
+    {
+      "id": "stapfer-2205",
+      "legacy_record_sha256": "108e1ad8a8e1bf7db4e4474b4b2bcfc8482f1899e7c66c9ac1b2b01ced403a89",
+      "text_sha256": "85265c20f0a8f2d4513a0b07966fd6026da0fa84ad2b905d55b59ae848c54430",
+      "locator": "export_antworten.xlsx#Worksheet!A11:L11",
+      "row": 11,
+      "row_sha256": "ce06f49bb1bf295cc531a2a8fab8ca3b4507fee7ad1f41d5163d17631c5298ab"
+    },
+    {
+      "id": "stapfer-1209",
+      "legacy_record_sha256": "08144a44d3abb59c9a6c7fc26b16867a4ed830726e63b1183078ba8c87e08f16",
+      "text_sha256": "a670a98e9f8c52b41712da1fb1f5e3cc878b2fd7807bd5075ac2954adc750ee7",
+      "locator": "export_antworten.xlsx#Worksheet!A12:L12",
+      "row": 12,
+      "row_sha256": "69dc4dc553daea9bf0dd1dcac7a389f98fdcc8d71bb01d788363a92bc98274e9"
+    },
+    {
+      "id": "stapfer-349",
+      "legacy_record_sha256": "eccaa022c33c6a7d217c454649a5bd26f91670075f7fea965ce48f5998396f5c",
+      "text_sha256": "b8c41954be9de4e2f6d0f7c3203088429f46fa306dbef73faa676cdfc88989bb",
+      "locator": "export_antworten.xlsx#Worksheet!A13:L13",
+      "row": 13,
+      "row_sha256": "e69bc3d518f4bf6b2a75523ec731e7b5785e32ed6a35b686ef1c68ac462a9cb1"
+    },
+    {
+      "id": "stapfer-2278",
+      "legacy_record_sha256": "d093da417fa9d43cf8e8c4cd79a5022e1ef153799cf74e08844aff3e74584df8",
+      "text_sha256": "5151d76b2cd165471141d37cefbb77a2f545220614d7eb382c12a8f13652b8ae",
+      "locator": "export_antworten.xlsx#Worksheet!A14:L14",
+      "row": 14,
+      "row_sha256": "4f5541f77c5c644c75a3362810b44dd33a67ada741ae32596f83217a760f1b78"
+    },
+    {
+      "id": "stapfer-1060",
+      "legacy_record_sha256": "3635246a58e4b6b8689a9d43d7a704babbda9d3fdeff94f71ae17ffc45a4a3e2",
+      "text_sha256": "b96b7309df20570f8263c106027db9bb86a92c2107980311a74cbff75d721bdb",
+      "locator": "export_antworten.xlsx#Worksheet!A15:L15",
+      "row": 15,
+      "row_sha256": "d8bfa70ac9f44aecb9b5d8c467d8edc02ce581e4025377ead4bbf9b7bd529591"
+    },
+    {
+      "id": "stapfer-485",
+      "legacy_record_sha256": "ac9d77118bef9f49080bde47c4c5e6ee42caf3bcbc15d79ffedd7ab442fbda13",
+      "text_sha256": "0c5aa3763be9ee25e931460e668b660813c8cc261bfaa51f0dadfe24ef3e1922",
+      "locator": "export_antworten.xlsx#Worksheet!A16:L16",
+      "row": 16,
+      "row_sha256": "7eb7bb74b33d837c7ea166c2ce08d6d249a86ed1be0dc57f1ace46271f95d23c"
+    },
+    {
+      "id": "stapfer-471",
+      "legacy_record_sha256": "8d952a6431f42b58f0cbe25e2680beeb80c9fd67af34998a4f7569f7790e2867",
+      "text_sha256": "e8422357745071af457a3d1328704ce20be5c05e37aad807b622a4255dc807b8",
+      "locator": "export_antworten.xlsx#Worksheet!A17:L17",
+      "row": 17,
+      "row_sha256": "ef9a329edfee668c3bde415630c498ab31e77ef05c280005e93a7f818bf3bb43"
+    },
+    {
+      "id": "stapfer-1053",
+      "legacy_record_sha256": "6db13fb578a40b2414867f9c28de7dd3497a57881acd37a6af4ad12c33e1cdf0",
+      "text_sha256": "3f6114d0c2247f1e5c989829f22d299136a0ce87c44c5a3112e7199f1c0bbbb6",
+      "locator": "export_antworten.xlsx#Worksheet!A18:L18",
+      "row": 18,
+      "row_sha256": "ed9248c22c4653d606870b12ba5ea966852de32c95b87e9a64cc878927d50939"
+    },
+    {
+      "id": "stapfer-1645",
+      "legacy_record_sha256": "ab12aab9625894ed2664229a81f2b8e42c49316ffe0145eec932b462399b5f58",
+      "text_sha256": "e0e478ec036feb4a4a2e494217a9e6229a4f0d90677aba7caba0b457034f2973",
+      "locator": "export_antworten.xlsx#Worksheet!A19:L19",
+      "row": 19,
+      "row_sha256": "50df3ebd2651e009e0dd4f26415a1470868f673e0c44d95f092a28f88fa0a49a"
+    },
+    {
+      "id": "stapfer-1634",
+      "legacy_record_sha256": "4697897badf8645ef924a28a9d5a9f1ed6befe52a14f8d32ba8844705558a8d8",
+      "text_sha256": "e1b6e964830a85be5900c5ecbcb1faead17afa261eadf7c3284f94db98e69b4f",
+      "locator": "export_antworten.xlsx#Worksheet!A20:L20",
+      "row": 20,
+      "row_sha256": "5ea1d475735dde4321d5053236d5617dd210376e4e9e580a674acafeb2ab5337"
+    },
+    {
+      "id": "stapfer-2241",
+      "legacy_record_sha256": "03f2eb03b10c55def5404ad4a2066e740db50647ce76231c79a8033518bf23f5",
+      "text_sha256": "edcd1a2eed1264c04c5afbd19d75b841e4a5a7ad0f31d2c3b86247cb56879263",
+      "locator": "export_antworten.xlsx#Worksheet!A21:L21",
+      "row": 21,
+      "row_sha256": "ae979d94a83ba3eec0589e7e570ca84ee6383aeae52a9993eb557418d4ab6cbc"
+    },
+    {
+      "id": "stapfer-161",
+      "legacy_record_sha256": "d10e6258216c5e836d2a812907965326aa1d608dfa9a304f13ef4b8f0bf66da3",
+      "text_sha256": "c4079ba625cbec8b13a73466b817a04186a689e86d924407286f04524c2ab34a",
+      "locator": "export_antworten.xlsx#Worksheet!A22:L22",
+      "row": 22,
+      "row_sha256": "462d191b055fea0ec7a7aaf0d12dc4f484949fb547591e4de2a76ae97025475d"
+    },
+    {
+      "id": "stapfer-1142",
+      "legacy_record_sha256": "5e74321f5f483fcc21973aa7693583075bb5b98408d2cca148e3f0690d05815f",
+      "text_sha256": "a58a2e5ec5fbac13401de6e803e77479c3ce6cf8fac2347578c43eac9dc5999b",
+      "locator": "export_antworten.xlsx#Worksheet!A23:L23",
+      "row": 23,
+      "row_sha256": "0bb3fd015fe3e9afd89fbdc104e78ad5005201ea401f5684a14822f24cb71492"
+    },
+    {
+      "id": "stapfer-1188",
+      "legacy_record_sha256": "d399faf277f24c76f94aeef9ff8572cb27dddd861d712703c48841382f715a33",
+      "text_sha256": "b031bc5eff468a69192b2aefa6ca6f94cd308f9b0e63310464428d5d92865aef",
+      "locator": "export_antworten.xlsx#Worksheet!A24:L24",
+      "row": 24,
+      "row_sha256": "03e67e225cb4b56a88887f62fc57f96ac69ea1cd09befdbc97058794326b5f59"
+    },
+    {
+      "id": "stapfer-2262",
+      "legacy_record_sha256": "93e363ad86b94c82f3a13f34c4ee8ccae0d31b7b0c55b732480f07efaa656b11",
+      "text_sha256": "cd97d819bfb10e36d0c4240a4d08e60556e16044db6242d603058cc5f0748195",
+      "locator": "export_antworten.xlsx#Worksheet!A25:L25",
+      "row": 25,
+      "row_sha256": "989d7cbc0d000eeb424ef428dc0bd0c68878f8fdca4410f79671c5ed3f288360"
+    },
+    {
+      "id": "stapfer-129",
+      "legacy_record_sha256": "6c57d67cc23d6978193e182e969859aaefa17b92761ea6d4e49b2c599e25378f",
+      "text_sha256": "56eb74a6671f6bd09e8cdf40875c56c6c461745912f60950d71536d71cadd256",
+      "locator": "export_antworten.xlsx#Worksheet!A26:L26",
+      "row": 26,
+      "row_sha256": "82394a7e5b3e8294f4deaca2d26c5f3e75748e8d226155dc6bac9e18a0e85bde"
+    },
+    {
+      "id": "stapfer-790",
+      "legacy_record_sha256": "d02bf064d45f74e90d8245d42211b3e43d82428a5e985d56524f8ecf9f265c59",
+      "text_sha256": "8f737e66b29c6b8a66d861277bdfdea6bb163853b2dee602867d2e6f87933d45",
+      "locator": "export_antworten.xlsx#Worksheet!A27:L27",
+      "row": 27,
+      "row_sha256": "5e24ddf52ae2c5fd95089030d6bd771ff3b214a133d469f567c551676b5764b0"
+    },
+    {
+      "id": "stapfer-254",
+      "legacy_record_sha256": "3f90c2e4ab78b6fe93450ab0d717cdbe71161359bd930a534696b26bb28930c3",
+      "text_sha256": "57331067878a42448e981c439dad62b07b02ba7c09b2a98ddebb3b30cb273b12",
+      "locator": "export_antworten.xlsx#Worksheet!A28:L28",
+      "row": 28,
+      "row_sha256": "89c4c798c631b0c67854df2b5a437a18041cfad35fbc7568fe5c2fe6813be50c"
+    },
+    {
+      "id": "stapfer-355",
+      "legacy_record_sha256": "d24012acfb6f887d99a79016b27a007df8418666135eab43c01150fdbf9e3599",
+      "text_sha256": "7dfda522ea52e762cb5a0cede75895b83bee692f0441fb73b791fc5574ae1361",
+      "locator": "export_antworten.xlsx#Worksheet!A29:L29",
+      "row": 29,
+      "row_sha256": "18bf7e900dc1a013849526f1dc1ebf4c7769e5c2632287cdf1776170cacdd77a"
+    },
+    {
+      "id": "stapfer-2165",
+      "legacy_record_sha256": "e74862df20dd825c51a03e4a76269977c6b0c6903ce31e9bec5cb593852bed78",
+      "text_sha256": "3538ee2c4838a3c0ff5ab4804545dcd89ac674f6b780add3c2b1206fd1884ed7",
+      "locator": "export_antworten.xlsx#Worksheet!A30:L30",
+      "row": 30,
+      "row_sha256": "9aef62ddd72cd59eaa2a4a715dafe913e6fa160bd75cba26f2cb7bc1c220cd58"
+    },
+    {
+      "id": "stapfer-1144",
+      "legacy_record_sha256": "88dcc94477f186ab88200111621840c05d51cae45e4747aa5a5ecc0f83aa273a",
+      "text_sha256": "d0b2e210e732177718d438b4a1b047b5a415d5400ee71759b8286e177d6ea80e",
+      "locator": "export_antworten.xlsx#Worksheet!A31:L31",
+      "row": 31,
+      "row_sha256": "5c95fb73ce681fb7f4c1c890b5e38a0aedf8f57a12e67babb8e0800d59745d1a"
+    },
+    {
+      "id": "stapfer-2399",
+      "legacy_record_sha256": "5b1c0e7c6860640795f0406c4e8e2412e032de01ab6c1f08d0a0c7e48445a1f8",
+      "text_sha256": "494a8c82775972d19f25d9edc2c5151b938338b5a8feeabca0bce0f3928cfdef",
+      "locator": "export_antworten.xlsx#Worksheet!A32:L32",
+      "row": 32,
+      "row_sha256": "05fea39c0401af303a812e3043b9b81f604c18a57e7542f8743a0f41e62a3e1f"
+    },
+    {
+      "id": "stapfer-2294",
+      "legacy_record_sha256": "ea8ff165ab891af475ce9f2544ef1ee1ade8b39eb549a475de494a43ed220afd",
+      "text_sha256": "8b4811ade2b3dcb0a2809e724c1061bd29426e8a2603247ca3c68357d743b3e8",
+      "locator": "export_antworten.xlsx#Worksheet!A33:L33",
+      "row": 33,
+      "row_sha256": "782f41813cea2f5278892c0e618bede9bb02b5ce2878a0e630b2fdd0f0960445"
+    },
+    {
+      "id": "stapfer-2371",
+      "legacy_record_sha256": "1e5c9417ab7dbbc611e2fc5fd9d11e683fc6d87b50cdb853cb55d3254688903f",
+      "text_sha256": "04039ab23708c930c7d8d1f6f3a8427108500999fed423de4146b3f79eacf163",
+      "locator": "export_antworten.xlsx#Worksheet!A34:L34",
+      "row": 34,
+      "row_sha256": "cc4ed0293f2d05def5d57708065d6929abeeb27a36d4b78a615360446fbce865"
+    },
+    {
+      "id": "stapfer-1670",
+      "legacy_record_sha256": "75f3ad6dda6d08fcf419cae692fc9022cb9c4eb0a5759d843113e130fa1f452e",
+      "text_sha256": "e5bcd5c9af89f1246cf0cc7f6520b8c5dce29aeffdfbb65338d150dca5b07bf3",
+      "locator": "export_antworten.xlsx#Worksheet!A35:L35",
+      "row": 35,
+      "row_sha256": "6ad36db09b805425b4031a2c514f5bcb4161dc03ba746d966a56b78804565cc6"
+    },
+    {
+      "id": "stapfer-424",
+      "legacy_record_sha256": "3e20f870d05619dcdd7bf2f2620b154a071ff7e393ed58461cb5ca48f57d69b6",
+      "text_sha256": "93c23ce696366c5195e5b32c4c60c51ccc9106df65b3b2d2eccdc99c028344b4",
+      "locator": "export_antworten.xlsx#Worksheet!A36:L36",
+      "row": 36,
+      "row_sha256": "0da43b8e19fabe5b2c17072e0c607c9749d657aa108a99383b90dd0e903008a4"
+    },
+    {
+      "id": "stapfer-432",
+      "legacy_record_sha256": "5cc768b20920d1eefb26a37e3f79285032328ef12187d24a805582194759e8d3",
+      "text_sha256": "4dea534f494f477526afec34313095a6a41c7078489d7d118ea91e8df5064525",
+      "locator": "export_antworten.xlsx#Worksheet!A37:L37",
+      "row": 37,
+      "row_sha256": "d6b64252666b63114a1b2de66a8e7978141565ae4841148a7a3c31a623fc3f54"
+    },
+    {
+      "id": "stapfer-1212",
+      "legacy_record_sha256": "e6ed1b56ef247509d08cc4b207396dfc008788a0b26d1e35896926ff4c90ccbf",
+      "text_sha256": "3ee774893c39447a5ac6af2a88b973ad4849736a19acbcadb3d6771817e8144e",
+      "locator": "export_antworten.xlsx#Worksheet!A38:L38",
+      "row": 38,
+      "row_sha256": "93408de7913b91eac6975418df4b8c1994c9b28ae653e8034a209992874f0bb9"
+    },
+    {
+      "id": "stapfer-397",
+      "legacy_record_sha256": "7ba150f879ae26f2109d60f75d4297e501c8ff16ef2771114f8200db8ff20366",
+      "text_sha256": "3ba319863520815f76616a572b6307270639b0cb19b6251e6978dbc72c8303e8",
+      "locator": "export_antworten.xlsx#Worksheet!A39:L39",
+      "row": 39,
+      "row_sha256": "08b989d1f7ba4c5c69dcefc24481da0f5568271f91d1e47d85fa8503f598fbc5"
+    },
+    {
+      "id": "stapfer-551",
+      "legacy_record_sha256": "533484d8bd1610dab98b827e9420d8b860b0127752071ed35974033ecc8614dc",
+      "text_sha256": "0bd62aa3ef1a49085ed8f8097d3d1a8e2da4d4a131d9cf4e268fa272e2b6b805",
+      "locator": "export_antworten.xlsx#Worksheet!A40:L40",
+      "row": 40,
+      "row_sha256": "f28215cdc948213ff9ef47154f601bc5334428debf2560d7c1734b2a357cb972"
+    },
+    {
+      "id": "stapfer-1999",
+      "legacy_record_sha256": "d36ea1a367c74fa7f7b911206cf54ff680ed094dddfbd95840e48564c4b57e80",
+      "text_sha256": "a13fa7c191d34c543420eb24dc311fdac105d8e6a975d642dd4b6005efa057cf",
+      "locator": "export_antworten.xlsx#Worksheet!A41:L41",
+      "row": 41,
+      "row_sha256": "ed761db679d91bee6b15998a9d226d271947cb740de68f169dfbe6b46e6e6c9c"
+    },
+    {
+      "id": "stapfer-90",
+      "legacy_record_sha256": "6dc11e149ece533cb658369f304c1fbb34edcd7dbfeda5c9467845edd190125e",
+      "text_sha256": "80cec052369e3a97a16d4a10fa9ea1d5388c9fc712185ce4f58fc11bfdb2084b",
+      "locator": "export_antworten.xlsx#Worksheet!A42:L42",
+      "row": 42,
+      "row_sha256": "58c6b39575069f4d97150367e0a3ce9c6f6f5bf9910557ced99302be9b8669bc"
+    },
+    {
+      "id": "stapfer-75",
+      "legacy_record_sha256": "2151e715265936c2ae01defde68748915803e80ef9186f53f6af8c44a0ca9636",
+      "text_sha256": "f59222d9710f06dccd2e72caed9555d97f58f2205f6ba2457388f7bf13c828dc",
+      "locator": "export_antworten.xlsx#Worksheet!A43:L43",
+      "row": 43,
+      "row_sha256": "4145c5af74f9bc9e52e998ce291a1ec3bb068128a209e075220ccca190ea0dd9"
+    },
+    {
+      "id": "stapfer-1216",
+      "legacy_record_sha256": "0d4e169780426b09fa36ce7acf7359a0d42ba7eac210802f8c8e63258e7b41f1",
+      "text_sha256": "b5fc59d23a7bd1bdbfb8913333e8daca10cae820b59cd98158bd1a2829087f2f",
+      "locator": "export_antworten.xlsx#Worksheet!A44:L44",
+      "row": 44,
+      "row_sha256": "015be292bdc81d706385035e630b313906124c473bb3d066315e41761fc9e139"
+    },
+    {
+      "id": "stapfer-1217",
+      "legacy_record_sha256": "53cf19e92a094d6568d9b4d6b7c9dc26dffe059714af73db45353b51b29a0761",
+      "text_sha256": "82bab01de87189c125632eb71fcd445f37b7c39350540454c09efd31a61f2b08",
+      "locator": "export_antworten.xlsx#Worksheet!A45:L45",
+      "row": 45,
+      "row_sha256": "6504d96e42fdf4c264f7658c57d3c533ad38c29adda919f3520a3df723ff2c68"
+    },
+    {
+      "id": "stapfer-2310",
+      "legacy_record_sha256": "efaf1a7cdac06805a0e78e3a98242f81a9d647b6f0aa019d17a724903049b13f",
+      "text_sha256": "443fbd734dc5b3e7f23c9fbf1a716b9bab475dfe432b51dfa696f71b6fb2202e",
+      "locator": "export_antworten.xlsx#Worksheet!A46:L46",
+      "row": 46,
+      "row_sha256": "6bbee2358beb9ca2766b4d0de43f393b88e3248d4690e3225fd2b6132362240d"
+    },
+    {
+      "id": "stapfer-444",
+      "legacy_record_sha256": "173b95b924b18ae3344ac4161acefa1ae8b4328b4977427b5b486a80054f6f9b",
+      "text_sha256": "f687aa121587334aad5879fe73f01c9ed894ca73b8fc0bf98198d08b138be7ca",
+      "locator": "export_antworten.xlsx#Worksheet!A47:L47",
+      "row": 47,
+      "row_sha256": "c7ce7c9fda4e43dcf6c794b28c3aad74c7e7ab41e771e8defca5c962157d18c7"
+    },
+    {
+      "id": "stapfer-2270",
+      "legacy_record_sha256": "e9f0ea404d6f46ebcb445937b37463cef141e102725d1717f74f1864a9854932",
+      "text_sha256": "4f5f253989ec6092e20cf94658fe082738120b307ec2efb61574a440fdf060a1",
+      "locator": "export_antworten.xlsx#Worksheet!A48:L48",
+      "row": 48,
+      "row_sha256": "34923df66b25fea24ebcc060a3b83a23bf2e2eaa064c49ea8e7db717c0bb4db5"
+    },
+    {
+      "id": "stapfer-1936",
+      "legacy_record_sha256": "fa40f319c5cf73ab8b909c17c7ee38484e0e02fc452b0a3cf0bedac20d8091f2",
+      "text_sha256": "26a65e2ec7e22e44e7a2869609cd526e0e18a7d930d362b2dae8bf160d19f19a",
+      "locator": "export_antworten.xlsx#Worksheet!A49:L49",
+      "row": 49,
+      "row_sha256": "fa1a72aa7e5a621e57f2b9ecf40ae297a57e1d804ac34528085c3a870a7d772d"
+    },
+    {
+      "id": "stapfer-1184",
+      "legacy_record_sha256": "7e9030b5b3740aed66b56ffb59ed76a8ba79a14ee2925d6300b829215dd85c67",
+      "text_sha256": "643afbe22164215c32f5591704a931cc1fe5cc12e3c376c20944f4e4f742bda9",
+      "locator": "export_antworten.xlsx#Worksheet!A50:L50",
+      "row": 50,
+      "row_sha256": "34e7ba78a9aa1e2ad2b9e4777fde3cd5f6e2f9076155a0317f2dc51f6df6b28e"
+    },
+    {
+      "id": "stapfer-2016",
+      "legacy_record_sha256": "c0fd742c1b59ca81338a93daf6060bfc6f94cc705b232b1c6456e8e54d2039d0",
+      "text_sha256": "c562d75e7233e50135b08dc6003865872ade91a5bf5970dda60a732191430d66",
+      "locator": "export_antworten.xlsx#Worksheet!A51:L51",
+      "row": 51,
+      "row_sha256": "4d55f87d864b541764754cde64f3387d39ba193de937cd8be3625c8b8e87d5b0"
+    },
+    {
+      "id": "stapfer-2414",
+      "legacy_record_sha256": "f85e164f6061c48bafa109f5ebc7a3ff43ab81213a7354e937a52a0516241ce1",
+      "text_sha256": "55b1dcde344e542950bd1a92f4d42b20afb223bc6e2f7c5be70c319eee11b212",
+      "locator": "export_antworten.xlsx#Worksheet!A52:L52",
+      "row": 52,
+      "row_sha256": "f1a548574d4e174ed96be4b3b2b7cdecb449ea5e9d7d2a1479e888d867c1a042"
+    },
+    {
+      "id": "stapfer-2168",
+      "legacy_record_sha256": "993d94abc84f0c0f62296e8a1d4f5915df2427b8f380e9a22fdfd9b81d9ef538",
+      "text_sha256": "003717f5193c752b3da10904d2b936ff6f1052425ff059907079a0e0d1238d05",
+      "locator": "export_antworten.xlsx#Worksheet!A53:L53",
+      "row": 53,
+      "row_sha256": "8349736c3dfb9e737c379f5807556deb607d26d25b933f012e3e52902e0c90f8"
+    },
+    {
+      "id": "stapfer-2320",
+      "legacy_record_sha256": "6f4de7f7a6cc6fcda294e45fcab49c61a8a9aab5b4c4b8b97c92ed14995d98d8",
+      "text_sha256": "408124949052a794ae8fa81b72b7fd807143c9605959b53a423a46870d7f8be7",
+      "locator": "export_antworten.xlsx#Worksheet!A54:L54",
+      "row": 54,
+      "row_sha256": "443958f9fbdb9f3b51228e03691ceb8b0bb5a452d2971d3bc9536587e844092d"
+    },
+    {
+      "id": "stapfer-366",
+      "legacy_record_sha256": "d9aa5556d36c4898c79e4ab5b1c056a562e3728a7f145d939f999838104cc1c6",
+      "text_sha256": "9d6a8713fee239d4e890ebf2d98821dcc4fd2504baa4b0d68acf9474a8592d22",
+      "locator": "export_antworten.xlsx#Worksheet!A55:L55",
+      "row": 55,
+      "row_sha256": "f1ae93b69713129351695d8e6e4af6923d010d374590cbb71d32df2792fabfaf"
+    },
+    {
+      "id": "stapfer-367",
+      "legacy_record_sha256": "5947099f7b69fcaeeaa8dfd8bb3752025b2117b2fe24dd96c92c73d9407ef132",
+      "text_sha256": "06653ed02edd92e784f3e63bf99300fa69e2424d68dffef9cfe3ef040844a944",
+      "locator": "export_antworten.xlsx#Worksheet!A56:L56",
+      "row": 56,
+      "row_sha256": "e0ec731b37c23b81a8c57128f9cf32f0448db4d43de1d8dd2d0343a5bcf83b3b"
+    },
+    {
+      "id": "stapfer-2337",
+      "legacy_record_sha256": "e3031fa3b054255a4ede48d0839427b7e86e7152aed597aea65742086b5f1888",
+      "text_sha256": "2a6bb83c2bdb4f50eac27117bc6d6543f64838ea44f73124033e7594ef92d9a4",
+      "locator": "export_antworten.xlsx#Worksheet!A57:L57",
+      "row": 57,
+      "row_sha256": "997d087830d828b096da693387e07841973c8c65ddd179aa7cd73fb9dbac025d"
+    },
+    {
+      "id": "stapfer-2169",
+      "legacy_record_sha256": "e30f9fe170e424bd5feedcd205c0a6b431c6d23fe450ae084c3e8951f6cad806",
+      "text_sha256": "3d1cff18056fb318f39bc1a257ea7c2b2262a8808e168e704b383c6a748da389",
+      "locator": "export_antworten.xlsx#Worksheet!A58:L58",
+      "row": 58,
+      "row_sha256": "293f1801911c5a128fd32f70e83ad2fac961d2a565308c9dcd00284bfa6f4aeb"
+    },
+    {
+      "id": "stapfer-2531",
+      "legacy_record_sha256": "8a8dd278512b6e6daf72f5e2358b6b7ae1613350d1de14c786144c87154774e8",
+      "text_sha256": "849f173c6cab26ac8505ff507e23ff610c9566ff32a66b82c569e6a14ba8c5db",
+      "locator": "export_antworten.xlsx#Worksheet!A59:L59",
+      "row": 59,
+      "row_sha256": "c13b4f7fcbc6c56ebbf68499af6214c6cb81743501d17f47dbad7f5f827eded3"
+    },
+    {
+      "id": "stapfer-1673",
+      "legacy_record_sha256": "bdb5b4c97a44471ad466d3548cd91e6da40c1ad81ad130158efae1037e0713bb",
+      "text_sha256": "a1847cb685b2b1b97bdf456d9a25b389eca3eb756fdfc45e9f6392f3cf5db409",
+      "locator": "export_antworten.xlsx#Worksheet!A60:L60",
+      "row": 60,
+      "row_sha256": "93f6f0b0a882ef36af0c7847eb3e0f996e7c1b253e19d21c17f4add478dd5b34"
+    },
+    {
+      "id": "stapfer-1154",
+      "legacy_record_sha256": "6cfd09c6339f7efe7c1c357e1546079ff8e04e1b3364e24622d876ce07db7226",
+      "text_sha256": "395d3f7a9d858855c1b0192bf0363379370f7617d74593abc10d6f02a9743e23",
+      "locator": "export_antworten.xlsx#Worksheet!A61:L61",
+      "row": 61,
+      "row_sha256": "c1e7b4a14afef9535884be0d4257b3782e6103aa0b506267adb8dd1f8440fbbc"
+    },
+    {
+      "id": "stapfer-2251",
+      "legacy_record_sha256": "90b53b49cbb27535030c5763e7a33b8db4b9e171c2a49e255d46f7e9cdc7a44c",
+      "text_sha256": "262936d89f401a3cc31edc3ea1fbaac7132ae1c5a7ef182be30a5b11f414777c",
+      "locator": "export_antworten.xlsx#Worksheet!A62:L62",
+      "row": 62,
+      "row_sha256": "fc812cb3adae22b00c5154bdb7f99c55b9650dc4ea74b3b2d3d421613120b012"
+    },
+    {
+      "id": "stapfer-2401",
+      "legacy_record_sha256": "b7786ea8062ecce85c67d78e8d166410c745962e8add7fd2ee5b355ab2c5bc3a",
+      "text_sha256": "d9ad213727d113627a480705ea28923dd4b411c6a98d92d963621b22bba180bf",
+      "locator": "export_antworten.xlsx#Worksheet!A63:L63",
+      "row": 63,
+      "row_sha256": "f493e017571fa493720ce3af321cabf78886e6bdcf6bfcc18e93d996588a065b"
+    },
+    {
+      "id": "stapfer-498",
+      "legacy_record_sha256": "3f19f7f40154f3ad7475af53dd324887a579d22d13943245f93a202b39bc299d",
+      "text_sha256": "4da42a616c746c52cef2dfed27f885f10268af2b076cc80fea37683c2c72f277",
+      "locator": "export_antworten.xlsx#Worksheet!A64:L64",
+      "row": 64,
+      "row_sha256": "86bb8af9868fd414167e016051cda1c96646c2f2d5b2913eb0656270df4b4348"
+    },
+    {
+      "id": "stapfer-826",
+      "legacy_record_sha256": "d95e4bfdf85dabe3e34554bb191d95d05bfedc6d9de84b9a21ebc525a1663447",
+      "text_sha256": "f2c0ccdaf76676ba33edc436a30e5708123c548e0abc1896f5779ad8caa36e38",
+      "locator": "export_antworten.xlsx#Worksheet!A65:L65",
+      "row": 65,
+      "row_sha256": "e60e68371a9f69afe7b0bbfbc49d102b6ff95678d4bfb3cc561d101ccac7eefb"
+    },
+    {
+      "id": "stapfer-2326",
+      "legacy_record_sha256": "c2cd67b5ab5ef1ca15614e058a90b3e727f3a7819122a019e7a1d4a6a926d3ba",
+      "text_sha256": "523b9188447a77fc62804ec3283f77dd7d24c8d078753bf568c5a00f905bbfb5",
+      "locator": "export_antworten.xlsx#Worksheet!A66:L66",
+      "row": 66,
+      "row_sha256": "2b580f169c98809e233b275bd0f938aaf81655e6d2380809d9cdaade4321e3bc"
+    },
+    {
+      "id": "stapfer-2279",
+      "legacy_record_sha256": "d7f52713e26e257c11ddb5c6eeb8d2436169a9c6b8820ffe0ff0723a8168b7ea",
+      "text_sha256": "139a62f03a312f697c8ab27e1c3220c6190cfa347013c01818883a9b0b000ffc",
+      "locator": "export_antworten.xlsx#Worksheet!A67:L67",
+      "row": 67,
+      "row_sha256": "9ea4699ecf8fa9e2fd407747899b24a7505dec468b7122f633c68ad7b58cdfc4"
+    },
+    {
+      "id": "stapfer-621",
+      "legacy_record_sha256": "616ec4ff2e87c39ee955da8bd3daafc8b43d1b7995fc559a5c14aaee86186259",
+      "text_sha256": "a2a9493dd68fd366bd3dc024696f2d9e9bb0868e0be233e38ceccecf57850bae",
+      "locator": "export_antworten.xlsx#Worksheet!A68:L68",
+      "row": 68,
+      "row_sha256": "6f148f335c4ee6fa1252764a6c0a4b81bcbbd0f4592f3d36e9f29ea66ccbc9eb"
+    },
+    {
+      "id": "stapfer-2527",
+      "legacy_record_sha256": "e21f5d8e54761d23c26e1bda47ee2503d6c3dea2d1ada922b170db660aa2b3e7",
+      "text_sha256": "d12f7f1150368c76f61dac1d91947bd69482e1814f3884887d67486c40cc8580",
+      "locator": "export_antworten.xlsx#Worksheet!A69:L69",
+      "row": 69,
+      "row_sha256": "d2ed87d2dccab62107d94b804ef98bc354bd3f9ecf74a9636af308a84c600c9c"
+    },
+    {
+      "id": "stapfer-1922",
+      "legacy_record_sha256": "320e429000d583080bfe9be8b528f1c4a4af0e44dfe1d088fbee43676fa5b9e7",
+      "text_sha256": "8c031b39b64835b04b9939bf48a3a1285b4771df476ee2fa7d36546b3e62d99d",
+      "locator": "export_antworten.xlsx#Worksheet!A70:L70",
+      "row": 70,
+      "row_sha256": "5f8a69a31b04ba1122d510bfeb2e174e6db6faed0b1c606cbdae82fcc71ebe79"
+    },
+    {
+      "id": "stapfer-1643",
+      "legacy_record_sha256": "8a0a69b23a1a1b29ec938279a3287442fb0a8d8ffa3e348e1c38bdb6583ef8ef",
+      "text_sha256": "01d8ad57b32771ffc0042e850e8fab6f8b073e4ff3dc886a00a846528435fa10",
+      "locator": "export_antworten.xlsx#Worksheet!A71:L71",
+      "row": 71,
+      "row_sha256": "6a5dfccfa182aacc973eecc15b9fae5cbd2396fda5ff909265c3433d7346ccd2"
+    },
+    {
+      "id": "stapfer-1227",
+      "legacy_record_sha256": "0d9cade11f08ecc1d23f69d0c28fb4d6528eaffb70663e3462db8ddfab1bab17",
+      "text_sha256": "f74580aa774778901d47d0b950a2ef5c6377647cb84900d9caed41e0f0f91f58",
+      "locator": "export_antworten.xlsx#Worksheet!A72:L72",
+      "row": 72,
+      "row_sha256": "e18fa34497e9c9b2ba85cb412e165f5dee9b91191857f9b3bd6989cd6603dbda"
+    },
+    {
+      "id": "stapfer-1175",
+      "legacy_record_sha256": "4f576a242bb69fb767e08436b59166e9839cd22878bd94571cf089f2ce348732",
+      "text_sha256": "e73b0e72983807311904fecdef08996b982877bdd91dde8803d1831743f90b90",
+      "locator": "export_antworten.xlsx#Worksheet!A73:L73",
+      "row": 73,
+      "row_sha256": "c33b04a8856f273e8b58e3ea57363f5fa6d81147299f4a4c4e7021316550a39a"
+    },
+    {
+      "id": "stapfer-2525",
+      "legacy_record_sha256": "b8751ea0341a3a8ab0478bf4f109551e048556386a433324eab7cb4f9f0e3e32",
+      "text_sha256": "361a2aa834ce6edfb20cfafeda6c8b2a5c16d7ca980f69342c6f7f1603e3b0b5",
+      "locator": "export_antworten.xlsx#Worksheet!A74:L74",
+      "row": 74,
+      "row_sha256": "a388696f2f05d1e1ede2ce3d835dcb22122c6d3996d9eafa02299fb13a5c35a0"
+    },
+    {
+      "id": "stapfer-1027",
+      "legacy_record_sha256": "b2741765f43cc4f263c7b022534faee1e095be969a7c522a38b83dba30511eb6",
+      "text_sha256": "615280404aae90f53e50172b9acd2cebe72632d38b215921fe8cdc1b15807568",
+      "locator": "export_antworten.xlsx#Worksheet!A75:L75",
+      "row": 75,
+      "row_sha256": "87a2f305f081d676b175e0035b0ccf173290600bcbd5ba15ef6cbf211be0fdc2"
+    },
+    {
+      "id": "stapfer-1025",
+      "legacy_record_sha256": "f991c605bb9e19b61d594fbfd1282d1601128224b0fb89eb8e2b6b8d3b492e83",
+      "text_sha256": "a7a387799742ca32520c9045dc4271846d3f895133b46af07a5c08cb20025458",
+      "locator": "export_antworten.xlsx#Worksheet!A76:L76",
+      "row": 76,
+      "row_sha256": "ed77725a572fa04f982a2759a2780f938308266013c509a235481cb4991f4444"
+    },
+    {
+      "id": "stapfer-1029",
+      "legacy_record_sha256": "dd0a2505350b8af7c0517ceca412bec964767fcde4d6cf29a8cc25e71536845b",
+      "text_sha256": "4bd77b62dcfa4a1e9bb1ee6f85a4dd9b2fa41b355bbe3307558e64332130559b",
+      "locator": "export_antworten.xlsx#Worksheet!A77:L77",
+      "row": 77,
+      "row_sha256": "c09cac4112d1e3a7735541a3156779265d4b2e003d8a200e85e358fa58636e5c"
+    },
+    {
+      "id": "stapfer-854",
+      "legacy_record_sha256": "9efe7e62b72c20a8330e8ffc88483073f6eacf78c1a475b807bf5dae36f4e9da",
+      "text_sha256": "6bca374c759c3385261c64a00c17578070b5f3282bbe60764b65c8a1103e56f3",
+      "locator": "export_antworten.xlsx#Worksheet!A78:L78",
+      "row": 78,
+      "row_sha256": "46d04ce2fe4b0bf97526169841c6178b26043d77b43dbf7c36ddbd100aee0323"
+    },
+    {
+      "id": "stapfer-1947",
+      "legacy_record_sha256": "59bc12bbea72ff894dc14a106929603a8204d5a0b2a2e5c9c364516dca50e955",
+      "text_sha256": "90ac12629d0154e891b1da5124999202653e1c3e7deb2a9ed0ecabc953c3f231",
+      "locator": "export_antworten.xlsx#Worksheet!A79:L79",
+      "row": 79,
+      "row_sha256": "c0444f7e096908d037401a473a2d1313625ec8e5db0602ca9f7d4afb703b755f"
+    },
+    {
+      "id": "stapfer-2384",
+      "legacy_record_sha256": "c2f6e62a07e11f0e3b88f8822cc1355cd688f3558896abfe71722f81e04d7045",
+      "text_sha256": "947ed836875d3eb2f6b3e515a2dcd44a25206e252a56862ee107b572f20a2bc4",
+      "locator": "export_antworten.xlsx#Worksheet!A80:L80",
+      "row": 80,
+      "row_sha256": "83757a1c9f34fb27f3c5b1357d543d79a1d463c79981ef69b2058a274d7c8d05"
+    },
+    {
+      "id": "stapfer-415",
+      "legacy_record_sha256": "7662ff97c186a2615f056382a8e9b435b4e44f499892bc9059acc7b0f988befb",
+      "text_sha256": "895158b9461bab0eed8d19f2f6a6fc753d47ba6650653dbfa22a723e4fbb001b",
+      "locator": "export_antworten.xlsx#Worksheet!A81:L81",
+      "row": 81,
+      "row_sha256": "14e943cc6f17d8b65525245ff4b2cbe12497b2c218acfa11b51378e28ce97cd6"
+    },
+    {
+      "id": "stapfer-1874",
+      "legacy_record_sha256": "a505e610b223ffd4f3c0ee89ef4a26e931dee6e92ec00a6add221021df60bb77",
+      "text_sha256": "c43923be8127fbbce49979e686744011fa58373e326cf09eeb5c17130601619d",
+      "locator": "export_antworten.xlsx#Worksheet!A82:L82",
+      "row": 82,
+      "row_sha256": "cf33f75d107c47a86ff9be8d88b40548ff4539d99113c793a07f631c166a7e7e"
+    },
+    {
+      "id": "stapfer-427",
+      "legacy_record_sha256": "547370de242186d5325d6e9087d7c517d6924a075c50f5c51ade908b0710ab51",
+      "text_sha256": "11751cf02135b43d538edbccb6a60f9f37e2a034c8fb80945d64592905069390",
+      "locator": "export_antworten.xlsx#Worksheet!A83:L83",
+      "row": 83,
+      "row_sha256": "3ef3e380707a897b7d1bf209a49e0914a7fd031b0f1ef13331913a38bdbc0f14"
+    },
+    {
+      "id": "stapfer-452",
+      "legacy_record_sha256": "a875b0aad8ce8ffc7522aae09a4a4d9aa5cc59100cb7fe29e491cf948babec05",
+      "text_sha256": "2b2b367ca45125f21bdbcb16e53a34a612218998d47280bdd958f7f44bd6985c",
+      "locator": "export_antworten.xlsx#Worksheet!A84:L84",
+      "row": 84,
+      "row_sha256": "ba035298501929bc4bc906f1b41f621d68c56e21fb3a5651683e4d80d8cd25f6"
+    },
+    {
+      "id": "stapfer-299",
+      "legacy_record_sha256": "f59f89016e3d1cab37c88641b00d62cca321e4b876ff9a250d76dabc3e60f85a",
+      "text_sha256": "7e5ea35e2a4266e181bef6d9e70dc79c5d5fe8a9a44d7d6b3bb78748a4ed21a5",
+      "locator": "export_antworten.xlsx#Worksheet!A85:L85",
+      "row": 85,
+      "row_sha256": "b7771c20a5a28512f09ed30d42026f2232ef0310a80c7f6e7edb32aa070a2418"
+    },
+    {
+      "id": "stapfer-1650",
+      "legacy_record_sha256": "7dbb5f6ed25886a8493edb11c39d3216761dff4a6b2c959cdd4a38cefa78a66b",
+      "text_sha256": "79c11f295d3fee92bb6a4091404e3e48234a7235be4b3e47d898cbe493977343",
+      "locator": "export_antworten.xlsx#Worksheet!A86:L86",
+      "row": 86,
+      "row_sha256": "c5e6a5858c36876bc3e19322e03e0580d199c0262ca42612c28a32400fe82579"
+    },
+    {
+      "id": "stapfer-1581",
+      "legacy_record_sha256": "8ee194fd8885ef597b1a7306216908a4809c4dcc614143d5f2311f2b806776e6",
+      "text_sha256": "f60b49cc8f47d8e4547522b01923ed23df9d1629835baa8e8a75635f96fffd75",
+      "locator": "export_antworten.xlsx#Worksheet!A87:L87",
+      "row": 87,
+      "row_sha256": "937a38d7f7aafc97b3771682d1d21da0cfd115fe5db37ae93b6b64812b2797ec"
+    },
+    {
+      "id": "stapfer-1513",
+      "legacy_record_sha256": "99567d7379310319f56631534576d1c64dd3fbf6ef02d00c5efe2a45be6c5092",
+      "text_sha256": "8798be2580c01cdf28615fa0c94e25244c21c4282fe3f6ca54024283976b70a9",
+      "locator": "export_antworten.xlsx#Worksheet!A88:L88",
+      "row": 88,
+      "row_sha256": "02d22c4c8e6944c6bc37b84e18555412dd9cc8d24e456aed65bca8c4facb6655"
+    },
+    {
+      "id": "stapfer-824",
+      "legacy_record_sha256": "caf01cb85402c0448c94ca79b70308f459eab5a946c7d78be7c9ef8603568bd8",
+      "text_sha256": "6469de65be8994f56bd0117fc31096b5410a57c48e844ae6e6640362c6beec67",
+      "locator": "export_antworten.xlsx#Worksheet!A89:L89",
+      "row": 89,
+      "row_sha256": "5fa1979fc37fc69010000742cfde6284c2fd38f523e2ca04a5c8da2682ec7cca"
+    },
+    {
+      "id": "stapfer-2056",
+      "legacy_record_sha256": "f5e083d1fd51ee0e70ee118ca3ca20a47601b7393e87491010d820b0287ba09a",
+      "text_sha256": "5b7497977c5e11e561824de090e171aa529780922c86cdf1084363300173abdf",
+      "locator": "export_antworten.xlsx#Worksheet!A90:L90",
+      "row": 90,
+      "row_sha256": "0f3000991528e536d5ac712235e6bb08b4c0893f1927259524d5e5ddc995d35d"
+    },
+    {
+      "id": "stapfer-2162",
+      "legacy_record_sha256": "1c16be151ef6ebaa9f20b6051570431e635e3724453738b5d61f7e5216b937e0",
+      "text_sha256": "215736da168c9b958ce71e0a12df785a819bae9dcc00fbb1023185fe0a268214",
+      "locator": "export_antworten.xlsx#Worksheet!A91:L91",
+      "row": 91,
+      "row_sha256": "f5bf1cd79176e8ea3ad5746ce52d8f8d8e763f08b7c0dc5639067fb0fc8d92b4"
+    },
+    {
+      "id": "stapfer-2269",
+      "legacy_record_sha256": "63ad6fdeed02199da86fafd0e89e1862eecce901a73618e004e3aaa2485fe200",
+      "text_sha256": "d2762b70888e209dce588d87791ade3d2683b45e358a01252eb199a85e6ff9a2",
+      "locator": "export_antworten.xlsx#Worksheet!A92:L92",
+      "row": 92,
+      "row_sha256": "9260b07618326958e4816175d70b56bfac32f437bb061b33a930046b4b724443"
+    },
+    {
+      "id": "stapfer-266",
+      "legacy_record_sha256": "69a74828ab64c814dfc87933ac77d33b19d36cd5d138af58f49ebb609a60d82c",
+      "text_sha256": "e5ada02b85511286a7e922fb56a74136dc3d45e0a77068988179f40da10d390b",
+      "locator": "export_antworten.xlsx#Worksheet!A93:L93",
+      "row": 93,
+      "row_sha256": "3aa2f9c2f18c5a42dc287f3d4301184cada25e2ac24ba6c400d94b64876af259"
+    },
+    {
+      "id": "stapfer-503",
+      "legacy_record_sha256": "dbe4cd6593612c86d9dbca4ff81b160697e45d720ee6a29da59863012406346d",
+      "text_sha256": "fc8a8ff5d2d2d477c35918ddb6fc55cb661d8237c6032afd191fbf6865d1fbea",
+      "locator": "export_antworten.xlsx#Worksheet!A94:L94",
+      "row": 94,
+      "row_sha256": "e7453b0e9dcd36887d00f49e88e055a9dcd88235ca03ea2960b30e63cbd63491"
+    },
+    {
+      "id": "stapfer-810",
+      "legacy_record_sha256": "6969eaa91a3dcda9ad5eaafe26ff605794e7bed0d8ac510a32439a5858c813f8",
+      "text_sha256": "27cac96b446896eb698158e6a20bb995fce8a7befff4ca35906098bd674def64",
+      "locator": "export_antworten.xlsx#Worksheet!A95:L95",
+      "row": 95,
+      "row_sha256": "5c8f2af9acb9905fce7d93f9fdb6b6dbb29418587c794b3a35364be19455de90"
+    },
+    {
+      "id": "stapfer-2379",
+      "legacy_record_sha256": "993c051999ba47d330bbc782a5fe11b7a3193c0c45da34cc5876d10d4eaab377",
+      "text_sha256": "4c34c5bbb48010eea4bde5b5233b23b3940d4a23d2c09f4af58b035d6a40fa1f",
+      "locator": "export_antworten.xlsx#Worksheet!A96:L96",
+      "row": 96,
+      "row_sha256": "1c539afe232641a2a00e3f1d3d7d6173af87b17ffe52fbbb5d4ff6bbba0e01b8"
+    },
+    {
+      "id": "stapfer-375",
+      "legacy_record_sha256": "07146752a127c2027fe6396456c1625e9b987875626481257023d7f686de7b11",
+      "text_sha256": "8952fcca578e3f3fb4bd400b78d4a4f924a9928533ae531fb32ae406f2ff7124",
+      "locator": "export_antworten.xlsx#Worksheet!A97:L97",
+      "row": 97,
+      "row_sha256": "9bbe219c7b11adeb80b33c0dc5b293064532691820d78b48c23bde4fbb28aa21"
+    },
+    {
+      "id": "stapfer-1629",
+      "legacy_record_sha256": "a1ecd4675fd933c09a04dbe49e8b603d553ad0b24eaa8834f046acb6e0511213",
+      "text_sha256": "0eab517492306d591f900c2d6fe03fadf63e15d9d1452b1ac00222aa6598c1d3",
+      "locator": "export_antworten.xlsx#Worksheet!A98:L98",
+      "row": 98,
+      "row_sha256": "a7c4d836df12716c3e726475db6f10f8db6a4fd496bb2c4a9e487bfe1556ab15"
+    },
+    {
+      "id": "stapfer-2413",
+      "legacy_record_sha256": "6cb80705dec3199cffa95e926c24464e5125965613f9f3744321b571a5227095",
+      "text_sha256": "d77eb426a19bb6e82c54b2476e1cffd3954e3750025417987a24ddb5a402c1d3",
+      "locator": "export_antworten.xlsx#Worksheet!A99:L99",
+      "row": 99,
+      "row_sha256": "0c7f34c4e340854f3d2b0dff5320cc8908007bdc72ec2e42c5f9782e9e4fcbaf"
+    },
+    {
+      "id": "stapfer-2302",
+      "legacy_record_sha256": "d4441a777dc1f35a6b0476cf7b64535e6e074db6d5af99e89819c93e1f0240ad",
+      "text_sha256": "a54c689187e94f855b82ceae1fd5fa98b2aec6f97437191ba582a718ed158360",
+      "locator": "export_antworten.xlsx#Worksheet!A100:L100",
+      "row": 100,
+      "row_sha256": "e0b6c994b68cab245b6b9e8821a6496dbaa20ae7e2406fb1764bc5b568726b41"
+    },
+    {
+      "id": "stapfer-746",
+      "legacy_record_sha256": "922f5869c819569dd84c668f51175a60d70f60948818f3fa6245ef9ae61beee7",
+      "text_sha256": "80cc4286cc6182f2190195eacbfef30b13c7ca0d94587bb368e284e463452949",
+      "locator": "export_antworten.xlsx#Worksheet!A101:L101",
+      "row": 101,
+      "row_sha256": "3fc960553f7beb3a7ff788cae3377332ccbda2aa184237dc359ca47aab25de1b"
+    },
+    {
+      "id": "stapfer-103",
+      "legacy_record_sha256": "1b600d528fb457c436cfa480fc099151f8a8a8d7935cdde967f26f7123fc76e7",
+      "text_sha256": "f5f7a76261bf539caa129c9fbe1125fa426a6e5e725bf79846de845a26f3a43e",
+      "locator": "export_antworten.xlsx#Worksheet!A102:L102",
+      "row": 102,
+      "row_sha256": "1c05bcacb2209f4a56a1f22466a813b8952d2169df3b084fd623e636856f0cec"
+    },
+    {
+      "id": "stapfer-2029",
+      "legacy_record_sha256": "bddef0e13644be52ca0f9470be836f9960eccad9eefda87ebb2b1fa8a1815cda",
+      "text_sha256": "fafd1f5be985560d9a3855c3889df8a63218af824be6eec452eeed224c512228",
+      "locator": "export_antworten.xlsx#Worksheet!A103:L103",
+      "row": 103,
+      "row_sha256": "40bc2cd955812698f54d3fa68c31fe9b58e6ebe404b2158315ba45ca879b3312"
+    },
+    {
+      "id": "stapfer-2071",
+      "legacy_record_sha256": "c15fdf1be2af18bdc2e9b91e6172738250537d74a060ef5cc9da5ab64cdccad1",
+      "text_sha256": "fbd14f9612d3a419b803844da0eedf46a5719e5c6fb4c7c50a622d6ad98636fb",
+      "locator": "export_antworten.xlsx#Worksheet!A104:L104",
+      "row": 104,
+      "row_sha256": "a4e66df7ee1191e0afeb29f69d562883525b64c1a9ae815d2ed9c9d906ba711c"
+    },
+    {
+      "id": "stapfer-2074",
+      "legacy_record_sha256": "85885abec98506ba2eda3a9ae51f3693d144bc249d92c39225904af994739b9c",
+      "text_sha256": "90cdaeee46776178fe8db57345fe4321d134ee80bd1229d024e04a3532a0f2df",
+      "locator": "export_antworten.xlsx#Worksheet!A105:L105",
+      "row": 105,
+      "row_sha256": "2c1add765b50f9d41185c51430de278aa6cc6f9a03a18444fa458505f5232f28"
+    },
+    {
+      "id": "stapfer-252",
+      "legacy_record_sha256": "9f2c7d5fb9b0527fcbc443c3583b22901a5b89c8ffa2a55bad3dba7d184ff9b9",
+      "text_sha256": "efa3acc5050b220e2da13b2c523181e3f5ccf9166235f703484c8a15d9dbe46b",
+      "locator": "export_antworten.xlsx#Worksheet!A106:L106",
+      "row": 106,
+      "row_sha256": "31920c811e9834fbeb88d4cd82520f16d0738809012ad0e94298daf3b79e7ad7"
+    }
+  ],
+  "second_collection_id": "stapfer-1799-answers",
+  "second_collection_records": 2245,
+  "overlapping_transcription_ids": 105,
+  "rejection_reasons": {
+    "empty_answer": 58
+  },
+  "original_files_committed": false,
+  "provider_calls": 0,
+  "limitations": [
+    "Workbook rows are published transcription exports, not original-page OCR.",
+    "Question labels are source export labels; numeric relational question IDs are not supplied.",
+    "Blank answers indicate missing exported content, not negative historical evidence.",
+    "Collections overlap and must not be counted as independent historical observations."
+  ],
+  "outputs": [
+    {
+      "path": "stapfer-answer-sources.jsonl",
+      "sha256": "0fcb43ed129b8e0a9260324314ea2d376e8e147f5ad02774c90daed3c016cad0"
+    },
+    {
+      "path": "stapfer-rejected-rows.jsonl",
+      "sha256": "0fed5a113ac26030c0bafc7cbcf82b60eaf1e817705723376f6803449c46b258"
+    }
+  ]
+}

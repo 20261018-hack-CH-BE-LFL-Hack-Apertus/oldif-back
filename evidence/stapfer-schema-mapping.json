@@ -1,0 +1,113 @@
+{
+  "reference": {
+    "file": "Stapferenquete_Datenmodell.pdf",
+    "sha256": "36db9ab8cbd3f885732889f303d9e74550ae1a390cbc30b8e7f0a2e5aa524262",
+    "pages": 32,
+    "original_committed": false
+  },
+  "inspection": {
+    "method": "Poppler pdftotext -layout; rendered page13 visually checked",
+    "text_pages_checked": [
+      13,
+      15,
+      20,
+      23,
+      24,
+      30
+    ],
+    "rendered_pages_checked": [
+      13
+    ]
+  },
+  "mappings": [
+    {
+      "export_field": "Antwort",
+      "schema_reference": "t_antwort.antwort",
+      "page": 13,
+      "status": "direct concept; original row preserved"
+    },
+    {
+      "export_field": "TransID",
+      "schema_reference": "t_transkription.id_transkription; t_antwort.f_id_transkription",
+      "pages": [
+        13,
+        30
+      ],
+      "status": "export identifier retained; SQL joins not executed"
+    },
+    {
+      "export_field": "Frage",
+      "schema_reference": "t_frage.frage and frage_nummer; t_antwort.f_id_frage",
+      "pages": [
+        13,
+        15
+      ],
+      "status": "text label preserved; numeric question ID unavailable, no invented join"
+    },
+    {
+      "export_field": "Schulort",
+      "schema_reference": "t_ort.ort_name; t_schule.f_id_ort",
+      "pages": [
+        20,
+        24
+      ],
+      "status": "export place string retained; no inferred geocoding"
+    },
+    {
+      "export_field": "Schule Konfession",
+      "schema_reference": "t_schule.schule_konfession",
+      "page": 23,
+      "status": "export value retained"
+    },
+    {
+      "export_field": "Schultyp",
+      "schema_reference": "t_schule.schule_schultypus",
+      "page": 23,
+      "status": "export label retained; foreign-key type IDs not reconstructed"
+    },
+    {
+      "export_field": "Signatur",
+      "schema_reference": "t_transkription.transkription_quelle_signatur",
+      "page": 30,
+      "status": "signature retained; not treated as a physical page index"
+    },
+    {
+      "export_field": "Distrikt",
+      "schema_reference": "t_ort.ort_distrikt",
+      "page": 20,
+      "status": "export label retained"
+    },
+    {
+      "export_field": "Kanton 1799",
+      "schema_reference": "t_ort.ort_kanton_1799",
+      "page": 20,
+      "status": "historical export label retained"
+    },
+    {
+      "export_field": "Kanton 2015",
+      "schema_reference": "t_ort.ort_kanton_aktuell",
+      "page": 20,
+      "status": "export explicitly means 2015; not relabeled current"
+    },
+    {
+      "export_field": "Kanton 1750",
+      "schema_reference": null,
+      "page": 20,
+      "status": "unmapped: model lists ort_kanton_1780, which is a different year; retain original1750label"
+    },
+    {
+      "export_field": "Zitierempfehlung",
+      "schema_reference": null,
+      "status": "export citation recommendation retained; author identity not inferred"
+    }
+  ],
+  "design_decisions": [
+    "Group second workbook by exported TransID only when stable school/signature/place metadata agrees.",
+    "Each answer retains its original question label, exact text or typed numeric value, Excel row locator and raw-row hash.",
+    "Blank answers remain missing rows in every group and the rejected-row registry.",
+    "No PDF text, SQL dump, workbook formula, or external link is executed.",
+    "Full-text and question-answer collections overlap; they are not independent observations."
+  ],
+  "provider_calls": 0,
+  "historical_expert_validation": "NOT_RUN"
+}

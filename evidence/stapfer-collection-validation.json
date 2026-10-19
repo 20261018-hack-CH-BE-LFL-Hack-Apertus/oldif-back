@@ -1,0 +1,138 @@
+{
+  "validation_class": "actual local HTTP collection export and provenance checks",
+  "passed": 19,
+  "failed": 0,
+  "checks": [
+    {
+      "check": "anonymous_export_denied",
+      "passed": true
+    },
+    {
+      "check": "demo_auth",
+      "passed": true
+    },
+    {
+      "check": "datasets_readable",
+      "passed": true
+    },
+    {
+      "check": "both_collections_visible",
+      "passed": true
+    },
+    {
+      "check": "declared_counts_exact",
+      "passed": true
+    },
+    {
+      "check": "rejection_registry_retained",
+      "passed": true
+    },
+    {
+      "check": "json_export",
+      "passed": true
+    },
+    {
+      "check": "export_count_matches_manifest",
+      "passed": true
+    },
+    {
+      "check": "unique_source_ids",
+      "passed": true
+    },
+    {
+      "check": "all_exact_text_hashes",
+      "passed": true
+    },
+    {
+      "check": "all_original_workbook_hashes",
+      "passed": true
+    },
+    {
+      "check": "missing_rows_not_silently_dropped",
+      "passed": true
+    },
+    {
+      "check": "complete_row_accounting",
+      "passed": true
+    },
+    {
+      "check": "numeric_cell_provenance",
+      "passed": true
+    },
+    {
+      "check": "answer_span_hashes",
+      "passed": true
+    },
+    {
+      "check": "jsonl_export_count",
+      "passed": true
+    },
+    {
+      "check": "tsv_export_count",
+      "passed": true
+    },
+    {
+      "check": "legacy_105_records_unchanged",
+      "passed": true
+    },
+    {
+      "check": "restored_sources_have_one_revision",
+      "passed": true
+    }
+  ],
+  "elapsed_seconds": 6.427,
+  "records": 2245,
+  "accepted_answer_rows": 14743,
+  "missing_answer_rows": 58,
+  "provider_calls": 0,
+  "historical_accuracy": "NOT_RUN",
+  "original_workbook_files_committed": false,
+  "native_tests": {
+    "passed": 24,
+    "failed": 0,
+    "cargo_build": "PASS"
+  },
+  "importer_tests": {
+    "passed": 5,
+    "failed": 0,
+    "receipt": "stapfer-rejected-fixture-validation.json"
+  },
+  "recovery": {
+    "preexisting_immutable_records": 17,
+    "final_records": 2245,
+    "all_versions_one": true,
+    "collection_marker_written_after_sources": true,
+    "resume_until_ready_seconds_upper_bound": 4.736,
+    "complete_marker_startup_seconds": 0.072,
+    "method": "isolated native backend + SQLite record store; first17records inserted without collection marker, then actual backend started; marker restart measured by health polling",
+    "azure_startup_timing": "NOT_RUN"
+  },
+  "limits": [
+    "Local SQLite timing is not a production PostgreSQL/Azure Files timing guarantee.",
+    "No provider calls, OCR or historical expert quality measurements in this import check.",
+    "Blank answers remain missing content, not negative historical evidence.",
+    "Original workbooks/schemaPDF were not copied into the repository."
+  ],
+  "reproducibility": {
+    "second_independent_import_byte_identical": true,
+    "outputs_checked": [
+      "stapfer-answer-sources.jsonl",
+      "stapfer-import-manifest.json",
+      "stapfer-rejected-rows.jsonl"
+    ]
+  },
+  "implementation_files": [
+    {
+      "path": "scripts/import_stapfer.py",
+      "sha256": "5db9718d09c02881ad8407e9375b303dfef8ad114851d9307f8eb0fb7a9a6094"
+    },
+    {
+      "path": "src/application/stapfer_seed.rs",
+      "sha256": "1263e958a5b760026d7649d07840e0b677b900437ca6d27f4fa1139ea5dd19cd"
+    },
+    {
+      "path": "scripts/test_import_stapfer.py",
+      "sha256": "20dc28eae9ce6715eca5dfa393d3a6d069ab4338cba319d19f3ab24fdc613ec9"
+    }
+  ]
+}
