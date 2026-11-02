@@ -25,4 +25,4 @@ libc = "=0.2.191"
 roxmltree = "=0.21.1"
 
 [build-dependencies]
-tonic-prost-build = "=0.14.6"
+tonic-prost-build = "=0.14.9"
